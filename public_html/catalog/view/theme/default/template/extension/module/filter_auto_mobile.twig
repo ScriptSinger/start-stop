@@ -1,0 +1,32 @@
+{% if (design_filter == 1) %}
+    {{ filter_include }}
+{% else %}
+<div id="auto-filter-mobile">
+    <div id="auto-filter-mobbutton">
+        <button type="button" class="btn btn-primary"><i class="fa fa-filter"></i></button>
+    </div>
+    <div class="auto-filter-mobbody">
+        {{ filter_include }}
+    </div>
+</div>
+{% endif %}
+<script>
+    (function() {
+        $('#auto-filter-mobile').detach().appendTo($('#column-left').parent());
+
+        $(document).on('click', '#auto-filter-mobbutton button', function(e){
+            e.stopPropagation();
+            $('#auto-filter-mobile').toggleClass('show-mobile-menu');
+            $('.auto-filter-mobile-wrap').html($('.auto-filter-content').html());
+        });
+        $(document).on('click', '.closebtn', function(e){
+            e.stopPropagation();
+            $('#auto-filter-mobile').removeClass('show-mobile-menu');
+        });
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest("#auto-filter-mobile").length) {
+                $("body").find("#auto-filter-mobile").removeClass("show-mobile-menu");
+            }
+        });
+    })();
+</script>

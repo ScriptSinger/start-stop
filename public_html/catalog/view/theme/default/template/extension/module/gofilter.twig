@@ -1,0 +1,2055 @@
+{% if on_category %}
+<div class="options{% if get_category_id %} filter_category_page{% endif %}" id="home_filter">
+<div class="margin-bottom">
+<div class="filter">
+<form action="index.php?" method="get" id="filter_send">
+<input type="hidden" name="route" value="product/category" />
+{% if page_category and page_category != "" or category_id %}
+<input type="hidden" name="path" value="{{ category_id }}" />
+<input type="hidden" name="category_id" value="{{ category_id }}" class="categ" />
+{% endif %}
+{% if manufacturer_id %}
+<input type="hidden" name="manufacturer_id" value="{{ manufacturer_id }}" />
+{% endif %}
+{% if search %}
+<input type="hidden" name="search" value="{{ search }}" />
+{% endif %}
+{% if parent_category_hierarchy.category_id %}
+<input type="hidden" name="parent_category_hierarchy" value="{{ parent_category_hierarchy.category_id }}" checked id="parent_category_hierarchy" />
+<input type="hidden" name="parent_category_hierarchy_name" value="{{ parent_category_hierarchy.name_hierarchy }}" checked id="parent_category_hierarchy_name" />
+{% endif %}
+{% set popup_on = true %}
+{% if keywords_filter_text and keywords_filter_text != "" %}<input type="hidden" name="keywords_filter" value="{{ keywords_filter_text }}" />{% endif %}
+{% if max_price_const or old_price %}<input type="hidden" name="op" value="{% if max_price_const %}{{ max_price_const }}{% else %}{{ old_price }}{% endif %}" class="filter_op" />{% endif %}
+{% set drop_option = true %}{% set drop_attributes = true %}
+{% if popup_view %}{% set popup_on = false %}{% endif %}
+{% if max_height == false %}{% set max_height = '215' %}{% endif %}
+{% if count_show == false %}{% set count_show = 3 %}{% endif %}
+{% if status_seo %}{% set seo_on = status_seo %}{% else %}{% set seo_on = false %}{% endif %}
+{% if seo_separator == false %}{% set seo_separator = "=" %}{% endif %}
+<div id="option_filter">
+	{% if name_module and name_module != "" %}<h3 class="col-sm-12"><i class="fa fa-filter"></i>&nbsp;&nbsp;&nbsp;{{ name_module }}</h3>{% endif %}
+	<div class="clearfix">
+	<div class="options_container_filter col-sm-12">
+	<div class="clearfix"></div>
+	<div class="options_container filter_container">
+	{% if category_id %}<a class="btn btn-white category_filt" onclick="{% if post_category_id == false %}{% if category_type=="radio" or category_type=="link" %}live_option_product('category_filter', 'options', '', '');{% else %}live_home_clear_category_filter({{ category_id }}){% endif %}{% else %}live_home_clear_category_filter({{ old_category_id }}){% endif %}"><span class="pull-left">{{ category_name }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>{% endif %}
+		{% if get_price_max and max_price_const %}
+			{% if get_price_max > max_price_const %}
+				{% if max_price_const %}{% set test_price = max_price_const %}{% endif %}
+			{% else %}
+				{% if get_price_max %}{% set test_price = get_price_max %}{% endif %}
+			{% endif %}
+				{% if test_price != max_price_const or get_price_min != 0 %}
+				{% for currency in currencies %}
+					{% if currency.symbol_left and currency.code == code %}
+						{% set value_max_currency = currency.symbol_left %}
+					{% elseif currency.symbol_right and currency.code == code %}
+						{% set value_max_currency = currency.symbol_right %}
+					{% endif %}
+				{% endfor %}
+				<a class="btn btn-white option_cloud_price" onclick="slider_generation('0','{{ max_price_const }}','clear'); clear_popup_filter();"><span class="pull-left">{{ text_price }} {% if min_price %}{{ min_price }}{% endif %} - {% if get_price_max > max_price_const %}{% if max_price_const %}{{ max_price_const }}{% endif %}{% else %}{% if max_price %}{{ max_price }}{% endif %}{% endif %}{% if value_max_currency %}{{ value_max_currency }}{% endif %}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+			{% endif %}
+		{% endif %}
+		{% if manufacturers %}
+			{% set n = 2000 %}
+			{% for manufacturer in manufacturers %}
+				{% if manufacturer.manufacturer_value_required %}
+					<a class="btn btn-white option_cloud{{ n }}{{ manufacturer.manufacturer_id }}" onclick="{% if manufacturers_type == 'radio' %}live_option_product('manufacturers_filter', 'options', '', '');{% else %}live_home_clear_manufacturers_filter({{ manufacturer.manufacturer_id }});{% endif %}"><span class="pull-left">{{ manufacturer.name }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+				{% endif %}
+				{% set n=n+1 %}
+			{% endfor %}
+		{% endif %}
+		{% set k=1 %}
+		{% if keywords_filter %}
+			{% for value in keywords_filter %}
+				{% if value != "" %}
+					<a class="btn btn-white option_cloud_keywords{{ k }}" onclick="live_home_clear_keywords_filter('{{ value }}', {{ k }});" data-value="{{ value }}"><span class="pull-left">{{ value }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+				{% endif %}
+				{% set k=k+1 %}
+			{% endfor %}
+		{% endif %}
+		{% if stock_statuses %}
+			{% for stock_status in stock_statuses %}
+				{% if stock_status.stock_status_value_required %}
+					<a class="btn btn-white option_cloud{{ stock_status.status_id }}" onclick="{% if status_stock_type == 'radio' %}live_option_product('stock_status_filter', 'options', '', '');{% else %}live_home_clear_stock_filter('{{ stock_status.status_id }}');{% endif %}"><span class="pull-left">{{ stock_status.name }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+		{% if options %}
+			{% for option in options %}
+				{% for option_value in option.option_value %}
+					{% if option_value.option_value_required %}
+						<a class="btn btn-white option_cloud{{ option_value.option_value_id }}" onclick="live_home_clear_option_filter({{ option_value.option_value_id }});"><span class="pull-left">{{ option.name }} : {{ option_value.option_value_name }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+					{% endif %}
+				{% endfor %}
+			{% endfor %}
+		{% endif %}
+		{% if filters %}
+			{% for filter in filters %}
+				{% for filter_value in filters.filter %}
+					{% if filter_value.filter_value_required %}
+						<a class="btn btn-white option_cloud{{ filter_value.filter_id }}" onclick="live_home_clear_filter_filter({{ filter_value.filter_id }});"><span class="pull-left">{{ filter.name }} : {{ filter_value.name }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+					{% endif %}
+				{% endfor %}
+			{% endfor %}
+		{% endif %}
+		{% if attributes %}
+			{% set m = 1000 %}
+			{% for attribute in attributes %}
+                {% if attribute.attribute_show_required %}
+    				{% for attribute_text in attribute.attribute %}
+                        {% if attribute_text.attribute_value_required and attribute_text.attribute_stock_required %}
+    						<a class="btn btn-white option_cloud{{ m }}{{ attribute.attribute_id }}" onclick="live_home_clear_attributes_filter({{ m }}{{ attribute.attribute_id }});"><span class="pull-left">{{ attribute.name }} : {{ attribute_text.text }}</span>&nbsp;&nbsp;<i class="fa fa-times pull-right" aria-hidden="true"></i></a>
+    					{% endif %}
+						{% set m=m+1 %}
+    				{% endfor %}
+                {% endif %}
+			{% endfor %}
+		{% endif %}
+		{% if options or attributes or prices_max_value %}{% else %}
+			<span class="clearfix">
+			{% if prices_max_value %}{{ text_option_no_empty }}{% endif %}
+			</span>
+		{% endif %}
+		{% if ratings %}
+			{% for rating in ratings %}
+				{% if rating.rating_value_required %}
+					<a class="btn btn-white option_cloud{{ rating.rating }}" onclick="{% if ratings_type == 'radio' %}live_option_product('rating_filter', 'options', '', '');{% else %}live_home_clear_rating_filter({{ rating.rating }});{% endif %}">
+					<span class="rating">
+						{% for i in 1..5 %}
+							{% if rating.rating < i %}
+								<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+							{% else %}
+								<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+							{% endif %}
+						{% endfor %}
+					</span>
+					&nbsp;&nbsp;<i class="fa fa-times pull-right"></i></a>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	</div>
+	</div>
+	{% for value in type_filters %}
+		{% if view_categories %}
+			{% if value == "categories" %}
+				{% if status_category %}
+						<div class="checkbox-group btn-border col-sm-12{% if view_categories == "column" %} column_filt{% if go_mobile %} column_mobile{% endif %}{% endif %}{% if view_categories == "content" %} content_filt{% endif %}{% if collapse_category == '1' %} collapse_filter{% endif %}{% if mobile_category == 0 %} hidden-xs{% endif %}{% if desktop_category == 0 %} hidden-sm{% endif %}">
+							<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.select-group').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_category }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+							{% if category_type == 'link' %}
+								<div class="checkbox-group-overflow categories_filter">
+									{% if parent_category_id %}
+										<div class="radio">
+											<input type="hidden" name="parent_category_hierarchy" value="{{ parent_category_hierarchy.category_id }}" checked id="parent_category_hierarchy" />
+											{% if old_category_id %}
+												<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+												<input type="radio" name="category_id" value="{{ old_category_id }}" id="option-value-category-{{ old_category_id }}" />
+													<i class="fa fa-reply-all pull-left"></i>
+													<label for="option-value-category-{{ old_category_id }}">
+														<a class="category_filter">{{ parent_category_hierarchy.name }}</a>
+													</label>
+											{% else %}
+												<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+												<input type="hidden" name="old_category_id" value="{{ parent_category_hierarchy.category_id }}" id="" />
+													<i class="fa fa-reply-all pull-left"></i>
+													<label for="option-value-category-{{ parent_category_hierarchy.category_id }}">
+														<a class="category_filter" onclick="live_option_product('category_filter', 'options', '', 'no_popup');">{{ parent_category_hierarchy.name }}</a>
+													</label>
+											{% endif %}
+										</div>
+									{% endif %}
+									{% if categories %}
+										{% for category in categories %}
+											{% if category.category_stock_required or parent_category_id %}
+												<div class="radio{% if category.category_stock_required == false %} not-active-link{% endif %}">
+													<input type="radio"{% if category.category_value_required %} checked{% endif %} name="category_id" value="{{ category.category_id }}" data-category="category-{{ category.category_id }}" id="option-value-category-{{ category.category_id }}"{% if category.category_stock_required == false %} disabled{% endif %} class="filter_hide" />
+														{% if category.category_value_required %}<i class="fa fa-check pull-left"></i>{% endif %}
+														<label for="option-value-category-{{ category.category_id }}">
+															<a class="category_filter">{{ category.name }}</a>
+															{% if category.category_value_required %}
+																<i class="fa fa-close pull-right" onclick="live_home_filter();"></i>
+															{% else %}
+																{% if category.total and quantity_view %}<span class="filter_total">{{ category.total }}</span>{% else %}<span class="filter_total filter_gray">0</span>{% endif %}
+															{% endif %}
+														</label>
+												</div>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+									<div><span id="popup_categories"></span></div>
+								</div>
+							{% endif %}
+							{% if category_type == 'select' %}
+								{% if parent_category_id %}
+									<div class="radio select_filter">
+										<input type="hidden" name="parent_category_hierarchy" value="{{ parent_category_hierarchy }}" checked id="parent_category_hierarchy" />
+										{% if old_category_id %}
+											<a class="category_filter">
+												<i class="fa fa-reply-all pull-left"></i>
+												<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+												<input type="radio" name="category_id" value="{{ old_category_id }}" id="option-value-category-{{ old_category_id }}" />
+												<label for="option-value-category-{{ old_category_id }}">
+													{{ parent_category_hierarchy.name }}
+												</label>
+											</a>
+										{% else %}
+											<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+											<a class="category_filter" onclick="live_option_product('category_filter', 'options', '', 'no_popup');">
+												<i class="fa fa-reply-all pull-left"></i>
+												<input type="hidden" name="old_category_id" value="{{ parent_category_hierarchy.category_id }}" id="" />
+												<label for="option-value-category-{{ parent_category_hierarchy.category_id }}">
+													{{ parent_category_hierarchy.name }}
+												</label>
+											</a>
+										{% endif %}
+									</div>
+								{% endif %}
+								<div class="select-group">
+									<select name="category_id" id="category-option" class="form-control">
+										<option value="" id="common_category">{{ text_select }}</option>
+										{% for category in categories %}
+											{% if category.category_stock_required %}
+											<option value="{{ category.category_id }}" {% if category.category_stock_required == false %} disabled{% endif %} {% if category.category_value_required %} selected{% endif %}>{{ category.name }}{% if category.total and quantity_view %} ({{ category.total }}){% else %} (0){% endif %}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+									<div><span id="popup_categories"></span></div>
+								</div>
+							{% endif %}
+							{% if category_type == 'radio' %}
+								<div class="checkbox-group-overflow categories_filter">
+									{% if parent_category_id %}
+										<div class="radio">
+											<input type="hidden" name="parent_category_hierarchy" value="{{ parent_category_hierarchy }}" checked id="parent_category_hierarchy" />
+											{%  if old_category_id %}
+												<a class="category_filter">
+													<i class="fa fa-reply-all pull-left"></i>
+													<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+													<input type="radio" name="category_id" value="{{ old_category_id }}" id="option-value-category-{{ old_category_id }}" />
+													
+													<label for="option-value-category-{{ old_category_id }}">
+														{{ parent_category_hierarchy.name }}
+													</label>
+												</a>
+											{% else %}
+												<input type="hidden" name="category_id" value="{{ category_id }}" checked id="common_category" />
+												<a class="category_filter" onclick="live_option_product('category_filter', 'options', '', 'no_popup');">
+													<i class="fa fa-reply-all pull-left"></i>
+													<input type="hidden" name="old_category_id" value="{{ parent_category_hierarchy.category_id }}" id="" />
+													<label for="option-value-category-{{ parent_category_hierarchy.category_id }}">
+														{{ parent_category_hierarchy.name }}
+													</label>
+												</a>
+											{% endif %}
+										</div>
+									{% endif %}
+									{% for category in categories %}
+										{% if category.category_stock_required or parent_category_id %}
+											<div class="radio">
+											  <input type="radio"{% if category.category_value_required %} checked{% endif %} name="category_id" value="{{ category.category_id }}" data-category="category-{{ category.category_id }}" id="option-value-category-{{ category.category_id }}"{% if category.category_stock_required == false %} disabled{% endif %} />
+											  <label for="option-value-category-{{ category.category_id }}">
+												{{ category.name }}
+												{% if category.category_value_required %}
+													<i class="fa fa-close" onclick="live_option_product('category_filter', 'options', '', '');"></i>
+												{% else %}
+													{% if category.total and quantity_view %}<span class="filter_total">{{ category.total }}</span>{% else %}<span class="filter_total filter_gray">0</span>{% endif %}
+												{% endif %}
+											  </label>
+											</div>
+										{% endif %}
+									{% endfor %}
+									<div><span id="popup_categories"></span></div>
+								</div>
+							{% endif %}
+						</div>
+					
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if max_price_const or old_price %}
+			{% if view_prices %}
+				{% if value == "prices" %}
+					{% if status_price %}
+						<div class="checkbox-group-price btn-border col-sm-12{% if view_prices == "column" %} column_filt{% if go_mobile %} column_mobile{% endif %}{% endif %}{% if view_prices == "content" %} content_filt{% endif %}{% if collapse_price == '1' %} collapse_filter{% endif %}{% if mobile_price == 0 %} hidden-xs{% endif %}{% if desktop_price == 0 %} hidden-sm{% endif %}">
+							<div class="checkbox-group-overflow-price{% if view_prices == "column" %} column_filt{% endif %}{% if view_prices == "content" %} content_filt{% endif %}">
+								<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.formCost.checkbox').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_range_price }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+								<div class="formCost checkbox">
+								{% if value_max_currency_left %}<label class="pull-left">{% if value_max_currency_left %}{{ value_max_currency_left }}{% endif %}</label>{% endif %}<input type="text" name="prices_min_value" id="minCost" value="{% if min_price %}{{ min_price }}{% else %}0{% endif %}" class="pull-left form-control" /><label class="pull-left">{% if value_max_currency_right %}{{ value_max_currency_right }}{% endif %}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</label>
+								{% if value_max_currency_left %}<label class="pull-left">{% if value_max_currency_left %}{{ value_max_currency_left }}{% endif %}</label>{% endif %}<input type="text" name="prices_max_value" id="maxCost" value="{% if max_price_const %}{% if get_price_max > max_price_const %}{% if max_price_const %}{{max_price_const }}{% endif %}{% else %}{% if max_price %}{{ max_price }}{% endif %}{% endif %}{% else %}{{ prices_max_value }}{% endif %}" class="pull-left form-control" /> {% if value_max_currency_right %}<label for="maxCost" class="pull-left">{{ value_max_currency_right }}</label>{% endif %}
+								<div class="clearfix"><div id="formCost_popup"></div></div>
+								<div class="clearfix"></div><br />
+								<div class="col-sm-12"><div class="slider"></div></div>
+								</div><div class="clearfix"></div>
+							</div>
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_keywords_filter %}
+			{% if value == "keywords_filter" %}
+				{% if status_keywords %}
+					{% if max_price_const %}
+						<div class="checkbox-group btn-border col-sm-12{% if view_keywords_filter == "column" %} column_filt{% endif %}{% if view_keywords_filter == "content" %} content_filt{% endif %}{% if collapse_keywords == '1' %} collapse_filter{% endif %}{% if mobile_keywords == 0 %} hidden-xs{% endif %}{% if desktop_keywords == 0 %} hidden-sm{% endif %}">
+							<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.select-group').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_keywords }}</strong><i class="fa fa-caret-down pull-right"></i></h4></div>
+							<div class="select-group">
+								<div id="keywords_filter" class="input-group select-group">
+								  <input type="text" id="keywords_filter_input" name="keywords_filter" value="{% if keywords_filter_text %}{{ keywords_filter_text }}{% endif %}" placeholder="{% if delimitier == " " %}{{ text_keywords_placeholder }}{% endif %}{% if delimitier == "," %}{{ text_keywords_placeholder_zap }}{% endif %}" class="form-control" />
+								  <span class="input-group-btn">
+									<button type="button" class="btn"><i class="fa fa-search"></i></button>
+								  </span>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_manufacturers %}
+			{% if value == "manufacturers" %}
+				{% if status_manufacturers %}
+					{% if manufacturers %}
+						<div class="checkbox-group btn-border col-sm-12{% if view_manufacturers == "column" %} column_filt{% endif %}{% if view_manufacturers == "content" %} content_filt{% endif %}{% if collapse_manufacturers == '1' %} collapse_filter{% endif %}{% if mobile_manufacturers == 0 %} hidden-xs{% endif %}{% if desktop_manufacturers == 0 %} hidden-sm{% endif %}">
+							<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.select-group').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_manufacturers }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+							{% set count = 0 %}
+							{% set coun_end = 0 %}
+							{% set count_group = 100 %}
+							{% if manufacturers_type == 'checkbox' %}
+								<div class="checkbox-group-overflow">
+								{% set test_checked = 0 %}{% if manufacturers %}{% for manufacturer in manufacturers %}{% if manufacturer.manufacturer_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+									{% for manufacturer in manufacturers %}
+										{% set count = count + 1 %}
+										<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="checkbox" name="manufacturers_filter[]" value="{{ manufacturer.manufacturer_id }}"{% if manufacturer.manufacturer_value_required %} checked{% endif %} data-manufacturers="manufacturers-{{ manufacturer.manufacturer_id }}" id="option-value-manufacturers-{{ manufacturer.manufacturer_id }}"{% if manufacturer.manufacturers_stock_required == false and manufacturer.manufacturer_value_required == false and manufacturer.manufacturer_value_required == false %} disabled{% endif %} />
+										  <label for="option-value-manufacturers-{{ manufacturer.manufacturer_id }}">
+											{% if manufacturer.image %}<img src="{{ manufacturer.image }}" alt="" title="" />{% endif %}
+											{{ manufacturer.name }}
+											{% if manufacturer.manufacturer_value_required %}
+												{% if manufacturer.manufacturers_stock_required %}
+													<i class="fa fa-close pull-right"></i>
+												{% else %}
+													<span class="filter_total filter_gray showing">0</span>
+												{% endif %}
+											{% else %}
+												{% if manufacturer.manufacturer_value_total and quantity_view %}<span class="filter_total">{% if manufacturer.manufacturers_stock_or %}+{% endif %}{{ manufacturer.manufacturer_value_total }}</span>{% else %}<span class="filter_total filter_gray">0</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+								{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+							{% if manufacturers_type == 'select' %}
+								<div class="select-group">
+								   <div class="checkbox">
+										<select name="manufacturers_filter[]" id="manufacturers-option" class="form-control">
+											<option value="" id="common_manufacturers">{{ text_select }}</option>
+											{% set test_checked = 0 %}{% if manufacturers %}{% for manufacturer in manufacturers %}{% if manufacturer.manufacturer_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+											{% for manufacturer in manufacturers %}
+												<option value="{{ manufacturer.manufacturer_id }}" {% if manufacturer.manufacturer_value_required %} selected{% endif %}{% if manufacturer.manufacturers_stock_required == false %} disabled{% endif %}>{{ manufacturer.name }}{% if manufacturer.manufacturer_value_total and quantity_view %} ({{ manufacturer.manufacturer_value_total }}){% endif %}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							{% endif %}
+							{% if manufacturers_type == 'radio' %}
+								<div class="checkbox-group-overflow">
+									{% set test_checked = 0 %}{% if manufacturers %}{% for manufacturer in manufacturers %}{% if manufacturer.manufacturer_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+									{% for manufacturer in manufacturers %}
+										{% set count = count + 1 %}
+										<div class="radio{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="radio"{% if manufacturer.manufacturer_value_required %} checked{% endif %} name="manufacturers_filter[]" value="{{ manufacturer.manufacturer_id }}" data-manufacturer="manufacturer-{{ manufacturer.manufacturer_id }}" id="option-value-manufacturer-{{ manufacturer.manufacturer_id }}"{% if manufacturer.manufacturers_stock_required == false %} disabled{% endif %} />
+										  <label for="option-value-manufacturer-{{ manufacturer.manufacturer_id }}">
+											{% if manufacturer.image %}<img src="{{ manufacturer.image }}" alt="" title="" />{% endif %}
+											{{ manufacturer.name }}
+											{% if manufacturer.manufacturer_value_required %}
+												<i class="fa fa-close pull-right" onclick="live_option_product('manufacturers_filter', 'options', '', '');"></i>
+											{% else %}
+												{% if manufacturer.manufacturer_value_total and quantity_view %}<span class="filter_total">{{ manufacturer.manufacturer_value_total }}</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+								{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_stock_statuses %}
+			{% if value == "stock_statuses" %}
+				{% if status_stock %}
+					{% if stock_statuses %}
+						<div class="checkbox-group btn-border col-sm-12{% if view_stock_statuses == "column" %} column_filt{% endif %}{% if view_stock_statuses == "content" %} content_filt{% endif %}{% if collapse_stock == '1'%} collapse_filter{% endif %}{% if mobile_stock == 0 %} hidden-xs{% endif %}{% if desktop_stock == 0 %} hidden-sm{% endif %}">
+							<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.select-group').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_stock_status }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+							{% set count = 0 %}
+							{% set coun_end = 0 %}
+							{% set count_group = 200 %}
+							{% if status_stock_type == 'checkbox' %}
+								<div class="checkbox-group-overflow">
+								{% set test_checked = 0 %}{% if stock_statuses %}{% for stock_status in stock_statuses %}{% if stock_status.stock_status_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+									{% for stock_status in stock_statuses %}
+										{% set count = count + 1 %}
+										<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="checkbox"{% if stock_status.stock_status_value_required %} checked{% endif %} name="stock_status_filter[]" value="{{ stock_status.status_id }}" data-stock="stock-{{ stock_status.status_id }}" id="option-value-stock-{{ stock_status.status_id }}" {% if stock_status.stock_status_stock_required == false %} disabled{% endif %} />
+										  <label for="option-value-stock-{{ stock_status.status_id }}">
+											{{ stock_status.name }}
+											{% if stock_status.stock_status_value_required %}
+												{% if stock_status.stock_status_value_required %}
+													<i class="fa fa-close pull-right" onclick="live_option_product('stock_status_filter', 'options', '', '');"></i>
+												{% else %}
+													{% if stock_status.stock_status_value_total %}<span class="filter_total filter_gray">0</span>{% endif %}
+												{% endif %}
+											{% else %}
+												{% if stock_status.stock_status_value_total and quantity_view %}<span class="filter_total">{% if stock_status.stock_status_stock_or %}+{% endif %}{{ stock_status.stock_status_value_total }}</span>{% else %}<span class="filter_total filter_gray">0</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+								{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+							{% if status_stock_type == 'select' %}
+								<div class="select-group">
+								   <div class="checkbox">
+										<select name="stock_status_filter[]" id="stock_status-option" class="form-control">
+											<option value="" id="common_stock_status">{{ text_select }}</option>
+												{% for stock_status in stock_statuses %}
+												<option value="{{ stock_status.status_id }}" {% if stock_status.stock_status_value_required %} selected{% endif %}{% if stock_status.stock_status_stock_required == false %}  disabled{% endif %}>{{ stock_status.name }}{% if stock_status.stock_status_value_total and quantity_view %} ({{ stock_status.stock_status_value_total }}){% endif %}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							{% endif %}
+							{% if status_stock_type == 'radio' %}
+								<div class="checkbox-group-overflow">
+									{% for stock_status in stock_statuses %}
+										{% set count = count + 1 %}
+										<div class="radio{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="radio"{% if stock_status.stock_status_value_required %} checked{% endif %} name="stock_status_filter[]" value="{{ stock_status.status_id }}" data-stock_status="stock_status-{{ stock_status.status_id }}" id="option-value-stock_status-{{ stock_status.status_id }}"{% if stock_status.stock_status_stock_required == false %} disabled{% endif %} />
+										  <label for="option-value-stock_status-{{ stock_status.status_id }}">
+											{{ stock_status.name }}
+											{% if stock_status.stock_status_value_required %}
+												{% if stock_status.stock_status_value_required %}
+													<i class="fa fa-close pull-right" onclick="live_option_product('stock_status_filter', 'options', '', '');"></i>
+												{% else %}
+													{% if stock_status.stock_status_value_total %}<span class="filter_total filter_gray">0</span>{% endif %}
+												{% endif %}
+											{% else %}
+												{% if stock_status.stock_status_value_total and quantity_view %}<span class="filter_total">{{ stock_status.stock_status_value_total }}</span>{% else %}<span class="filter_total filter_gray">0</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+								{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_ratings %}
+			{% if value == "ratings" %}
+				{% if status_ratings %}
+					{% if ratings %}
+						<div class="checkbox-group btn-border col-sm-12{% if view_ratings == "column" %} column_filt{% endif %}{% if view_ratings == "content" %} content_filt{% endif %}{% if collapse_ratings == '1' %} collapse_filter{% endif %}{% if mobile_ratings == 0 %} hidden-xs{% endif %}{% if desktop_ratings == 0 %} hidden-sm{% endif %}">
+							<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ text_rating }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+							{% set count = 0 %}
+							{% set coun_end = 0 %}
+							{% set count_group = 300 %}
+							{% if ratings_type == 'checkbox' %}
+								<div class="checkbox-group-overflow">
+								{% set test_checked = 0 %}{% if ratings %}{% for rating in ratings %}{% if rating.rating_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+									{% for rating in ratings %}
+										{% set count = count + 1 %}
+										<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="checkbox"{% if rating.rating_value_required %} checked{% endif %} name="rating_filter[]" value="{{ rating.rating }}" data-rating="{{ rating.rating }}" id="option-value-rating-{{ rating.rating }}"{% if rating.ratings_stock_required == false %} disabled{% endif %} />
+										  <label for="option-value-rating-{{ rating.rating }}">
+											<span class="rating">
+												{% for i in 1..5 %}
+													{% if rating.rating < i %}
+														<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+													{% else %}
+														<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+													{% endif %}
+												{% endfor %}
+											</span>
+											{% if rating.rating_value_required %}
+												<i class="fa fa-close pull-right"></i>
+											{% else %}
+												{% if rating.rating_value_total and quantity_view %}<span class="filter_total">{% if rating.ratings_stock_or %}+{% endif %}{{ rating.rating_value_total }}</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+								{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+							{% if ratings_type == 'radio' %}
+								<div class="checkbox-group-overflow">
+									{% for rating in ratings %}
+										{% set count = count + 1 %}
+										<div class="radio{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+										  <input type="radio"{% if rating.rating_value_required %} checked{% endif %} name="rating_filter[]" value="{{ rating.rating }}" data-rating="{{ rating.rating }}" id="option-value-rating-{{ rating.rating }}"{% if rating.ratings_stock_required == false %} disabled{% endif %} />
+										  <label for="option-value-rating-{{ rating.rating }}">
+											<span class="rating">
+												{% for i in 1..5 %}
+													{% if rating.rating < i %}
+														<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+													{% else %}
+														<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+													{% endif %}
+												{% endfor %}
+											</span>
+											{% if rating.rating_value_required %}
+												<i class="fa fa-close pull-right" onclick="live_option_product('rating_filter', 'options', '', '');"></i>
+											{% else %}
+												{% if rating.rating_value_total and quantity_view %}<span class="filter_total">{{ rating.rating_value_total }}</span>{% endif %}
+											{% endif %}
+										  </label>
+										</div>
+										{% set coun_end = coun_end + 1 %}
+									{% endfor %}
+								</div>
+								{% set coun_end = coun_end - count_show %}
+									{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+							{% endif %}
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_options %}
+			{% if value == "options" %}
+				{% if status_options %}
+					{% if options %}
+						{% set count_group = 400 %}
+						{% for option in options %}
+							{% if option.options_show_required %}
+								{% if option.type == 'checkbox' or option.type == 'radio' or option.type == 'select' %}
+								<div class="checkbox-group btn-border col-sm-12{% if view_options == "column" %} column_filt{% endif %}{% if view_options == "content" %} content_filt{% endif %}{% if collapse_options == '1' %} collapse_filter{% endif %}{% if mobile_options == 0 %} hidden-xs{% endif %}{% if desktop_options == 0 %} hidden-sm{% endif %}">
+									<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ option.name }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+										<div class="checkbox-group-overflow{% if drop_option == false %} no_drop{% endif %}">
+											{% set count = 0 %}
+											{% set coun_end = 0 %}
+											{% set test_checked = 0 %}{% if option.option_value %}{% for option_value in option.option_value %}{% if option_value.option_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+											{% for option_value in option.option_value %}
+												{% set count = count + 1 %}
+												<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+												  <input type="checkbox"{% if option_value.option_value_required %} checked{% endif %} name="option_filter[]" value="{{ option_value.option_value_id }}" id="option-value-{{ option_value.option_value_id }}" {% if option_value.option_stock_required == false and option_value.option_value_required == false %} disabled{% endif %} data-options="{{ option.option_id }}" />
+												  <label for="option-value-{{ option_value.option_value_id }}">
+													{% if option_value.image %}<img src="{{ option_value.image }}" alt="" title="" />{% endif %}
+													{{ option_value.option_value_name }}
+													{% if option_value.option_value_required %}
+														{% if option_value.option_stock_required %}
+															<i class="fa fa-close pull-right" onclick="live_home_clear_option_filter('{{ option_value.option_value_id }}');"></i>
+														{% else %}
+															{% if option_value.option_value_total and quantity_view %}<span class="filter_total filter_gray showing">0</span>{% endif %}
+														{% endif %}
+													{% else %}
+														{% if option_value.option_value_total and quantity_view %}<span class="filter_total">{{ option_value.option_value_total }}</span>{% endif %}
+													{% endif %}
+												  </label>
+												</div>
+												{% set coun_end = coun_end + 1 %}
+											{% endfor %}
+										</div>
+										{% set coun_end = coun_end - count_show %}
+										{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+								</div>
+								{% endif %}
+								{% set count_group = count_group + 1 %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_attributes %}
+			{% if value == "attributes" %}
+				{% if status_attributes %}
+					{% if attributes %}
+						{% set m = 1000 %}
+						{% set count_group = 500 %}
+						{% for attribute in attributes %}
+							{% if attribute.attribute_show_required %}
+								<div class="checkbox-group btn-border col-sm-12{% if view_attributes == "column" %} column_filt{% endif %}{% if view_attributes == "content" %} content_filt{% endif %}{% if collapse_attributes == '1' %} collapse_filter{% endif %}{% if mobile_attributes == 0 %} hidden-xs{% endif %}{% if desktop_attributes == 0 %} hidden-sm{% endif %}">
+									<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ attribute.name }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+									<div class="checkbox-group-overflow{% if drop_attributes == false %} no_drop{% endif %}">
+										{% set count = 0 %}
+										{% set coun_end = 0 %}
+										{% set test_checked = 0 %}{% if attribute.attribute %}{% for attribute_text in attribute.attribute %}{% if attribute_text.attribute_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}{% endif %}
+										{% for attribute_text in attribute.attribute %}
+											{% set count = count + 1 %}
+											<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+												{% if attribute_text.attribute_value_required and attribute_text.attribute_stock_required == false %}<input type="checkbox" name="attributes_filter[{{ attribute_text.attribute_id }}][]" value="{{ attribute_text.text }}" checked />{% endif %}
+												<input type="checkbox"{% if attribute_text.attribute_value_required %} checked{% endif %} name="attributes_filter[{{ attribute_text.attribute_id }}][]" value="{{ attribute_text.text }}" id="attribute-value-attribute-{{ m }}{{ attribute.attribute_id }}" data-attribute="{{ attribute.attribute_id }}" {% if attribute_text.attribute_stock_required == false  and attribute_text.attribute_value_required == false %} disabled{% endif %} />
+												<label for="attribute-value-attribute-{{ m }}{{ attribute.attribute_id }}">{{ attribute_text.text }}
+													{% if attribute_text.attribute_value_required %}
+														{% if attribute_text.attribute_stock_required %}
+															<i class="fa fa-close pull-right" onclick="live_home_clear_attributes_filter('{{ m }}{{ attribute.attribute_id }}');"></i>
+														{% else %}
+															{%  if quantity_view %}
+																<span class="filter_total filter_gray showing">0</span>
+															{% endif %}
+														{% endif %}
+													{% else %}
+														{% if attribute_text.attribute_text_total and quantity_view %}
+															<span class="filter_total">{{ attribute_text.attribute_text_total }}</span>
+														{% endif %}
+													{% endif %}
+												</label>
+											</div>
+											{% set m = m + 1 %}
+											{% set coun_end = coun_end + 1 %}
+										{% endfor %}
+									</div>
+									{% set coun_end = coun_end - count_show %}
+									{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+								</div>
+								{% set count_group = count_group + 1 %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+		{% if view_filter %}
+			{% if value == "filter" %}
+				{% if status_filter %}
+					{% if filters %}
+						{% set count_group = 400 %}
+						{% for filter in filters %}
+							{% if filter.filter_show_required %}
+								<div class="checkbox-group btn-border col-sm-12{% if view_filter == "column" %} column_filt{% endif %}{% if view_filter == "content" %} content_filt{% endif %}{% if collapse_filter == '1' %} collapse_filter{% endif %}{% if mobile_filter == 0 %} hidden-xs{% endif %}{% if desktop_filter == 0 %} hidden-sm{% endif %}">
+									<div class="row"><h4 class="col-sm-12" onclick="$(this).parent().parent().find('.checkbox-group-overflow').slideToggle(300); $(this).parent().parent().find('.text_more_group').slideToggle(300);"><strong>{{ filter.name }}</strong><i class="fa fa-caret-down pull-left"></i></h4></div>
+										<div class="checkbox-group-overflow">
+											{% set count = 0 %}
+											{% set coun_end = 0 %}
+											{% set test_checked = 0 %}{% for filter_value in filter.filter %}{% if filter_value.filter_value_required %}{% set test_checked = test_checked + 1 %}{% endif %}{% endfor %}
+											{% for filter_value in filter.filter %}
+												{% set count = count + 1 %}
+												<div class="checkbox{% if test_checked == 0 %}{% if count > count_show %} none none{{ count_group }}{% endif %}{% endif %}">
+												  <input type="checkbox"{% if filter_value.filter_value_required %} checked{% endif %} name="filter_filter[]" value="{{ filter_value.filter_id }}" id="filter-value-{{ filter_value.filter_id }}" {% if filter_value.filter_stock_required == false and filter_value.filter_value_required == false %} disabled{% endif %} data-filter="{{ filter_value.filter_id }}" />
+												  <label for="filter-value-{{ filter_value.filter_id }}">
+													{{ filter_value.name }}
+													{% if filter_value.filter_value_required %}
+														{% if filter_value.filter_stock_required %}
+															<i class="fa fa-close pull-right" onclick="live_home_clear_filter_filter('{{ filter_value.filter_id }}');"></i>
+														{% else %}
+															{% if quantity_view %}<span class="filter_total filter_gray showing">0</span>{% endif %}
+														{% endif %}
+													{% else %}
+														{% if filter_value.filter_value_total and quantity_view %}<span class="filter_total">{{ filter_value.filter_value_total }}</span>{% endif %}
+													{% endif %}
+												  </label>
+												</div>
+												{% set coun_end = coun_end + 1 %}
+											{% endfor %}
+										</div>
+										{% set coun_end = coun_end - count_show %}
+										{% if test_checked == 0 %}{% if count > count_show %}<div class="text_more_group"><a id="show_parent{{ count_group }}" onclick="show_parent({{ count_group }})"><strong class="text_more">{{ text_more }} ({{ coun_end }})</strong><strong class="text_hide none">{{ text_hide }} ({{ coun_end }})</strong></a></div>{% endif %}{% endif %}
+								</div>
+								{% set count_group = count_group + 1 %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+	<div class="clearfix"></div>
+</div>
+</div>
+</form>
+<div class="clearfix"></div>
+</div>
+</div>
+</div>
+<script id="module{{ modul }}"><!--
+$('#maxCost').on('keydown', function(e) {
+	if (e.keyCode == 13) {
+		live_option_product('no', 'prices', '', 'maxCost');
+	}
+});
+$('#minCost').on('keydown', function(e) {
+	if (e.keyCode == 13) {
+		live_option_product('no', 'prices', '', 'maxCost');
+	}
+});
+$('{{ id_content }} #home_filter .column_filt').remove();
+$('{{ id_column_left }} #home_filter .content_filt, {{ id_column_right }} #home_filter .content_filt').remove();
+$('.go_filter_mobile_block #home_filter .content_filt, .go_filter_mobile_block #home_filter .content_filt').remove();
+$('.go_filter_mobile_block .options_container_filter').hide();
+var col = $('input[name=\'op\'].filter_op').length;
+if (col == 1) {
+	$('input[name=\'op\'].filter_op').addClass('filter_op' + col);
+} else {
+	$('input[name=\'op\'].filter_op').addClass('filter_op' + col);
+	$('input[name=\'op\'].filter_op' + parseInt(col - 1)).removeClass('filter_op' + col);
+}
+if ($('{{ id_column_left }} #home_filter input.categ, {{ id_column_right }} #home_filter input.categ').html() != null) {
+	$('{{ id_content }} #home_filter input.categ').remove();
+}
+{% if (max_price_const or old_price) and nofilter == false %}
+slider_generation('{% if min_price %}{{ min_price }}{% endif %}','{% if max_price_const %}{% if get_price_max > max_price_const %}{{ max_price_const }}{% else %}{% if max_price %}{{ max_price }}{% endif %}{% endif %}{% else %}{{ prices_max_value }}{% endif %}','noclear');
+function slider_generation(min_value_price, max_value_price, clear) {
+	$(".slider").slider({
+		min: {% if min_const_price %}{{ min_const_price }}{% else %}0{% endif %},
+		max: {% if max_price_const %}{{ max_price_const }}{% else %}{{ old_price }}{% endif %},
+		range: true,
+		step: 1,
+		values: [min_value_price, max_value_price],
+		slide: function(event, ui){
+			$("input#minCost").val($(".slider").slider("values",0));
+			$("input#maxCost").val($(".slider").slider("values",1));
+		},
+		stop: function(event, ui){
+			
+			$("input#minCost").val($(".slider").slider("values",0));
+			$("input#maxCost").val($(".slider").slider("values",1));
+
+			if (clear != 'clear') {live_option_product('no', 'prices', '', 'maxCost');}
+			
+			var value_min = $(".slider").slider("values",0);
+			var value_max = $(".slider").slider("values",1);
+			
+			{% for currency in currencies %}
+				{% if currency.symbol_left and currency.code == code %}
+					var value_max_currency = $(".slider").slider("values",1) + '{{ currency.symbol_left }}';
+				{% elseif currency.symbol_right and currency.code == code %}
+					var value_max_currency = $(".slider").slider("values",1) + '{{ currency.symbol_right }}';
+				{% endif %}
+			{% endfor %}
+		}
+	});
+
+	if (clear == 'clear') {
+		$('.option_cloud_price').remove();
+		$("input#minCost").val('0');
+		$("input#maxCost").val(max_value_price);
+		setTimeout(function() {
+			live_option_product('no', 'options', '', 'maxCost');
+		},200)
+	}
+	return clear = 'noclear';
+}
+{% endif %}
+
+var test_category = '';
+$('select#category-option, #filter_send input[name^=category_id]').on('change', function(){
+	if (test_category == '') {
+		live_option_product('no', 'options', '', 'popup_categories');
+		test_category = '1';
+	}
+});
+var test_keywords = '';
+$('input[name^=keywords_filter]').on('change', function(){
+	if (test_keywords == '') {
+		live_option_product('no', 'options', 'keywords', $(this));
+		test_keywords = '1';
+	}
+});
+var test_options = '';
+$('input[name^=option_filter\\[]').on('change', function(){
+	if (test_options == '') {
+		live_option_product('no', 'options', 'options' + $(this).attr('data-options'), $(this));
+		test_options = '1';
+	}
+});
+var test_filter = '';
+$('input[name^=filter_filter\\[]').on('change', function(){
+	if (test_filter == '') {
+		live_option_product('no', 'options', 'filter' + $(this).attr('data-filter'), $(this));
+		test_filter = '1';
+	}
+});
+var test_attributes = '';
+$('input[name^=attributes_filter\\[]').on('change', function(){
+	if (test_attributes == '') {
+		live_option_product('no', 'options', 'attributes' + $(this).attr('data-attribute'), $(this));
+		test_attributes = '1';
+	}
+});
+var stock_call = '';
+$('.checkbox input[name^=stock_status_filter\\[], select#stock_status-option, .radio input[name^=stock_status_filter\\[]').on('change', function(){
+	if (stock_call == '') {
+		live_option_product('no', 'options', 'stock', $(this));
+		stock_call = '1';
+	}
+});
+var manuf_call = '';
+$('.checkbox input[name^=manufacturers_filter\\[], select#manufacturers-option, .radio input[name^=manufacturers_filter\\[]').on('change', function(){
+	if (manuf_call == '') {
+		live_option_product('no', 'options', 'manuf', $(this));
+		manuf_call = '1';
+	}
+});
+var rating_call = '';
+$('.checkbox input[name^=rating_filter\\[], .radio input[name^=rating_filter\\[]').on('change', function(){
+	if (rating_call == '') {
+		live_option_product('no', 'options', 'rating', $(this));
+		rating_call = '1';
+	}
+});
+function live_option_product(clear_radio, click_options, selection, clac) {
+	$('{{ id_content }} #home_filter').addClass('content_filter');
+	var data_clear_radio = '';
+	if (clear_radio == 'no') {data_clear_radio = ', #option_filter input[type=\'radio\'], input[name^=option_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search]';} 
+	
+	if (clear_radio == 'stock_status_filter') {
+		data_clear_radio = ', input[name^=manufacturers_filter\\[], input[name^=rating_filter\\[], input[name^=option_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search]';
+	}
+	if (clear_radio == 'manufacturers_filter') {
+		data_clear_radio = ', input[name^=stock_status_filter\\[], input[name^=rating_filter\\[], input[name^=option_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search]';
+	}
+	
+	if (clear_radio == 'rating_filter') {
+		data_clear_radio = ', input[name^=stock_status_filter\\[], input[name^=manufacturers_filter\\[], input[name^=option_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search]';
+	}
+	
+	if (clear_radio == 'option_filter') {
+		data_clear_radio = ', input[name^=stock_status_filter\\[], input[name^=manufacturers_filter\\[], input[name^=rating_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search]';
+	}
+	
+	if (clear_radio == 'category_filter') {
+		data_clear_radio = ', input[name^=stock_status_filter\\[], input[name^=manufacturers_filter\\[], input[name^=rating_filter\\[], input[name^=option_filter\\[], input[name^=manufacturer_id], input[name^=search]';
+	}
+
+	var data_click = '';
+	if (click_options != 'options') {
+		data_click += ', .formCost input[type=\'text\']';
+		data_click += ', input[name=\'op\'].filter_op1';
+	}
+	
+	var sel = '';
+	if (selection != '') {
+		sel = '&select=' + selection;
+		
+	}
+	
+	var select_value = '';
+	if ($('select#category-option').val() != '') {
+		select_value += ', select#category-option';
+	}
+	if ($('select#stock_status-option').val() != '') {
+		select_value += ', select#stock_status-option';
+	}
+	if ($('select#manufacturers-option').val() != '') {
+		select_value += ', select#manufacturers-option';
+	}
+	
+	if ($('#keywords_filter input[type=\'text\']').val() != '') {var keyword = ', #keywords_filter input[type=\'text\']';} else {var keyword = '';}
+	data: data = $('#option_filter input[type=\'checkbox\']:checked, #filter_send input[name^=old_category_id]' + data_clear_radio + data_click + keyword + select_value);
+	var products = '';
+	var options = data.serialize();
+
+	var clas = '';
+	var classing = '';
+	if (clac != 'no_popup') {
+		if ($(clac).attr('id') != null) {
+			clas = '&class=' + clac.attr('id');
+			classing = $('#' + clac.attr('id'));
+		} else {
+			clas = '&class=' + clac;
+			classing = $('#' + clac);
+		}
+	}
+	$.ajax({
+		url: 'index.php?route=extension/module/gofilter/live_option_product',
+		type: 'post',
+		data: options{% if category_id %} + '&path={{ category_id }}'{% endif %} + sel {% if route %} + '&route_layout={{ route }}'{% endif %}{% if url and url !="" %} + '{{ url }}'{% endif %} + clas{% if go_mobile %} + '&go_mobile=1'{% endif %},
+		beforeSend: function() {
+				$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter, .filter_cloud_mobile #home_filter').addClass('load');
+				$('#home_filter').find('.pupop-filter').remove();
+			{% if popup_on == false %}
+				$('{{ id_content }}').addClass('load');
+			{% endif %}
+		},
+		success: function(msg){
+			get_data = this.data;
+
+			setTimeout(function () {
+				$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter, .filter_cloud_mobile #home_filter').removeClass('load');
+				$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').empty();
+				$('{{ id_content }} #home_filter').empty();
+				
+				if ($('.icon_mobile_filter').hasClass('oneclick')) {
+					$('.filter_cloud_mobile #home_filter').empty();
+					$('.filter_cloud_mobile #home_filter').append(msg);
+				} else {
+					$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').append(msg);
+				}
+				
+				$('{{ id_content }} #home_filter').css('opacity','0');
+				
+				$('{{ id_content }} #home_filter').append(msg);
+				
+				generetion_content();
+				$('{{ id_content }} #home_filter').css('opacity','1');
+			}, 0);
+			setTimeout(function () {
+				{% if popup_on == false or go_mobile %}
+					ajax_page_category(get_data, 'get');
+					{% if go_mobile %}
+						$('.icon_mobile_filter').trigger('click');
+					{% endif %}
+				{% else %}
+					generation_head_results('reset');
+					var test_ajaxing = '';
+					
+					if (clac != 'no_popup') {
+						if (classing.parent().parent().parent().parent().hasClass('content_filt')) {
+							test_ajaxing = '1';
+						}
+						if (classing.parent().parent().parent().parent().hasClass('column_mobile')) {
+							test_ajaxing = '1';
+						}
+					} else {
+						test_ajaxing = '1';
+					}
+					
+					if (test_ajaxing == '1') {
+						ajax_page_category(get_data, 'get');
+					}
+				{% endif %}
+			}, 0);
+			
+			$('{{ id_content }} .option_cloud_price').remove();
+			$('{{ id_content }} #home_filter.content_filter').show();
+			$('{{ id_content }} #home_filter + #home_filter.content_filter').hide();
+			$('{{ id_content }} #home_filter.content_filter').empty();
+			
+		}
+	});
+}
+{% if class %}
+count_option_product('{{ class }}', '{% if products %}{{ products }}{% endif %}');
+function count_option_product(clac, products) {
+		var products_array = '';
+		var count = '';
+		if (products != "-1") {
+			products_array = products.split(',');
+			count = products_array.length;
+		} else {
+			count = 0;
+		}
+		
+		var select_value = '';
+		if ($('select#category-option').val() != '') {
+			select_value += ', select#category-option';
+		}
+		if ($('select#stock_status-option').val() != '') {
+			select_value += ', select#stock_status-option';
+		}
+		if ($('select#manufacturers-option').val() != '') {
+			select_value += ', select#manufacturers-option';
+		}
+		
+		if ($('#keywords_filter input[type=\'text\']').val() != '') {var keyword = ', #keywords_filter input[type=\'text\']';} else {var keyword = '';}
+		var data = $(' .formCost input[type=\'text\'], #option_filter input[type=\'radio\'], input[name^=filter_filter\\[], input[name^=option_filter\\[], input[name^=option_filter\\[], input[name^=attributes_filter\\[], #filter_send input[name^=category_id], input.categ[name^=category_id], input[name^=manufacturer_id], input[name^=search], #option_filter input[type=\'checkbox\']:checked, #filter_send input[name^=old_category_id]' + keyword + select_value);
+		
+		var get_data = data.serialize();
+		
+		var html = '';
+		
+		{% if count_products %}
+		
+			html += '<div class="pupop-filter animated bounceInLeft hidden-xs"><span class="pull-left">{{ text_products }} {{ count_products }}</span>';
+			
+			if (count != '0') {
+				html += '<a class="btn btn-white btn-header pull-right" onclick="reset_filter();">{{ text_reset }}</a><a class="btn btn-primary btn-header pull-right text-uppercase" onclick="ajax_page_category(\'' + get_data + '\',\'get\');"><i class="fa fa-filter"></i>{{ text_show }}</a>';
+			} else {
+				html += '<a class="btn btn-white btn-header pull-right" onclick="reset_filter();">{{ text_reset }}</a>';
+			} 
+
+			html += '</div>';
+		{% endif %}
+
+		$('#' + clac).parent().parent().parent().find('.row').append(html);
+}
+{% endif %}
+function generation_head_results(reset) {
+	
+	if ($('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').html() != null) {
+		$('{{ id_content }}').removeClass('load');
+		
+		var home_filter_content = $('{{ id_content }} #home_filter').html();
+
+		var html_cloud = '<div class="options_container_filter">' + $('.options_container_filter').html() + '</div>';
+
+		$('#home_filter .options_container_filter').remove();
+		
+		$('{{ id_content }} .options_container_filter').remove();
+
+		if (home_filter_content != undefined) {
+			$('{{ id_content }} .reset_filter').addClass('none_content_filter');
+		}
+		
+		$('{{ id_content }} .none_content_filter').remove();
+
+		$('{{ id_content }}').prepend(html_cloud);
+		
+		if ($('#home_filter').hasClass('filter_category_page')) {
+			{% if post_category_id == false %}
+				$('.category_filt').remove();
+			{% endif %}
+		}
+		
+	}
+		
+	show_reset();
+}
+function separator(get_parametr, get_check, get_select) {
+		var temp_data_seo = '';
+		if ($(get_check).html() != null || $(get_select).html() != null) {
+			if (get_select != 'options' && get_select != 'attributes' && get_select != 'filters') {
+				temp_data_seo += get_parametr;
+				if ($(get_check).html() != null) {
+					temp_data_seo += count_separator(count_separator($(get_check).text(),/\t+/g,''),/\n+/g,'');
+					var count = $(get_check).length + 1;
+					for (var i = 0; i < count; i++) {temp_data_seo = temp_data_seo.replace('  ','{{ seo_separator }}');}
+					for (var i = 0; i < count; i++) {temp_data_seo = temp_data_seo.replace(' ','_');}
+				}
+				temp_data_seo += count_separator(count_separator(count_separator(count_separator($(get_select).text().split('(')[0],/\s+/g,' '),'  ',' '),' ','_'),'/','?');
+			}
+			if (get_select == 'options') {
+				var temp_arr = $(get_check).serialize().split('&');
+				var url_text = '';
+				temp_arr.forEach(function(item, i, temp_arr) {
+					var item_id_group = count_separator(count_separator(count_separator($('#option-value-' + item.split('=')[1]).parent().parent().parent().parent().find('.row strong').text(),'  ',''),' ','_'),'/','?');
+					var item_id_attr = count_separator(count_separator(count_separator(count_separator(count_separator($('#option-value-' + item.split('=')[1] + ' + label').text(),/\t+/g,''),/\n+/g,''),'  ',''),' ','_'),'/','?');
+					temp_data_seo += get_parametr + '{{ seo_separator }}' + item_id_group + '{{ seo_separator }}' + item_id_attr;
+					temp_data_seo += '/';
+				});
+			}
+			if (get_select == 'filters') {
+				var temp_arr = $(get_check).serialize().split('&');
+				var url_text = '';
+				temp_arr.forEach(function(item, i, temp_arr) {
+					var item_id_group = count_separator(count_separator(count_separator($('#filter-value-' + item.split('=')[1]).parent().parent().parent().parent().find('.row strong').text(),'  ',''),' ','_'),'/','?');
+					var item_id_attr = count_separator(count_separator(count_separator(count_separator(count_separator($('#filter-value-' + item.split('=')[1] + ' + label').text(),/\t+/g,''),/\n+/g,''),'  ',''),' ','_'),'/','?');console.log(temp_data_seo);
+					temp_data_seo += get_parametr + '{{ seo_separator }}' + item_id_group + '{{ seo_separator }}' + item_id_attr;
+					temp_data_seo += '/';
+				});
+			}
+			if (get_select == 'attributes') {
+				var temp_arr = $(get_check).serialize().split('&');
+				temp_arr.forEach(function(item, i, temp_arr) {
+					item = decodeURIComponent(item);
+					var item_id_group = count_separator(count_separator(count_separator($('#' + $('input[data-attribute=' + '"' + count_separator(item.split("=")[0],/\D+/g,"") + '"' + ']').attr('id')).parent().parent().parent().parent().find('.row strong').text(),'  ',''),' ','_'),'/','?');
+
+					var item_attr = count_separator(count_separator(count_separator(count_separator(count_separator($('#' + $('input[data-attribute][value=' + '"' + count_separator(item.split("=")[1], '+',' ') + '"' + ']').attr('id') + ' + label').text(),/\t+/g,''),/\n+/g,''),'  ',''),' ','_'),'/','?');
+					
+					temp_data_seo += get_parametr + '{{ seo_separator }}' + item_id_group + '{{ seo_separator }}' + item_attr;
+					temp_data_seo += '/'
+				});
+			};
+			temp_data_seo += '/';
+			temp_data_seo = temp_data_seo.replace(' /','/').replace('//','/').replace('_/','/').replace('{{ seo_separator }}/','/');
+		}
+	
+		return temp_data_seo;
+}
+function count_separator(itm, aft, bef) {
+	var mas = itm.split(aft);
+	var itog = '';
+	mas.forEach(function(item, i, mas) {
+		
+		if (i == 0) {
+			itog += item.replace(aft, bef);
+		} else {
+			itog += bef;
+			itog += item.replace(aft, bef);
+		}
+	});
+	return itog;
+}
+function Seo_juxtaposition(data_seo_parametr) {
+	
+	var seo_massiv = [];
+	{% if seo_keywords %}
+		{% for key, value in seo_keywords %}
+			seo_massiv['{{ key }}'] = '{{ value }}';
+		{% endfor %}
+	{% endif %}
+	
+	var temp_data_seo = data_seo_parametr;
+	var result_seo_url = '';
+
+	var temp_data_seo_arr_1 = temp_data_seo.split('/');
+	temp_data_seo_arr_1.forEach(function(item_array, i, temp_data_seo_arr_1) {
+		var temp_result_seo_url_1 = '';
+		var temp_result_seo_url_2 = '';
+		var temp_result_seo_url_common_for = '';
+		if (item_array != '') {
+			var item_array_1 = item_array.split('{{ seo_separator }}');
+			item_array_1.forEach(function(item, j, item_array_1) {
+				if (j == 0) {
+					temp_result_seo_url_1 = item + '{{ seo_separator }}';
+				} else {
+					temp_result_seo_url_2 = item + '{{ seo_separator }}';
+					for (var k in seo_massiv) {
+						if (k === count_separator(count_separator(item,'_', ' '),'?','/')) {
+							temp_result_seo_url_2 = seo_massiv[k] + '{{ seo_separator }}';
+						}
+					}
+					temp_result_seo_url_common_for += temp_result_seo_url_2;
+				}
+			});
+			result_seo_url += temp_result_seo_url_1 + temp_result_seo_url_common_for;
+			result_seo_url += '/';
+			result_seo_url = result_seo_url.replace('{{ seo_separator }}/', '/');
+		}
+		
+	});
+	
+	
+	
+	return result_seo_url;
+}
+function ajax_page_category(get_data, types) {
+
+	var data_seo = '';
+	var route_layout = '{{ route }}';
+	data_seo += route_layout.replace('/','-');
+	data_seo += '/';
+	var data_seo_parametr = '';
+	if ($('#filter_send input[name^=category_id]#common_category + a.category_filter label, #filter_send input[name^=category_id]#common_category + input +label').html() != null || $('select#category-option option:selected').html() != null || $('input[name^=parent_category_hierarchy_name]#parent_category_hierarchy_name').html() != null) {
+		if ($('input[name^=parent_category_hierarchy_name]#parent_category_hierarchy_name').val() != '' && $('input[name^=parent_category_hierarchy_name]#parent_category_hierarchy_name').html() != undefined) {
+			data_seo_parametr += 'category{{ seo_separator }}';
+			data_seo_parametr += $('input[name^=parent_category_hierarchy_name]#parent_category_hierarchy_name').val();
+			data_seo_parametr += '/';
+			data_seo_parametr = data_seo_parametr.replace('{{ seo_separator }}/','/');
+		}
+	}
+	
+	data_seo_parametr += separator('manufacturers{{ seo_separator }}', 'input[name^=manufacturers_filter\\[]:checked + label', 'select#manufacturers-option option:selected');
+	data_seo_parametr += separator('stock{{ seo_separator }}', 'input[name^=stock_status_filter\\[]:checked + label', 'select#stock_status-option option:selected');
+	data_seo_parametr += separator('options', 'input[name^=option_filter\\[]:checked', 'options');
+	data_seo_parametr += separator('filter_filter', 'input[name^=filter_filter\\[]:checked', 'filters');
+	data_seo_parametr += separator('attributes', 'input[name^=attributes_filter\\[]:checked', 'attributes');
+	
+	if ($('#keywords_filter input[type=\'text\']').val() != '' && $('#keywords_filter input[type=\'text\']').val() == 'undefined') {
+		data_seo_parametr += 'keywords{{ seo_separator }}';
+		{% if delimitier == " " %}
+		if ($('#keywords_filter input[type=\'text\']').val() != null) {
+			data_seo_parametr += $('#keywords_filter input[type=\'text\']').val().replace('  ',',').replace(' ',',');
+		}
+		{% endif %}
+		{% if delimitier == "," %}
+		if ($('#keywords_filter input[type=\'text\']').val() != null) {
+			data_seo_parametr += $('#keywords_filter input[type=\'text\']').val().replace('  ',' ').replace(', ',',');
+		}
+		{% endif %}
+		data_seo_parametr += '/';
+		data_seo_parametr = data_seo_parametr.replace('{{ seo_separator }}/','/');
+	}
+	if ($('input[name^=rating_filter\\[]:checked + label').html() != null) {
+		data_seo_parametr += 'rating{{ seo_separator }}';
+		var temp_arr = $('input[name^=rating_filter\\[]:checked').serialize().split('&');
+		var temp_data_seo = '';
+		temp_arr.forEach(function(item, i, temp_arr) {
+			var item_attr = $('#option-value-rating-' + item.split("=")[1]).val();
+			temp_data_seo += item_attr + '{{ seo_separator }}';
+		});
+		data_seo_parametr += temp_data_seo;
+		data_seo_parametr += '/';
+		data_seo_parametr = data_seo_parametr.replace('{{ seo_separator }}/','/');
+	}
+	
+	{% if get_price_max and max_price_const %}
+		{% if get_price_max > max_price_const %}
+			{% if max_price_const %}{% set test_price = max_price_const %}{% endif %}
+		{% else %}
+			{% if get_price_max %}{% set test_price = get_price_max %}{% endif %}
+		{% endif %}
+		{% if test_price != max_price_const or get_price_min != 0 %}
+			if ($('input[name^=prices_min_value]').html() != null && $('input[name^=prices_max_value]').html() != null) {
+				data_seo_parametr += $('input[name^=op]').val() + '-price-{{ code }}{{ seo_separator }}';
+				data_seo_parametr += $('input[name^=prices_min_value]').val() + '-';
+				data_seo_parametr += $('input[name^=prices_max_value]').val();
+				data_seo_parametr += '/';
+			}
+		{% endif %}
+	{% endif %}
+	get_data = get_data.replace('path','patfilter').replace('path','patfilter').replace('path','patfilter');
+	var typ = '';
+	
+	var typs = types;
+	if (types == 'post') {typ = 'post';} else {typ = 'get';}
+	
+	{% if page %}
+		if (typs != 'ref') {
+			get_data += '&page={{ page }}';
+		}
+	{% endif %}
+	
+	{% if limit %}
+		if (typs != 'ref') {
+			get_data += '&limit={{ limit }}';
+		}
+	{% endif %}
+	
+	{% if sort %}
+		if (typs != 'ref') {
+			get_data += '&sort={{ sort }}';
+		}
+	{% endif %}
+	
+	{% if order %}
+		if (typs != 'ref') {
+			get_data += '&order={{ order }}';
+		}
+	{% endif %}
+	$.ajax({
+		url: 'index.php?route=product/category&path=0&gofilter=1',
+		type: typ,
+		data: get_data,
+		beforeSend: function(){
+			$('body').prepend('<div class="gofilter_shadow_block"></div>');
+		},
+		success: function(data){
+			
+			generation_head_results('no_reset');
+
+			$('{{ id_content }}').children().not('.category_description').not('.category_description + hr').not('.category_description + hr + h3').not('.list-category').not('.list-category + hr').not('#home_filter').not('.options_container_filter').not('.breadcrumb').not('#home_filter').not('h1').remove();
+
+			var data = $(data);
+
+			$('{{ id_content }}').append(data.find('{{ id_content }}').html());
+			
+			if ($("{{ id_content }} .options_container_filter").offset() != undefined) {
+				var top_content = $("{{ id_content }} .options_container_filter").offset().top - 100;
+			} else {
+				var top_content = $("{{ id_content }}").offset().top - 200;
+			}
+			
+			$('html, body').animate({scrollTop: top_content}, 1000);
+
+			$('{{ id_content }}').removeClass('load');
+			
+			var browsers = '';
+			
+			var hrefing = window.location.href;
+			browsers += 'gofilter/';
+			browsers += data_seo;
+			browsers += Seo_juxtaposition(data_seo_parametr);
+			
+			{% if page %}
+			if (typs != 'ref') {
+				if (window.location.href.indexOf('/page=') != '-1') {
+					browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+					browsers += 'page={{ page }}/';
+				}
+			}
+			{% endif %}
+			{% if limit %}
+			if (typs != 'ref') {
+				if (window.location.href.indexOf('/limit=') != '-1') {
+					browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+					browsers = browsers.replace('limit=' + window.location.href.split('/limit=')[1], '');
+					browsers += 'limit={{ limit }}/';
+				}
+			}
+			{% endif %}
+			{% if sort %}
+			if (typs != 'ref') {
+				if (window.location.href.indexOf('/sort=') != '-1') {
+					browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+					browsers = browsers.replace('sort=' + window.location.href.split('/sort=')[1], '');
+					browsers += 'sort={{ sort }}/';
+				}
+			}
+			{% endif %}
+			{% if order %}
+			if (typs != 'ref') {
+				if (window.location.href.indexOf('/order=') != '-1') {
+					browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+					browsers = browsers.replace('order=' + window.location.href.split('/order=')[1], '');
+					browsers += 'order={{ order }}/';
+				}
+			}
+			{% endif %}
+			var mas_hrefing = get_data.split('&');
+			mas_hrefing.forEach(function(item, i) {
+				window.location.href.split('/').forEach(function(ite, i2) {
+					if (item.indexOf('page=') != '-1' && ite.indexOf('page=') != '-1') {
+						browsers = browsers.replace(ite + '/', '');
+					}
+					if (item.indexOf('sort=') != '-1' && ite.indexOf('sort=') != '-1') {
+						browsers = browsers.replace(ite + '/', '');
+					}
+					if (item.indexOf('order=') != '-1' && ite.indexOf('order=') != '-1') {
+						browsers = browsers.replace(ite + '/', '');
+					}
+					if (item.indexOf('limit=') != '-1' && ite.indexOf('limit=') != '-1') {
+						browsers = browsers.replace(ite + '/', '');
+					}
+					
+				});
+				setTimeout(function () {
+					if (item.indexOf('page=') != '-1') {
+						browsers += 'page=' + item.split('=')[1];
+						browsers += '/';
+					}
+					if (item.indexOf('sort=') != '-1') {
+						browsers += 'sort=' + item.split('=')[1];
+						browsers += '/';
+					}
+					if (item.indexOf('order=') != '-1') {
+						browsers += 'order=' + item.split('=')[1];
+						browsers += '/';
+					}
+					if (item.indexOf('limit=') != '-1') {
+						browsers += 'limit=' + item.split('=')[1];
+						browsers += '/';
+					}
+					
+				}, 0);
+				
+			});
+			{% if seo_on %}
+				setTimeout(function () {
+					window.history.pushState({urlPath:browsers}, '', browsers);
+				}, 0);
+			{% endif %}
+			
+			$('#option_filter .pupop-filter').remove();
+			
+			setTimeout(function () {
+				$('body .gofilter_shadow_block').remove();
+			}, 500);
+            
+            $('h1+.breadcrumb').remove();
+            $('h1+h1').remove();       
+			$('h1+h2').remove();
+			
+			{% if filter_scriptss %}{{ filter_scriptss }}{% endif %}
+            
+            $('.dropdown-toggle').dropdown();
+			
+			$('{{ id_content }} #home_filter + #home_filter, {{ id_content }} #home_filter + h1 + #home_filter, {{ id_content }} .breadcrumb + .breadcrumb').remove();
+			
+		}
+
+	});
+}
+function ajax_page_category_select(hrefing) {
+	$.ajax({
+		url: hrefing,
+		type: 'get',
+		beforeSend: function(){
+			$('body').prepend('<div class="gofilter_shadow_block"></div>');
+		},
+		success: function(data){
+			
+			generation_head_results('no_reset');
+
+			$('{{ id_content }}').children().not('#home_filter').not('.options_container_filter').not('.breadcrumb').not('#home_filter').not('h1').remove();
+
+			var data = $(data);
+
+			$('{{ id_content }}').append(data.find('{{ id_content }}').html());
+
+			$('{{ id_content }}').removeClass('load');
+            
+            $('h1+.breadcrumb').remove();
+            $('h1+h1').remove();
+			$('h1+h2').remove();			
+			
+			{% if filter_scriptss %}{{ filter_scriptss }}{% endif %}
+			
+			$('#option_filter .pupop-filter').remove();
+			
+			setTimeout(function () {
+				$('body .gofilter_shadow_block').remove();
+			}, 500);
+			
+			{% if seo_on %}
+				var browsers = window.location.href;
+				var mas_hrefing = hrefing.split('&');
+				mas_hrefing.forEach(function(item, i) {
+					window.location.href.split('/').forEach(function(ite, i2) {
+						if (ite.indexOf('sort=') != '-1') {
+							browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+							browsers = browsers.replace('sort=' + ite.split('=')[1] + '/', '');
+						}
+						if (ite.indexOf('order=') != '-1') {
+							browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+							browsers = browsers.replace('order=' + ite.split('=')[1] + '/', '');
+						}
+						if (ite.indexOf('limit=') != '-1') {
+							browsers = browsers.replace('page=' + window.location.href.split('/page=')[1], '');
+							browsers = browsers.replace('limit=' + ite.split('=')[1] + '/', '');
+						}
+						
+					});
+					setTimeout(function () {
+						if (item.indexOf('sort=') != '-1') {
+							browsers += 'sort=' + item.split('=')[1];
+							browsers += '/';
+						}
+						if (item.indexOf('order=') != '-1') {
+							browsers += 'order=' + item.split('=')[1];
+							browsers += '/';
+						}
+						if (item.indexOf('limit=') != '-1') {
+							browsers += 'limit=' + item.split('=')[1];
+							browsers += '/';
+						}
+						window.history.pushState({urlPath:browsers}, '', browsers);
+					}, 500);
+					
+				});
+			{% endif %}
+		}
+
+	});
+}
+var test_reset ='';
+function show_reset() {
+	if (test_reset == '') {
+		if ($('{{ id_content }}').find('.options_container_filter .filter_container').find('*').length != 0) {
+			$('{{ id_content }} .options_container_filter').prepend('<div class="reset_filter"><a {% if set_cookie %}href="{{ set_cookie }}"{% else %}onclick="reset_filter();"{% endif %}><i class="fa fa-close"></i>&nbsp;&nbsp;{{ text_reset_all }}</a></div>');
+			if ($('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').html() == null) {
+				$('{{ id_content }} .options_container_filter').addClass('row');
+			}
+		} else {
+			$('{{ id_content }}').find('.options_container_filter .filter_container').empty();
+		}
+		test_reset = '1';
+	}
+}
+function show_parent(count_group) {
+	if ($('#show_parent' + count_group + ' .text_more').hasClass('none')) {
+		$('#show_parent' + count_group + ' .text_more').removeClass("none");
+	} else {
+		$('#show_parent' + count_group + ' .text_more').addClass("none");
+		$('.none.none' + count_group).removeClass("none");
+	}
+	if ($('#show_parent' + count_group + ' .text_hide').hasClass("none")) {
+		$('#show_parent' + count_group + ' .text_hide').removeClass("none");
+	} else {
+		$('#show_parent' + count_group + ' .text_hide').addClass("none");
+		$('.none' + count_group).addClass("none");
+	}
+}
+function clear_popup_filter() {
+	$('#home_filter').find('.pupop-filter').remove();
+}
+function remove_popup() {
+	$('#option_filter .pupop-filter').remove();
+}
+$("#keywords_filter .btn").click(function() {
+	if ($('#keywords_filter input[type=\'text\']').val() != '') {
+		
+	} else {
+		$('#keywords_filter input[type=\'text\']').attr('placeholder', '{{ text_keywords_placeholder_empty }}');
+		$('#keywords_filter input[type=\'text\']').addClass('red_filter');
+	}
+});
+$(document).mouseup(function (e) {
+	if ($('#keywords_filter input[type=\'text\']').attr('placeholder') == '{{ text_keywords_placeholder_empty }}' && $('#keywords_filter').has(e.target).length === 0) {
+		$('#keywords_filter input[type=\'text\']').attr('placeholder', '{{ text_keywords_placeholder }}');
+		$('#keywords_filter input[type=\'text\']').removeClass('red_filter');
+	}
+});
+function live_home_filter(category_id) {
+	if (category_id != null && category_id != 'mobile') {
+		$.ajax({
+			url: 'index.php?route=extension/module/gofilter/live_home_filter',
+			type: 'post',
+			data: '&category_id=' + category_id{% if route %} + '&route_layout={{ route }}'{% endif %},
+			beforeSend: function() {
+				$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').addClass('load');
+			},
+			success: function(msg){
+				setTimeout(function () {
+					$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').removeClass('load');
+					$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').empty();
+					
+					$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').append(msg);
+					
+					$('{{ id_content }} #home_filter').empty();
+					$('{{ id_content }} #home_filter').append(msg);
+					generetion_content();
+				}, 500);
+				
+			}
+		});
+	} else if (category_id != 'mobile') {
+		var options = {% if route %}'&route_layout={{ route }}'{% else %}''{% endif %};
+		$.ajax({
+			url: 'index.php?route=extension/module/gofilter/live_home_filter',
+			type: 'post',
+			data: options,
+			beforeSend: function() {
+				$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').addClass('load');
+			},
+			success: function(msg){
+				get_data = this.data;
+				setTimeout(function () {
+					$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').removeClass('load');
+					$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').empty();
+					
+					$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').append(msg);
+					
+					$('{{ id_content }} #home_filter').empty();
+					$('{{ id_content }} #home_filter').append(msg);
+					generetion_content();
+					
+				}, 500);
+				setTimeout(function () {
+					ajax_page_category(get_data);
+				}, 0);
+			}
+		});
+	} else if ($('.icon_mobile_filter').hasClass('oneclick')) {
+		$('.go_filter_mobile_block').animate({left: "-300px"}, 500);
+		$('.icon_mobile_filter').removeClass('oneclick');
+		$('.icon_mobile_filter').addClass('returnclick');
+		$('.close-mobile-filter').remove();
+	} else if ($('.filter_cloud_mobile').text() == "") {
+		generation_ajax('.filter_cloud_mobile');
+		setTimeout(function () {
+			$('.go_filter_mobile_block').prepend('<div class="close-mobile-filter" onclick="$(\'.icon_mobile_filter\').trigger(\'click\');"><i class="fa fa-close"></i></div>');
+		}, 2000);
+	} else if ($('.icon_mobile_filter').hasClass('returnclick')) {
+		$('.go_filter_mobile_block').animate({left: "0px"}, 500);
+		setTimeout(function () {
+			$('.go_filter_mobile_block').prepend('<div class="close-mobile-filter" onclick="$(\'.icon_mobile_filter\').trigger(\'click\');"><i class="fa fa-close"></i></div>');
+		}, 0);
+		$('.icon_mobile_filter').removeClass('returnclick');
+	} else {
+		$('.go_filter_mobile_block').animate({left: "-300px"}, 500);
+		$('.close-mobile-filter').remove();
+		$('.icon_mobile_filter').addClass('returnclick');
+	}
+}
+function generation_ajax(clas) {
+	var categ = $('input.categ[name^=category_id]'); categ = '&' + categ.serialize();
+	var manuf = $('input[name^=manufacturer_id]'); manuf = '&' + manuf.serialize();
+	var searc = $('input[name^=search]'); searc = '&' + searc.serialize();
+	if (clas == '.filter_cloud_mobile') {
+		$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').empty();
+	} else {
+		setTimeout(function () {
+			$('.filter_cloud_mobile').empty();
+		}, 1000);
+	}
+	var options = '&go_mobile=1{% if route %}&route_layout={{ route }}'{% else %}'{% endif %};
+	$.ajax({
+		url: 'index.php?route=extension/module/gofilter/live_home_filter',
+		type: 'post',
+		data: options + categ + manuf + searc,
+		beforeSend: function() {
+			if (clas == '.filter_cloud_mobile') {
+				$('.icon_mobile_filter .fa').removeClass('fa-filter').addClass('fa-spinner').addClass('wheel');
+			} else {
+				$('.go_filter_mobile_block').animate({left: "-300px"}, 500);
+			}
+		},
+		success: function(msg){
+			get_data = this.data;
+			setTimeout(function () {
+				$(clas).empty();
+				$(clas).append(msg);
+				if (clas == '.filter_cloud_mobile') {
+					$('.icon_mobile_filter .fa').removeClass('fa-spinner').removeClass('wheel').addClass('fa-filter');
+					$('.go_filter_mobile_block').animate({left: "0px"}, 500);
+					$('.icon_mobile_filter').addClass('oneclick');
+				} else {
+					setTimeout(function () {
+						$('.icon_mobile_filter').removeClass('oneclick');
+						$('.icon_mobile_filter').addClass('returnclick');
+						$('.filter_cloud_mobile').empty();
+					}, 500);
+					
+				}
+				
+				
+			}, 500);
+		}
+	});
+}
+
+function reset_filter() {
+	var category_id = '';
+	if ($('#home_filter').hasClass('filter_category_page')) {
+		category_id = $('input.categ[name^=category_id]');
+		category_id = category_id.serialize();
+	}
+	$.ajax({
+		url: 'index.php?route=extension/module/gofilter/live_home_filter',
+		type: 'post',
+		data: {% if route %}'&route_layout={{ route }}{% endif %}&' + category_id,
+		beforeSend: function() {
+			$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').addClass('load');
+		},
+		success: function(msg){
+			$('{{ id_content }} #home_filter').addClass('content_filter');
+			setTimeout(function () {
+				$('{{ id_content }} #home_filter, {{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').removeClass('load');
+				$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').empty();
+				$('{{ id_content }} #home_filter').empty();
+				$('{{ id_column_left }} #home_filter, {{ id_column_right }} #home_filter').append(msg);
+				
+				$('{{ id_content }} #home_filter').css('opacity','0');
+				$('{{ id_content }} #home_filter').append(msg);
+				generetion_content();
+				$('{{ id_content }} #home_filter').css('opacity','1');
+				
+				$('{{ id_content }} .reset_filter').remove();
+				$('{{ id_content }} .options_container').remove();
+			}, 500);
+			setTimeout(function () {
+				ajax_page_category(category_id, 'get');
+			}, 1000);
+		}
+	});
+}
+function getting() {
+	
+	var select_value = '';
+	if ($('select#category-option').val() != '') {
+		select_value += ', select#category-option';
+	}
+	if ($('select#stock_status-option').val() != '') {
+		select_value += ', select#stock_status-option';
+	}
+	if ($('select#manufacturers-option').val() != '') {
+		select_value += ', select#manufacturers-option';
+	}
+	
+	if ($('#keywords_filter input[type=\'text\']').val() != '') {var keyword = ', #keywords_filter input[type=\'text\']';} else {var keyword = '';}
+	var data = $(' input[name^=manufacturers_filter\\[], .formCost input[type=\'text\'], #option_filter input[type=\'radio\'], input[name^=option_filter\\[], #filter_send input[name^=category_id], #option_filter input[type=\'checkbox\']:checked, #filter_send input[name^=old_category_id]' + keyword + select_value);
+		
+	var get_data = data.serialize();
+	return get_data;
+}
+function live_home_clear_option_filter(option_id) {
+	$('#option_filter .checkbox label[for="option-value-' + option_id + '"]').trigger('click');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_filter_filter(filter_id) {
+	$('#option_filter .checkbox label[for="filter-value-' + filter_id + '"]').trigger('click');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_attributes_filter(attributes_id) {
+	$('#option_filter .checkbox label[for="attribute-value-attribute-' + attributes_id + '"]').trigger('click');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_stock_filter(stock_id) {
+	$('#option_filter .checkbox label[for="option-value-stock-' + stock_id + '"]').trigger('click');
+	$('select option#common_stock_status:eq(0)').prop('selected', 'selected').trigger('change');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_rating_filter(rating) {
+	$('#option_filter .checkbox label[for="option-value-rating-' + rating + '"]').trigger('click');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_manufacturers_filter(manufacturer) {
+	$('#option_filter .checkbox label[for="option-value-manufacturers-' + manufacturer + '"]').trigger('click');
+	$('select option#common_manufacturers:eq(0)').prop('selected', 'selected').trigger('change');
+	ajax_page_category(getting(), 'get');
+}
+function live_home_clear_category_filter(category) {
+	$('#option_filter .checkbox label[for="option-value-category-' + category + '"]').trigger('click');
+	$('#option_filter .radio label[for="option-value-category-' + category + '"]').trigger('click');
+	$('select option#common_category:eq(0)').prop('selected', 'selected').trigger('change');
+	$('#option_filter .radio a.category_filter').trigger('click');
+}
+function live_home_clear_keywords_filter(text, key) {
+	var isset_keywords = '';
+	$('#keywords_filter input').attr("value", $('#keywords_filter input').attr("value") + '{{ delimitier }}');
+	$('#keywords_filter input').attr("value", $('#keywords_filter input').attr("value").replace(text + '{{ delimitier }}',''));
+	{% if delimitier == "," %}$('#keywords_filter input').attr("value", $('#keywords_filter input').attr("value").replace(', ',','));{% endif %}
+	$('#keywords_filter input').attr("value", $('#keywords_filter input').attr("value").replace({% if delimitier == " " %}/\s+$/{% endif %}{% if delimitier == "," %}','{% endif %},''));
+	$('.option_cloud_keywords' + key).remove();
+	if ($('#keywords_filter input').attr("value") != '') {isset_keywords = 'yes';} else {isset_keywords = 'no';}
+	if (isset_keywords == 'yes') {
+		setTimeout(function () {
+			$('#keywords_filter .input-group-btn > .btn').trigger('click');
+		}, 500);
+	}
+}
+{% if modul > 0 %}
+	$('{{ id_content }} .filter #option_filter h3').remove();
+{% endif %}
+function clear_all_option_filter() {
+	$('#option_filter .checkbox input:checked').trigger('click');
+	setTimeout(function () {
+		$('.pupop-filter').remove();
+	}, 300);
+}
+function clear_all_option_filter_page_category() {
+	$('#option_filter .checkbox input:checked').trigger('click');
+	setTimeout(function () {
+		$('.pupop-filter').remove();
+	}, 300);
+}
+update_scrollbar();
+function update_scrollbar() {
+	$(document).ready(function(){
+		$('{{ id_column_left }} .checkbox-group-overflow, {{ id_column_right }} .checkbox-group-overflow, .filter_cloud_mobile .checkbox-group-overflow').scrollbar();
+	});
+}
+{% if go_mobile == false %}
+if ($('{{ id_content }} #home_filter').hasClass('content_filter')) {
+	
+} else {
+	generetion_content();
+}
+{% endif %}
+var test_content ='';
+function generetion_content() {
+if (test_content == '') {
+		$('{{ id_content }} #option_filter .checkbox-group .row, {{ id_content }} #option_filter .checkbox-group-overflow-price .row').wrap('<div class="input-group-addon"></div>').parent().parent().find('.select-group').addClass('col-xs-12 col-sm-12');
+		$('{{ id_content }} #option_filter .checkbox-group .checkbox, {{ id_content }} #option_filter .checkbox-group .radio').removeClass('none');
+		$('{{ id_content }} #option_filter .formCost label, {{ id_content }} #option_filter #minCost, {{ id_content }} #option_filter #maxCost').wrapAll('<div class="col-xs-12 col-sm-12 col-md-5"></div>');
+		$('{{ id_content }} #option_filter .formCost .clearfix').addClass('visible-xs visible-sm');
+		$('{{ id_content }} #option_filter .checkbox-group, {{ id_content }} #option_filter .checkbox-group-overflow-price').wrapInner('<div class="input-group row"></div>').find('.formCost').addClass('col-xs-12 col-sm-12').find('.col-sm-12').removeClass('col-xs-12 col-sm-12').addClass('col-xs-12 col-sm-12 col-md-7');
+		$('{{ id_content }} #option_filter .filter_total').prepend('(').append(')');
+		$('{{ id_content }} input[type=\'checkbox\']:checked').parent().addClass('reding');
+	test_content = '1';
+    }
+}
+{% if mobile_pult %}
+	if ($('.filter_cloud_mobile').length == false) {
+		$('body').prepend('<div class="go_filter_mobile_block visible-xs"><div class="filter_cloud_mobile"></div></div>');
+		$('{{ id_button_mobile }}').after('<div class="icon_mobile_filter btn btn-primary visible-xs" onclick="live_home_filter(\'mobile\'); "><i class="fa fa-filter"></i> {{ text_filter }}</div>');
+	}
+{% endif %}
+{% if seo_results %}
+	var get_data = getting();
+	setTimeout(function () {
+		ajax_page_category(get_data, 'get');
+	}, 1500);
+{% endif %}
+//--></script>
+<style>
+#option_filter .checkbox-group-overflow {
+{% if max_height %}
+    max-height: {{ max_height }}px;
+{% else %}
+	max-height: 215px;
+{% endif %}	
+}
+{{ id_content }} #option_filter .checkbox-group-overflow {
+	max-height: none;
+}
+{% if color_caption %}
+	#option_filter h3 {
+		color: {{ color_caption }};
+	}
+{% endif %}
+{% if color_group %}
+	{{ id_column_left }} #option_filter .checkbox-group h4,
+	{{ id_column_right }} #option_filter .checkbox-group h4,
+	{{ id_column_left }} #option_filter .checkbox-group-price h4,
+	{{ id_column_right }} #option_filter .checkbox-group-price h4	{
+		color: {{ color_group }};
+	}
+{% endif %}
+{% if bg_group %}
+	{{ id_column_left }} #option_filter .checkbox-group h4,
+	{{ id_column_right }} #option_filter .checkbox-group h4,
+	{{ id_column_left }} #option_filter .checkbox-group-price h4,
+	{{ id_column_right }} #option_filter .checkbox-group-price h4,
+	{{ id_content }} #option_filter .input-group-addon	{
+		background: {{ bg_group }};
+	}
+{% endif %}
+{% if color_product %}
+	.filter .filter_total {
+		background: {{ color_product }};
+	}
+	.filter .filter_total::after {
+		border-color: transparent {{ color_product }} transparent transparent;
+	}
+{% endif %}
+{% if color_product_no %}
+	.filter .filter_total.gray {
+		background: {{ color_product_no }};
+	}
+	.filter .filter_total.gray::after {
+		border-color: transparent {{ color_product_no }} transparent transparent;
+	}
+{% endif %}
+{% if bg_price %}
+	.filter .ui-widget-header {
+		background: {{ bg_price }};
+	}
+{% endif %}
+{% if popup_on == false or go_mobile %}
+	.pupop-filter {
+		display: none;
+	}
+{% endif %}
+{{ id_column_left }} .filter #option_filter .formCost.checkbox,
+{{ id_column_right }} .filter #option_filter .formCost.checkbox {
+	margin-bottom: 30px;
+	padding-top: 15px;
+}
+{{ id_content }} .filter .checkbox-group-price .checkbox label {
+	padding-left: 0;
+	margin-left: 7px;
+}
+{{ id_content }} .filter .filter_total {
+	background: none;
+	color: inherit;
+    font-size: 13px;
+    position: initial;
+}
+{{ id_content }} .filter .filter_total:after {
+	display: none;
+}
+{{ id_content }} #option_filter  .checkbox-group h4,
+{{ id_content }} #option_filter  .checkbox-group-price h4 {
+	cursor: default;
+}
+#option_filter  .checkbox-group h4 strong,
+#option_filter  .checkbox-group-price h4 strong {
+	border-bottom: 1px dotted #000000;
+}
+{{ id_content }} #option_filter h4 {
+	border-top: 0 none;
+	border-bottom: 0 none;
+}
+{{ id_content }} #option_filter .checkbox-group + .checkbox-group,
+{{ id_content }} #option_filter .checkbox-group-price + .checkbox-group {
+	border-top: 1px solid #ddd;
+}
+{{ id_content }} #option_filter .input-group .input-group-addon {
+	border: 0 none;
+    min-width: 160px;
+    text-align: left;
+}
+{{ id_content }} #option_filter .checkbox-group-overflow-price .ui-slider {
+	margin-top: -14px;
+}
+{{ id_column_left }} #option_filter h4 .fa,
+{{ id_column_right }} #option_filter h4 .fa {
+	color: #d60000;
+    font-size: 13px;
+    line-height: 15px;
+    margin-right: 9px;
+}
+{{ id_content }} #option_filter h4 .fa {
+	display: none;
+}
+{{ id_content }} #option_filter .checkbox-group .fa-close {
+	top: 2px;
+}
+{{ id_content }} #option_filter .checkbox-group-overflow {
+	max-height: auto;
+	position: relative;
+}
+{{ id_content }} #option_filter .checkbox-group-overflow.owl-carousel {
+	padding-right: 50px;
+    right: -15px;
+}
+{{ id_column_left }} #option_filter .checkbox-group .row + .select-group,
+{{ id_column_right }} #option_filter .checkbox-group .row + .select-group {
+	margin-bottom: 15px;
+}
+{{ id_content }} #option_filter .checkbox-group-overflow,
+{{ id_content }} #option_filter .formCost,
+{{ id_content }} #option_filter .select-group,
+{{ id_content }} #option_filter .text_more_group {
+	max-height: none;
+}
+{{ id_content }} #option_filter .select-group {
+	margin: 5px 0;
+}
+{{ id_content }} #option_filter .checkbox-group .row,
+{{ id_content }} #option_filter .checkbox-group-price .row {
+	
+}
+{{ id_content }} #option_filter .checkbox-group-overflow {
+	overflow: hidden;
+}
+{{ id_content }} #option_filter .checkbox-group-overflow .checkbox-group-overflow {
+	width: 100% !important;
+}
+{{ id_column_right }} .pupop-filter {
+	right: 100%;
+	left: auto;
+}
+{{ id_content }} .pupop-filter {
+	display: none !important;
+}
+{{ id_content }} .load {
+	background: url('loading.gif') center center no-repeat;
+}
+{{ id_content }} #home_filter.load {
+	background: none;
+}
+{{ id_content }} #home_filter + #home_filter,
+{{ id_content }} #home_filter + #home_filter,
+{{ id_content }} .options_container_filter .reset_filter + .reset_filter {
+	display: none;
+}
+{{ id_column_left }} .formCost input.form-control,
+{{ id_column_right }} .formCost input.form-control {
+    background: none;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    color: #434343;
+    float: left;
+    font-size: 14px;
+    height: 28px;
+    padding-right: 10px;
+    text-align: right;
+    top: -2px;
+}
+{{ id_content }} .input-group .formCost input#maxCost.form-control {
+	width: 70px;
+}
+{{ id_content }} .filter .ui-slider-horizontal .ui-slider-handle {
+    margin-left: -21px;
+}
+{{ id_column_left }} .formCost input.form-control,
+{{ id_column_right }} .formCost input.form-control {
+	width: 75px;
+}
+{{ id_content }} .filter .checkbox,
+{{ id_content }} .filter .radio {  
+    display: inline-block;
+    margin: 10px 0 5px 15px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 4px 10px 4px 8px;
+	position: relative;
+}
+{{ id_content }} .filter .categories_filter .checkbox,
+{{ id_content }} .filter .categories_filter .radio {
+	
+}
+{{ id_content }} .filter a.category_filter {
+	
+}
+{{ id_content }} .filter a.category_filter .fa {
+	left: 8px;
+    position: absolute;
+    top: 8px;
+}
+{{ id_content }} .filter a.category_filter label {
+	padding-right: 0px;
+}
+{{ id_content }} .filter a.category_filter .fa + input + label,
+{{ id_content }} .filter a.category_filter .fa + input + input + label {
+	padding-left: 25px;
+}
+{{ id_content }} .filter .not-active-link {
+	display: none;
+}
+{{ id_content }} .filter .checkbox-group-overflow-price .checkbox {
+	border: 0 none;
+	margin: 0;
+	padding: 13px 0 0;
+}
+{{ id_content }} .checkbox-group-overflow.owl-carousel {
+	display: inline-block;
+}
+{{ id_content }} #option_filter .text_more_group {
+	display: none;
+}
+{{ id_content }} #option_filter .col-sm-12:nth-child(2n) {
+	clear:left;
+}
+{{ id_content }} #option_filter .checkbox.reding {
+	border-color: #c54448;
+}
+{{ id_column_left }} .options_container_filter,
+{{ id_column_right }} .options_container_filter {
+	display: none;
+}
+{{ id_content }} #home_filter .column_filt,
+{{ id_column_left }} #home_filter .content_filt, {{ id_column_right }} #home_filter .content_filt {
+	display: none;
+}
+{{ id_column_left }} #option_filter .collapse_filter .select-group,
+{{ id_column_right }} #option_filter .collapse_filter .select-group,
+{{ id_column_left }} #option_filter .collapse_filter .checkbox-group-overflow,
+{{ id_column_right }} #option_filter .collapse_filter .checkbox-group-overflow,
+{{ id_column_left }} #option_filter .collapse_filter .checkbox-group-price,
+{{ id_column_right }} #option_filter .collapse_filter .checkbox-group-price,
+{{ id_column_left }} #option_filter .collapse_filter .checkbox-group,
+{{ id_column_right }} #option_filter .collapse_filter .checkbox-group,
+{{ id_column_left }} #option_filter .collapse_filter .text_more_group,
+{{ id_column_right }} #option_filter .collapse_filter .text_more_group {
+	display: none;
+}
+@media (max-width: 991px) {
+	.input-group .formCost input.form-control {
+		max-width: 130px;
+		width: auto;
+	}
+	{{ id_content }} #option_filter .checkbox-group-overflow-price .ui-slider {
+		margin: -5px 0 15px;
+	}
+	{{ id_content }} .filter .ui-slider-horizontal .ui-slider-handle {
+		margin-left: -5px;
+	}
+	{{ id_content }} .filter .ui-slider .ui-slider-handle + .ui-slider-handle {
+		margin-left: -15px;
+	}
+}
+@media (max-width: 768px) {
+	{{ id_content }} .input-group .formCost input.form-control {
+		max-width: 100px;
+		width: auto;
+	}
+}
+@media (max-width: 520px) {
+	{{ id_content }} .input-group .formCost input.form-control {
+		max-width: 80px;
+	}
+	{{ id_content }} #option_filter .input-group .input-group-addon {
+		min-width: 130px;
+	}
+}
+@media (max-width: 1200px) {
+	{{ id_column_left }} .formCost input.form-control,
+	{{ id_column_right }} .formCost input.form-control {
+		width: 55px;
+	}
+}
+@media (max-width: 991px) {
+	{{ id_column_left }} .formCost input.form-control,
+	{{ id_column_right }} .formCost input.form-control {
+		margin-bottom: 13px;
+		width: 73px;
+	}
+}
+{{ id_column_left }} #option_filter .row, {{ id_column_right }} #option_filter .row {
+	width: auto;
+}
+{{ id_content }} #option_filter .col-sm-12:nth-child(2n) {
+	clear:left;
+}
+{{ id_content }} #option_filter .checkbox.reding {
+	border-color: #c54448;
+}
+{{ id_content }} #option_filter .input-group-addon h4 {
+	margin-top: 0;
+}
+</style>
+{{ gofilter_cloud }}
+{% endif %}

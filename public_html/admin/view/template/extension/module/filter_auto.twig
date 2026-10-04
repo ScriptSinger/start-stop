@@ -1,0 +1,327 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button id="refresh-attribute" data-toggle="tooltip" title="{{ button_import }}" class="btn btn-success"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                <button type="submit" form="form-filter" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="alert alert-success alert-dismissible alert-attr" style="display: none;" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ entry_attr_updated }}
+        </div>
+        <div class="progress" style="display: none;">
+            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only">45% Complete</span>
+            </div>
+            <div class="progress-bar progress-bar-warning progress-bar-striped active" style="width: 10%">
+                <span class="sr-only">Connecting</span>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-filter" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+                            {% if error_name %}
+                            <div class="text-danger">{{ error_name }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-type">{{ entry_type }}</label>
+                        <div class="col-sm-10">
+                            <select name="filter_auto_type" id="input-type" class="form-control">
+                                {% if filter_auto_type %}
+                                <option value="1" selected="selected">{{ entry_horizontal }}</option>
+                                <option value="0">{{ entry_vertical }}</option>
+                                {% else %}
+                                <option value="1">{{ entry_horizontal }}</option>
+                                <option value="0" selected="selected">{{ entry_vertical }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="status" id="input-status" class="form-control">
+                                {% if status %}
+                                <option value="1" selected="selected">{{ text_enabled }}</option>
+                                <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                <option value="1">{{ text_enabled }}</option>
+                                <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>{{ text_main_setting }}</legend>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-applicability">{{ entry_applicability }}</label>
+                        <div class="col-sm-10">
+                            <select name="filter_auto_applicability" id="input-applicability" class="form-control">
+                                {% if filter_auto_applicability %}
+                                <option value="1" selected="selected">{{ text_enabled }}</option>
+                                <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                <option value="1">{{ text_enabled }}</option>
+                                <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-remeber">{{ entry_remember }}</label>
+                        <div class="col-sm-10">
+                            {% if filter_auto_remember %}
+                                <input type="checkbox" name="filter_auto_remember" id="input-remeber" value="1" checked>
+                            {% else %}
+                                <input type="checkbox" name="filter_auto_remember" id="input-remeber" value="1">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-year">{{ entry_show_year }}</label>
+                        <div class="col-sm-10">
+                            {% if filter_auto_show_year %}
+                                <input type="checkbox" name="filter_auto_show_year" id="input-year" value="1" checked>
+                            {% else %}
+                                <input type="checkbox" name="filter_auto_show_year" id="input-year" value="1">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ entry_attr_show }}</label>
+                        <div class="col-sm-10">
+                            <div class="well well-sm" style="min-height:150px;max-height: 500px;overflow: auto;">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        {% if attributes %}
+                                            {% for attribute in attributes %}
+                                            <tr>
+                                                <td class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="filter_auto_attr[]" value="{{ attribute.attribute_id }}" {% if attribute.attribute_id in filter_auto_attr %} checked="checked" {% endif %} >
+                                                        {{ attribute.name }}
+                                                    </label>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">Выделить всё</a> /
+                            <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">Снять выделение</a>
+                        </div>
+                    </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>{{ text_seo_setting }}</legend>
+                        <ul class="nav nav-tabs" id="language">
+                            {% for language in languages %}
+                            <li><a href="#language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content">
+                            {% for language in languages %}
+                            <div class="tab-pane" id="language{{language.language_id }}">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-meta-title{{ language.language_id }}">{{ entry_meta_title }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            <button type="button" class="btn btn-default btn-xs button-category">{{ entry_category }}</button> <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button> <button type="button" class="btn btn-default btn-xs button-modif">{{ entry_modif }}</button>
+                                        </p>
+                                        <input type="text" name="filter_auto_description[{{ language.language_id }}][meta_title]" value="{{ description[language.language_id] ? description[language.language_id].meta_title}}" placeholder="{{ entry_meta_title }}" id="input-meta-title{{language.language_id}}" class="form-control" />
+                                        {% if error_meta_title[language.language_id] %}
+                                        <div class="text-danger">{{ error_meta_title[language.language_id] }}</div>
+                                        {%  endif %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-h1{{ language.language_id }}">{{ entry_html_h1 }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            <button type="button" class="btn btn-default btn-xs button-category">{{ entry_category }}</button> <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button> <button type="button" class="btn btn-default btn-xs button-modif">{{ entry_modif }}</button>
+                                        </p>
+                                        <input type="text" name="filter_auto_description[{{ language.language_id }}][html_h1]" value="{{ description[language.language_id] ? description[language.language_id].html_h1 }}" placeholder="{{ entry_html_h1 }}" id="input-html-h1{{ language.language_id }}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-meta-description{{ language.language_id }}">{{ entry_meta_description }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            <button type="button" class="btn btn-default btn-xs button-category">{{ entry_category }}</button> <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button> <button type="button" class="btn btn-default btn-xs button-modif">{{ entry_modif }}</button>
+                                        </p>
+                                        <textarea name="filter_auto_description[{{ language.language_id }}][meta_description]" rows="5" placeholder="{{ entry_meta_description }}" id="input-meta-description{{ language.language_id }}" class="form-control">{{ description[language.language_id] ? description[language.language_id].meta_description }}</textarea>
+                                        {% if error_meta_description[language.language_id] %}
+                                        <div class="text-danger">{{ error_meta_description[language.language_id] }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>{{ text_seo_model_setting }}</legend>  
+                        <ul class="nav nav-tabs" id="language-model">
+                            {% for language in languages %}
+                            <li><a href="#language-model{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                            {% endfor %}
+                        </ul> 
+                        <div class="tab-content">
+                            {% for language in languages %}
+                            <div class="tab-pane" id="language-model{{ language.language_id }}">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-model-description{{ language.language_id }}">{{ entry_model_description }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            </button> <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button>
+                                        </p>
+                                        <textarea name="filter_auto_model_description[{{ language.language_id }}][description]" rows="7" placeholder="{{ entry_model_description }}" id="input-model-description{{ language.language_id }}" class="form-control">{{ model_description[language.language_id] ? model_description[language.language_id].description }}</textarea>
+                                    </div>    
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-meta-model-title{{ language.language_id }}">{{ entry_meta_title }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                           <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button>
+                                        </p>
+                                        <input type="text" name="filter_auto_model_description[{{ language.language_id }}][meta_title]" value="{{ model_description[language.language_id].meta_title ? model_description[language.language_id].meta_title }}" placeholder="{{ entry_meta_title }}" id="input-meta-model-title{{ language.language_id }}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-model-h1{{ language.language_id }}">{{ entry_html_h1 }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button>
+                                        </p>
+                                        <input type="text" name="filter_auto_model_description[{{ language.language_id }}][html_h1]" value="{{ model_description[language.language_id].html_h1 ? model_description[language.language_id].html_h1 }}" placeholder="{{ entry_html_h1 }}" id="input-model-h1{{ language.language_id }}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input-meta-model-description{{ language.language_id }}">{{ entry_meta_description }}</label>
+                                    <div class="col-sm-10">
+                                        <p>
+                                            <button type="button" class="btn btn-default btn-xs button-brand">{{ entry_brand }}</button> <button type="button" class="btn btn-default btn-xs button-model">{{ entry_model }}</button>
+                                        </p>
+                                        <textarea name="filter_auto_model_description[{{ language.language_id }}][meta_description]" rows="5" placeholder="{{ entry_meta_description }}" id="input-meta-description{{ language.language_id }}" class="form-control">{{ model_description[language.language_id].meta_description ? model_description[language.language_id].meta_description }}</textarea>
+                                    </div>
+                                </div>
+                            </div>    
+                            {% endfor %}    
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        var limit = {{ limit }} ;
+        var start = {{ start }};
+        var attr_count = {{ attr_count }};
+        var iteration = 0;
+
+        $('#language a:first,#language-model a:first').tab('show');
+
+        $('#refresh-attribute').on('click', function(e) {
+            e.preventDefault();
+
+            copyAttribute(start, limit, iteration);
+        });
+
+        function copyAttribute(begin, count, i) {
+            $.ajax({
+                type: 'post',
+                url:  'index.php?route=extension/module/filter_auto/copyattr&user_token={{ user_token }}',
+                dataType: 'json',
+                data: {
+                    start: begin,
+                    limit: count,
+                    iteration: i
+                },
+                beforeSend: function() {
+                    $('.progress').show();
+                },
+                success: function(json) {
+                    if (json.success) {
+                        if (attr_count > (json.iteration * limit)) {
+                            $('.progress-bar-warning').hide();
+                            displayProgressbar(attr_count, limit, json.iteration)
+                            copyAttribute(json.iteration * limit, limit, json.iteration);
+                        } else {
+                            $('.progress').hide();
+                            $('.alert-attr').show();
+                        }
+                    } else {
+                        return;
+                    }
+                }
+            });
+        }
+
+        function displayProgressbar(total, limit, iteration) {
+            let percent = (limit * iteration * 100)/total;
+
+            if (percent > 100) percent = 100;
+
+            $('.progress-bar-success').css('width', percent + '%');
+            $('.progress-bar-success').find('span').html(percent + '%');
+        }
+
+        $('.button-brand').on('click', function(e) {
+            addSeoText(this, '%brand%');
+        });
+
+        $('.button-model').on('click', function(e) {
+            addSeoText(this, '%model%');
+        });
+
+        $('.button-modif').on('click', function(e) {
+            addSeoText(this, '%modif%');
+        });
+
+        $('.button-category').on('click', function(e) {
+            addSeoText(this, '%category%');
+        });
+
+        function addSeoText(element, value)
+        {
+            let input = $(element).closest('.form-group').find('input');
+            if (input.length) {
+                input.val(input.val().concat(value));
+            }
+
+            let textarea = $(element).closest('.form-group').find('textarea');
+            if (textarea.length) {
+                textarea.val(textarea.val().concat(value));
+            }
+        }
+    })();
+</script>
+{{ footer }}

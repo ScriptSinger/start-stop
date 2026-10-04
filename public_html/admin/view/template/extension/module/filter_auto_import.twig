@@ -1,0 +1,117 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="progress" style="display: none;">
+            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            </div>
+        </div>
+        <div class="alert alert-success" role="alert" style="display: none">{{ import_success }}</div>
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <div class="well">{{ text_import_example }} <a class="btn btn-default btn-xs" href="{{ link_csv }}"><i class="fa fa-file-excel-o" aria-hidden="true"></i> {{ text_file_example }}</a></div>
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ entry_product_field }}</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" name="product_field">
+                                <option value="sku">{{ entry_sku_field }}</option>
+                                <option value="model">{{ entry_model_field }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ entry_start_row }}</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="start_row" value="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-supplier">{{ text_file }}</label>
+                        <div class="col-sm-6">
+                            <input id="csv_file" type="file" name="file" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-8 text-right">
+                        <button id="upload" class="btn btn-primary" type="submit"><i class="fa fa-upload" aria-hidden="true"></i> {{ button_import_base }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
+<script>
+    (function() {
+        $('#upload').on('click', function(e) {
+            e.preventDefault();
+
+            $('#csv_file').closest('.form-group').removeClass('has-error');
+
+            if (!$('#csv_file').val()) {
+                $('#csv_file').closest('.form-group').addClass('has-error');
+
+                return;
+            }
+
+            let file_data = $('#csv_file').prop('files')[0];
+            let form_data = new FormData();
+
+            form_data.append('file', file_data);
+            form_data.append('product_field', $('select[name="product_field"]').val());
+            form_data.append('start_row', $('input[name="start_row"]').val());
+
+            importProducts(form_data, 0, 40, 0, 0);
+        });
+
+        function importProducts(form_data, start, limit, iteration, count) {
+
+            $.ajax({
+                url: 'index.php?route=extension/module/filter_auto/import/import&start=' + start + '&limit=' + limit + '&iteration=' + iteration + '&user_token={{ user_token }}',
+                dataType: 'json',
+                data: form_data,
+                processData: false,
+                contentType: false,
+                type: 'post',
+                beforeSend: function() {
+                    $('.progress').show();
+                    $('.alert-success').hide();
+                },
+                success: function(data){
+                    if (data.success) {
+                        count += data.count;
+
+                        displayProgressbar(data.total, count, limit, data.iteration);
+                        importProducts(form_data, data.iteration * 40, 40, data.iteration, count);
+                    } else {
+                        $('.progress').hide();
+                        $('.alert-success').show();
+
+                        return;
+                    }
+                }
+            });
+        }
+
+        function displayProgressbar(total, count, limit, iteration) {
+            let percent = (limit * iteration * 100)/total;
+
+            if (percent > 100) {
+                percent = 100;
+            }
+            console.log(count);
+            $('.progress-bar-success').css('width', percent + '%');
+            $('.progress-bar-success').html('Import: ' + count);
+        }
+    })();
+</script>

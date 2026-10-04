@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<title>{{ title }}</title>
+		<style>
+			.order-info{width:1300px;max-width:95%;line-height:1.6em;font-size:16px}
+			.order-info__logo{margin:0 0 30px}
+			.order-info__block{margin:0 0 25px}
+			.order-info__block-item{width:50%;max-width:450px}
+			.order-info__block-item + .order-info__block-item{padding:0 0 0 20px}
+			.order-info__block-heading{margin:0 0 10px;font-weight:bold}
+			.order-info__products{border-collapse:collapse;width:100%;border-top:1px solid #ddd;border-left:1px solid #ddd;margin:0 0 30px}
+			.order-info__products thead td{border-right:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f7f7f7;font-weight:bold;font-size:.95em;text-align:left;padding:10px 15px;color:#222}
+			.order-info__products tbody td, .order-info__products tfoot td{border-right:1px solid #ddd;border-bottom:1px solid #ddd;text-align:left;padding:10px 15px}
+		</style>
+	</head>
+	<body>
+		<div class="order-info">
+			<div class="order-info__logo">
+				<a href="{{ store_url }}" title="{{ store_name }}"><img src="{{ logo }}" alt="{{ store_name }}" style="border:none" /></a>
+			</div>
+			<div class="order-info__block">{{ text_greeting }}</div>
+			{% if customer_id %}
+				<div class="order-info__block">{{ text_link }} <a href="{{ link }}">{{ link }}</a></div>
+			{% endif %}
+			{% if download %}
+				<div class="order-info__block">{{ text_download }} <a href="{{ download }}">{{ download }}</a></div>
+			{% endif %}
+			<div class="order-info__block" style="font-size:1.4em"><b>{{ text_order_detail }} #{{ order_id }} - {{ date_added }}</b></div>
+			<table class="order-info__products">
+				<thead>
+					<tr>
+						<td>{{ text_product }}</td>
+						<td>{{ text_model }}</td>
+						<td>{{ text_quantity }}</td>
+						<td style="text-align:right">{{ text_price }}</td>
+						<td style="text-align:right">{{ text_total }}</td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for product in products %}
+						<tr>
+							<td>
+								{{ product.name }}
+								{% for option in product.option %}<br />
+									&nbsp;<small> - {{ option.name }}:{{ option.value }}</small>
+								{% endfor %}
+							</td>
+							<td>{{ product.model }}</td>
+							<td>{{ product.quantity }}</td>
+							<td style="text-align:right">{{ product.price }}</td>
+							<td style="text-align:right">{{ product.total }}</td>
+						</tr>
+					{% endfor %}
+					{% for voucher in vouchers %}
+						<tr>
+							<td>{{ voucher.description }}</td>
+							<td></td>
+							<td>1</td>
+							<td>{{ voucher.amount }}</td>
+							<td>{{ voucher.amount }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					{% for total in totals %}
+						<tr>
+							<td style="text-align:right" colspan="4"><b>{{ total.title }}:</b></td>
+							<td style="text-align:right">{{ total.text }}</td>
+						</tr>
+					{% endfor %}
+				</tfoot>
+			</table>
+			<div class="order-info__block">
+				<b>{{ text_email }}</b> {{ email }}<br />
+				<b>{{ text_telephone }}</b> {{ telephone }}<br />
+				<!-- <b>{{ text_ip }}</b> {{ ip }}<br /> -->
+				<b>{{ text_order_status }}</b> {{ order_status }}
+			</div>
+			<div class="order-info__block">
+				<div class="order-info__block-heading">{{ text_payment_method }}</div>
+				{{ payment_method }}
+			</div>
+			{% if shipping_method %}
+				<div class="order-info__block">
+					<div class="order-info__block-heading">{{ text_shipping_method }}</div>
+					{{ shipping_method }}
+				</div>
+			{% endif %}
+			{% if unicheckout_pickup is empty %}
+				<div class="order-info__block">
+					{% if payment_address != shipping_address %}
+						<div class="order-info__block-item">
+							<div class="order-info__block-heading">{{ text_payment_address }}</div>
+							{{ payment_address }}
+						</div>
+					{% endif %}
+					{% if shipping_address %}
+						<div class="order-info__block-item">
+							<div class="order-info__block-heading">{{ text_shipping_address }}</div>
+							{{ shipping_address }}
+						</div>
+					{% endif %}
+				</div>
+			{% endif %}
+			{% if comment %}
+				<div class="order-info__block">
+					<div class="order-info__block-heading">{{ text_instruction }}</div>
+					{{ comment }}
+				</div>
+			{% endif %}
+			<div class="order-info__block"><b>{{ text_footer }}</b></div>
+		</div>
+	</body>
+</html>

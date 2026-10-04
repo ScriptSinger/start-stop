@@ -1,0 +1,261 @@
+{{ header }} {{ column_left }}
+<div id="content">
+    <!-- Header-->
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="button" data-toggle="tooltip" title=" {{ button_delete }}" class="btn btn-danger" onclick="confirm(' {{ text_confirm }}') ? $('#form-modif').submit() : false;"><i class="fa fa-trash-o"></i></button>
+            </div>
+            <h1> {{ heading_modif }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <!-- /Header-->
+    <!-- Content -->
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i>  {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %} 
+        {% if success %}
+            <div class="alert alert-success"><i class="fa fa-check-circle"></i>  {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="input-brand"> {{ heading_title }}</label>
+                                <select name="filter_brand" id="input-brand" class="form-control">
+                                    <option value="*"></option>
+                                    {% if brands %}
+                                        {% for brand in brands %}
+                                            <option value="{{ brand.brand_id }}" {% if brand.brand_id == filter_brand %} selected="selected" {% endif %}>{{ brand.brand_name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="input-model"> {{ heading_models }}</label>
+                                <select name="filter_model" id="input-model" class="form-control">
+                                    <option value="*"></option>
+                                    {% if models %}
+                                        {% for model in models %}
+                                            <option value="{{ model.model_id }}" {% if model.model_id == filter_model %} selected="selected" {% endif %}>{{ model.model_name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button type="button" id="button-filter" class="btn btn-primary pull-left"><i class="fa fa-filter"></i>  {{ button_filter }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="well">
+                    {% if filter_model %}
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-name">{{ column_name }}</label>
+                                    <input type="text" id="modif-name" class="form-control require" value="">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-dvs">{{ column_dvs }}</label>
+                                    <input type="text" id="modif-dvs" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-hp">{{ column_hp }}</label>
+                                    <input type="text" id="modif-hp" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-start">{{ column_date_start }}</label>
+                                    <input type="text" id="modif-start" class="form-control" value="" placeholder="{{ column_date_plh }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-end">{{ column_date_end }}</label>
+                                    <input type="text" id="modif-end" class="form-control" value="" placeholder="{{ column_date_plh }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-body">{{ column_body }}</label>
+                                    <input type="text" id="modif-body" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="modif-status">{{ column_status }}</label>
+                                    <select class="form-control" id="modif-status">
+                                        <option value="1">{{ text_enabled }}</option>
+                                        <option value="0">{{ text_disabled }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label></label>
+                                    <button id="modif-save" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary btn btn-primary pull-right"><i class="fa fa-save"></i> {{ button_save }}</button>
+                                    <input type="hidden" id="model-id" class="form-control" value="{{ filter_model }}">
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {{ text_no_filter }}
+                    {% endif %}
+                </div>
+
+                {% if modifies %}
+                    <form action=" {{ delete }}" method="post" enctype="multipart/form-data" id="form-modif">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                                    <td class="text-left"> {{ column_name }}</td>
+                                    <td class="text-left"> {{ column_dvs }}</td>
+                                    <td class="text-left"> {{ column_hp }}</td>
+                                    <td class="text-left"> {{ column_body }}</td>
+                                    <td class="text-left"> {{ column_date }}</td>
+                                    <td class="text-left"> {{ column_status }}</td>
+                                    <td class="text-right"> {{ column_action }}</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for modif in modifies %}
+                                    {% if modif != 'all' %}
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" name="selected[]" value="{{ modif.modif_id }}" />
+                                        </td>
+                                        <td class="text-left">{{ modif.modif_name }}</td>
+                                        <td class="text-left">{{ modif.modif_dvs }}</td>
+                                        <td class="text-left">{{ modif.modif_hp }}</td>
+                                        <td class="text-left">{{ modif.modif_body }}</td>
+                                        <td class="text-left">{{ modif.modif_start }} - {{ modif.modif_end }}</td>
+                                        <td class="text-left">{{ modif.status }}</td>
+                                        <td class="text-right"><a href=" {{ modif.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                {% else %}
+                    {{ text_no_results }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- /Content -->
+</div>
+<script><!--
+    var url = 'index.php?route=extension/module/filter_auto/auto_modifies&user_token={{ user_token }}';
+
+    $('#input-brand').on('change', function() {
+        var filter_brand = $("select[name='filter_brand']").val();
+
+        if (filter_brand != '*') {
+            url += '&filter_brand=' + encodeURIComponent(filter_brand);
+        }
+
+        location = url;
+    });
+
+    $('#button-filter').on('click', function() {
+
+        var filter_model = $("select[name='filter_model']").val();
+
+        if (filter_model != '*') {
+            url += '&filter_brand=' + getParameterByName('filter_brand');
+            url += '&filter_model=' + encodeURIComponent(filter_model);
+        }
+
+        location = url;
+    });
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return results[2].replace(/\+/g, " ");
+    }
+
+    $('#modif-save').on('click', function() {
+        var model_id = $('#model-id').val();
+        var modif_name = $('#modif-name');
+        var modif_dvs = $('#modif-dvs');
+        var modif_hp = $('#modif-hp');
+        var modif_body = $('#modif-body');
+        var modif_start = $('#modif-start');
+        var modif_end = $('#modif-end');
+        var modif_status = $('#modif-status');
+
+        var error = false;
+
+        $('.require').each(function() {
+            if (!$(this).val()) {
+                $(this).closest('.form-group').addClass('has-error');
+                error = true;
+            } else {
+                $(this).closest('.form-group').removeClass('has-error');
+                error = false;
+            }
+
+        });
+
+        if (!error) {
+            $.ajax({
+                url: '/admin/index.php?route=extension/module/filter_auto/auto_modifies/add&user_token={{ user_token }}',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    model_id: model_id,
+                    modif_name: modif_name.val(),
+                    modif_dvs: modif_dvs.val(),
+                    modif_hp: modif_hp.val(),
+                    modif_body: modif_body.val(),
+                    modif_start: modif_start.val(),
+                    modif_end: modif_end.val() || 0,
+                    modif_status: modif_status.val()
+                },
+                success: function(data) {
+                    if (data.result) {
+                        location.reload();
+                    }
+                },
+                error: function() {
+                    alert('Server is down');
+                }
+            });
+        }
+    });
+
+    //--></script>
+ {{ footer }}

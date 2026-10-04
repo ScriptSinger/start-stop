@@ -1,0 +1,35 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOSTNAME: db
+      DB_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-opencart}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Copy .env.example to .env and set MYSQL_PASSWORD}
+    volumes:
+      # Проброс папок проекта в контейнер
+
+      - ./public_html:/var/www/html
+      - ./storage:/var/www/storage
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Copy .env.example to .env and set MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-opencart}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Copy .env.example to .env and set MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      # Автоматический импорт вашего дампа при первом запуске
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    # Решает возможные проблемы с авторизацией старых версий PHP
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  db_data:

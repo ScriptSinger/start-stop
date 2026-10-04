@@ -1,0 +1,432 @@
+{% if brands or filter_manufacturers or filter_attributes %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-sliders" aria-hidden="true"></i> {% if brands %} {{ heading_title_auto }} {% else %} {{ heading_title_filter }} {% endif %}
+        {% if (filter_active) %}
+        <a rel="nofollow" class="pull-right clear-filter" title="" data-toggle="tooltip" data-placement="bottom" data-original-title="{{ auto_filter_clear }}">
+            <i class="fa fa-trash text-danger"></i></a>
+        {% endif %}
+    </div>
+    {% if (brands) %}
+    <div class="panel-body">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <select class="form-control selectpickerImg" name="brand" id="filter_auto_brand" data-live-search="true">
+                    <option value="0" data-img="">{{ text_no_brand }}</option>
+                    {% for brand in brands %}
+                        <option value="{{ brand.brand_id }}" {% if current_brand == brand.brand_id %} selected {% endif %}
+                                data-img="{{ brand.brand_img }}"> {{ brand.brand_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <select class="form-control selectpicker" name="model" id="filter_auto_model" data-live-search="true" disabled="disabled">
+                    <option value="0">{{ text_no_model }}</option>
+                </select>
+            </div>
+        </div>
+        {% if show_year %}
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <div class="form-group year_form_wrap"></div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="modif_form_wrap"></div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <button class="btn btn-primary" id="filter_auto_find" disabled="disabled">{{ text_find }}</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if (filter_manufacturers or filter_attributes) %}
+    <div class="panel-footer-afilter">
+        {% if (filter_manufacturers) %}
+        <div class="btn-group">
+            <button type="button"
+                    class="btn {% if filter_data.manufacturer %} btn-primary {% else %} btn-default {% endif %} dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ text_manufacturers }} <span class="caret"></span></button>
+            <div class="dropdown-menu">
+                {% for filter_manufacturer in filter_manufacturers %}
+                <div class="checkbox afilter-checkbox">
+                    <label {{ filter_manufacturer['total'] == 0 ? 'class="disabled"' : '' }}>
+                        <input type="checkbox" onclick="goFilterManuf(this)" name="filter_manufacturer[]" value="{{ filter_manufacturer['manufacturer_id'] }}"
+                                {% if filter_manufacturer.manufacturer_id in manufacturer_selected %} checked="checked" {% endif %}
+                                {% if filter_manufacturer.total == 0 %} disabled {% endif %}/>
+                        {{ filter_manufacturer['name'] }}
+                    </label>
+                    <span class="label label-info afilter-label">{{ filter_manufacturer.total }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if (filter_attributes) %}
+        {% for atr_key,filter_attr_group in filter_attributes %}
+        <div class="btn-group">
+            <button type="button" class="btn {% if atr_key in attr_group_selected %} btn-primary {% else %} default {% endif %} dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ filter_attr_group.atr_name }} <span class="caret"></span>
+            </button>
+            <div class="dropdown-menu">
+                {% for atr_item in filter_attr_group.values %}
+                <div class="checkbox afilter-checkbox">
+                    <label {% if atr_item.total == 0 %} class="disabled" {% endif %}>
+                        <input type="checkbox" onclick="goFilterAttr(this)" name="filter_attribute[]"
+                               value="{{ atr_item.atr_value_id }}"
+                                {% if atr_item.atr_value_id in attribute_selected %} checked="checked" {% endif %}
+                                {{ atr_item.total == 0 ? 'disabled' : '' }}/>
+                        {{ atr_item.atr_value }}
+                    </label>
+                    <span class="label label-info afilter-label">{{ atr_item.total }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+<script>
+    (function() {
+        var loading = '<option>{{ filter_loading }}</option>';
+
+        var category_id = {% if category_id %} {{ category_id }} {% else %} "" {% endif %};
+        var model = $('#filter_auto_model'),
+            yearWrap = $('.year_form_wrap'),
+            modif = $('.modif_form_wrap');
+        var button = $('#filter_auto_find');
+
+        var current_brand = '{{ current_brand }}';
+        var current_model = '{{ current_model }}';
+        var current_modify = '{{ current_modify }}';
+
+        {% if show_year %}
+        var current_year = '{{ current_year }}';
+        {% else %}
+        var current_year = '';
+        {% endif %}
+
+        if (current_brand) {
+            getModels(current_brand);
+        }
+
+        if (current_model) {
+            {% if show_year %}
+            getYears(current_model);
+            {% else %}
+            getModifies(current_model);
+            {% endif %}
+        }
+
+        if (current_year) {
+            getModifies(current_model, current_year);
+        }
+
+        $('#filter_auto_brand').on('change', function() {
+            var brand_id = $(this).val();
+
+            model.attr('disabled', true).empty();
+            modif.empty();
+
+            if (brand_id) {
+                getModels(brand_id);
+                button.attr('disabled', true);
+            }
+        });
+
+        function getModels(brand_id) {
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: 'index.php?route=extension/module/filter_auto/models',
+                data: {
+                    brand_id: brand_id,
+                    cat_id: category_id
+                },
+                beforeSend: function() {
+                    model.html(loading);
+                },
+                success: function(data) {
+                    if (data.models) {
+
+                        var html = '';
+
+                        $.each(data.models, function(key, value) {
+                            var current = (current_model == value.model_id) ? 'selected' : '';
+
+                            html += '<option value="' + value.model_id + '" ' + current + '>' + value.model_name + '</option>';
+                        });
+
+                        model.html('<option value="">{{ text_no_model }}</option>');
+                        model.append(html);
+                        model.attr('disabled', false);
+                    } else {
+                        model.html('<option value="">{{ text_no_model }}</option>');
+                    }
+                },
+                error: function() {
+                    alert('Server is down');
+                }
+            });
+        }
+
+        $(document).on("change", "#filter_auto_model", function() {
+            var model_id = $(this).val();
+
+            {% if show_year %}
+                yearWrap.empty();
+
+                if (model_id) {
+                    getYears(model_id);
+                    button.attr('disabled', false);
+                } else {
+                    button.attr('disabled', true);
+                }
+            {% else %}
+                modif.empty();
+
+                if (model_id) {
+                    getModifies(model_id);
+                    button.attr('disabled', false);
+                } else {
+                    button.attr('disabled', true);
+                }
+            {% endif %}
+        });
+
+        function getYears(model_id)
+        {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: 'index.php?route=extension/module/filter_auto/years',
+                data: {
+                    model_id: model_id,
+                    cat_id: category_id
+                },
+                success: function (data) {
+                    if (data.years) {
+
+                        let html = `<select class="form-control selectpicker" name="years" id="filter_auto_year" data-live-search="true">
+                            <option value="">{{ text_no_year }}</option>`;
+
+
+                        $.each(data.years, function(key, value) {
+                            let current = (current_year == value) ? 'selected' : '';
+
+                            html += '<option value="' + value + '" ' + current + '>' + value + '</option>';
+                        });
+
+                        html += '</select>';
+                        yearWrap.append(html);
+                        yearWrap.attr('disabled', false);
+                        $('.selectpicker').select2();
+                    }
+                },
+                error: function() {
+                    alert('Server is down');
+                }
+            });
+        }
+
+        $(document).on("change", "#filter_auto_year", function() {
+            var model_id = $('#filter_auto_model').val();
+            var year = $(this).val();
+
+            modif.empty();
+
+            if (model_id && year) {
+                getModifies(model_id, year);
+            }
+
+            button.attr('disabled', true);
+        });
+
+        function getModifies(model_id, year) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: 'index.php?route=extension/module/filter_auto/modifies',
+                data: {
+                    model_id: model_id,
+                    year: year,
+                    cat_id: category_id
+                },
+                success: function(data) {
+
+                    if (data.num_fileds == 3) {
+
+                        if (data.modifies) {
+
+                            var html = '<div class="form-group"><select class="form-control selectpicker" name="modif" id="filter_auto_modif" data-live-search="true"><option value="0">{{ text_no_modif }}</option>';
+
+                            $.each(data.modifies, function(key, value) {
+                                var current = (current_modify == value.modif_id) ? 'selected' : '';
+
+                                if (value.modif_id == 'all') {
+                                    html += '<option value="' + value.modif_id + '" ' + current + '>{{ text_all_model }}</option>';
+                                } else {
+
+                                    if (value.modif_name != 'all') {
+                                        html += '<option value="' + value.modif_id + '" ' + current + '>' + value.modif_name + '</option>';
+                                    }
+                                }
+                            });
+
+                            html += '</select></div>';
+
+                            $('.modif_form_wrap').addClass('col-sm-3').append(html);
+                            $('.selectpicker').select2();
+
+                            button.attr('disabled', false);
+                        }
+                    }
+                },
+                error: function() {
+                    alert('Server is down');
+                }
+            });
+        }
+
+        $('#filter_auto_find').on('click', function() {
+            var modif_id = $('#filter_auto_modif').val();
+            var model_id = $('#filter_auto_model').val();
+            var brand_id = $('#filter_auto_brand').val();
+            var year = $('#filter_auto_year').val();
+
+            if (model_id) {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: 'index.php?route=extension/module/filter_auto/filter',
+                    data: {
+                        brand_id: brand_id,
+                        model_id: model_id,
+                        modif_id: modif_id,
+                        year: year,
+                        path: {% if auto_path_category %} '{{ auto_path_category }}' {% else %} '' {% endif %},
+                        search: JSON.parse('{{ auto_search }}'),
+                        sort: {% if filter_data.sort %} {{ filter_data.sort }} {% else %} '' {% endif %},
+                        order: {% if filter_data.order %} {{ filter_data.order }} {% else %} '' {% endif %},
+                        limit: {% if filter_data.limit %} {{ filter_data.limit }} {% else %} '' {% endif %}
+                    },
+                    beforeSend: function() {
+                        $('#filter_auto_find').html('<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i>');
+                    },
+                    success: function(data) {
+
+                        if (data.filter) {
+                            location = data.filter;
+                        }
+                    },
+                    error: function() {
+                        alert('Server is down');
+                    }
+                });
+            }
+        });
+
+    })();
+
+    function goFilterManuf(elem) {
+        let filter_m = [];
+
+        $('input[name^="filter_manufacturer"]:checked').each(function(element) {
+            filter_m.push(this.value);
+        });
+        postData('manuf', filter_m.join(','));
+    }
+
+    function goFilterAttr(elem) {
+        let filter_a = [];
+
+        $('input[name^="filter_attribute"]:checked').each(function(element) {
+            filter_a.push(this.value);
+        });
+        postData('attribute', filter_a.join(','));
+    }
+
+    function postData(param, value) {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: 'index.php?route=extension/module/filter_auto/location',
+            data: {
+                param: param,
+                value: value,
+                path: '{{ path }}',
+                filter: JSON.parse('{{ filter_data|json_encode() }}')
+            },
+            success: function(data) {
+
+                if (data.filter) {
+                    goRedirect(data.filter);
+                }
+            },
+            error: function() {
+                alert('Server is down');
+            }
+        });
+    }
+
+    $('.clear-filter').on('click', function(e) {
+        e.preventDefault();
+        let categoryUrl = '{{ category_url }}';
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: 'index.php?route=extension/module/filter_auto/clear',
+            data: {
+                category: categoryUrl
+            },
+            success: function(data) {
+                if (!categoryUrl) {
+                    location.reload();
+                }
+
+                if (data.redirect) {
+                    goRedirect(data.redirect);
+                }
+            },
+            error: function() {
+                alert('Server is down');
+            }
+        });
+    });
+
+    function goRedirect(url) {
+        location = url;
+    }
+
+    function formatState (state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var icon = $(state.element).data('img');
+        var $state;
+
+        if (icon) {
+            $state = $('<span><img src="' + icon + '"/> ' + state.text + '</span>');
+        } else {
+            $state = $('<span>' + state.text + '</span>');
+        }
+        return $state;
+    };
+
+    $('.selectpickerImg').select2({
+        templateResult: formatState
+    });
+
+    $(document).ready(function() {
+        $('.selectpicker').select2();
+    });
+</script>
+{% endif %}

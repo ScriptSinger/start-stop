@@ -1,0 +1,71 @@
+# 1. Чтобы использовать URL Alias, вам нужно запустить apache с включенным mod_rewrite.
+
+# 2. В вашем каталоге opencart переименуйте htaccess.txt в .htaccess.
+
+# По любым вопросам поддержки, пожалуйста, посетите: https://www.opencart.com/
+
+Options +FollowSymlinks
+
+# Запрет выдачи листинга пустого каталога
+Options -Indexes
+
+# Запретить прямой доступ к файлам
+<FilesMatch "(?i)((\.tpl|.twig|\.ini|\.log|(?<!robots)\.txt))">
+ Require all denied
+## For apache 2.2 and older, replace "Require all denied" with these two lines :
+# Order deny,allow
+# Deny from all
+</FilesMatch>
+
+# Настройки SEO URL
+RewriteEngine On
+
+RewriteBase /
+# Если ваша установка opencart инсталлируется не в главной директории, убедитесь, что в вашей папке она работает, т.е. / becomes /shop/
+
+# Редирект с www на ssl без www
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Редирект с ssl без www на ssl
+# Локальная разработка: Docker слушает HTTP на localhost:8080.
+# RewriteCond %{HTTPS} off
+# RewriteCond %{HTTP:X-Forwarded-Proto} !https
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{QUERY_STRING} ^(.+)/$
+RewriteRule ^(.*)/$ /$1/?%1 [R=301,L]
+
+RewriteBase /
+RewriteRule ^googlebase.xml$ index.php?route=extension/feed/google_base [L]
+RewriteRule ^system/storage/(.*) index.php?route=error/not_found [L]
+RewriteRule ^system/download/(.*) index.php?route=error/not_found [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !.*\.(ico|gif|jpg|jpeg|png|js|css)
+RewriteRule ^([^?]*) index.php?_route_=$1 [L,QSA]
+
+### Дополнительные настройки, которые могут потребоваться для некоторых серверов
+### Раскомментируйте команды, удалив знак # перед ним.
+### Если вы получили «Внутреннюю ошибку сервера 500» после включения любой из следующих настроек, восстановите #, так как это означает, что ваш хост не поддерживает директиву.
+
+# 1. Если ваша корзина позволяет вам добавлять только один элемент за раз, возможно, что register_globals включен. Эта директива поможет его:
+# php_flag register_globals off
+
+# 2. Если в вашей корзине включены магические кавычки, это может помочь отключить их:
+# php_flag magic_quotes_gpc Off
+
+# 3. Установите максимальный размер загружаемого файла. Большинство хостов ограничивают это и не позволяют переопределить его, но вы можете попробовать
+# php_value upload_max_filesize 999M
+
+# 4. Установите максимальный размер отправляемых данных. Раскомментируйте эту строку, если вы получаете ошибки, когда формы не сохраняют все поля
+# php_value post_max_size 999M
+
+# 5. Установите какое максимальное время может занять сценарий. Раскомментируйте эту строку, если у вас много товаров или вы получаете ошибки, когда формы не сохраняют все поля
+# php_value max_execution_time 200
+
+# 6. Установите максимальное время для получения ввода. Раскомментируйте эту строку, если у вас много товаров или вы получаете ошибки, когда формы не сохраняют все поля
+# php_value max_input_time 200
+
+# 7. Отключить ограничения open_basedir
+# php_admin_value open_basedir none

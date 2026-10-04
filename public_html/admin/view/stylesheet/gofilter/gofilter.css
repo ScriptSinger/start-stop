@@ -1,0 +1,345 @@
+ul.nav.nav-tabs {
+    background: #ffffff none repeat scroll 0 0;
+    display: block;
+	margin-bottom: 0;
+}
+ul.nav.nav-tabs.left {
+	border-right: 0 none;
+	margin-right: -15px;
+	position: relative;
+	z-index: 1;
+}
+.nav-tabs > li {
+    float: left;
+	margin-bottom: -2px;
+}
+.nav-tabs.left > li {
+	width: 100%;
+}
+.nav-tabs.left > li.active > a {
+	border-left: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
+	border-right: 0 none;
+	background: #ffffff;
+}
+.nav-tabs.block > li.active {
+	margin-bottom: -1px;
+}
+.nav-tabs.block > li > a {
+	font-size: 14px;
+	border-bottom: 0 none;
+	color: #666666;
+}
+.nav-tabs.block > li > a > .fa {
+	color: #333333;
+}
+.nav-tabs.block > li > a {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+.nav-tabs.block > li.active > a {
+	background: #ffffff;
+    border-left: 1px solid #aaaaaa;
+	border-top: 1px solid #aaaaaa;
+	border-right: 1px solid #aaaaaa;
+	border-bottom: 0 none;
+	font-weight: normal;
+	margin-right: 0;
+}
+.nav-tabs.left > li.active > a,
+.nav-tabs.block > li.active > a {
+	outline: 0 none;
+}
+.nav-tabs.block > li > a:focus {
+	outline: 0 none;
+}
+.nav-tabs > li + li {
+	
+}
+.nav-tabs > li.active + li {
+	border-top: 0 none;
+}
+.nav-tabs > li > a {
+    border-radius: 0 0 0 0;
+    color: #666;
+}
+.nav-tabs > li > a {
+    margin-right: -1px;
+}
+ul.nav.nav-tabs.left  > li.active > a {
+    margin-right: -1px;
+}
+.nav-tabs {
+	border-bottom: 0 none;
+}
+.name_block {
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+.status_block {
+	padding-top: 8px;
+}
+.status_block > div {
+	margin-bottom: 0px;
+}
+fieldset.border {
+	border: 1px solid #aaaaaa;
+	padding: 10px 0;
+}
+.block_checked_filter {
+	border: 1px solid #dddddd;
+}
+.block_checked_filter + .block_checked_filter {
+	margin-top: -1px;
+}
+#cont {
+    float: left;
+    height: 28px;
+    padding: 2px 0;
+    text-align: center;
+    width: auto;
+	border-radius: 0;
+}
+.plus,
+.minus {
+	border: 1px solid #ccc;
+    float: left;
+    height: 28px;
+    line-height: 25px;
+    text-align: center;
+    width: 24px;
+	cursor: pointer;
+}
+.plus .fa,
+.minus .fa {
+	font-size: 10px;
+}
+.plus {
+	top: 0px;
+	margin-left: -1px;
+	border-radius: 0 3px 3px 0;
+}
+.minus {
+	border-top: 1px solid #ccc;
+    bottom: 0;
+	margin-right: -1px;
+	border-radius: 3px 0 0 3px;
+}
+.form-select {
+	border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 7px;
+    margin-top: 7px;
+    padding: 4px 10px;
+    width: 80%;
+}
+.border-left {
+	border-left: 1px solid #dddddd;
+}
+.border {
+	border: 1px solid #dddddd;
+}
+.checkbox-group-overflow {
+	border: 1px solid #dddddd;
+	max-height: 215px;
+	overflow: auto;
+}
+.checkbox-group-overflow .checkbox input {
+	margin-left: 0;
+    position: relative;
+    top: 2px;
+}
+.checkbox-group-overflow .checkbox label {
+	padding-left: 5px;
+}
+.table {
+	margin-bottom: 0;
+}
+.block-information .form-control {
+    height: auto;
+}
+.block-information label {
+	font-weight: normal;
+}
+.block-information .fa {
+	font-size: 14px;
+}
+.tab-block-display .fa {
+	margin-left: -5px;
+    padding: 3px;
+}
+.tab-block-display .delete-icon {
+	position: absolute;
+    right: 15px;
+    top: 0px;
+	cursor: pointer;
+	display: none;
+}
+.tab-block-display .fa.fa-close {
+	color: red;
+}
+.tab-block-display .fa.fa-minus-circle {
+	position: absolute;
+	right: 10px;
+	cursor: pointer;
+	top: 7px;
+}
+.tab-block-display .save-icon .fa {
+	background: green;
+	color: #ffffff;
+	border-radius: 2px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+.tab-block-display .layout-icon .fa {
+	color: #666666;
+}
+.tab-block-display span {
+	display: block;
+}
+.tab-block-display .fa.fa-paperclip {
+	font-size: 15px;
+}
+.style_text {
+	height: 30px;
+	line-height: 1.42857;
+    padding: 0 13px;
+}
+span .style_text {
+	padding: 0 0 0 13px;
+	line-height: 30px;
+}
+.nav-tabs.left > li span .style_text {
+	border: 1px solid #ffffff;
+	border-radius: 3px;
+}
+.nav-tabs.left > li:hover span .style_text {
+	border: 1px solid #eeeeee;
+}
+.nav-tabs.left > li.active:hover span .style_text,
+.nav-tabs.left > li.active span .style_text:hover,
+.nav-tabs.left > li.active span .style_text.form-control:focus {
+	border: 1px dashed #999999;
+}
+.row-group-left {
+	margin-left: -15px;
+}
+.row-group-right {
+	margin-right: -15px;
+}
+.tab-block-display span input#edit_name_layout,
+.tab-block-display span.save-icon {
+	display: none;
+}
+input#edit_name_layout {
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+.form-horizontal .control-label {
+	text-align: left;
+}
+.form-horizontal .form-group {
+	margin-left: 0px;
+    margin-right: 0px;
+}
+.margin-bottom {
+	margin-bottom: 20px;
+}
+.block_checked_filter.bg-gray {
+	background-color: #eeeeee;
+	border-radius: 3px 3px 0 0;
+}
+.block_checked_filter:nth-of-type(2n) {
+    background-color: #f9f9f9;
+}
+.form-control.px {
+	max-width: 80px;
+}
+.text_after_form {
+	line-height: 35px;
+}
+.tab-additional-setting label {
+	font-weight: normal;
+}
+.block_checked_filter .control-label {
+	padding-top: 0;
+}
+.collapsing .fa {
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 18px;
+}
+.collapsing .fa.fa-mobile {
+	font-size: 17px;
+}
+.collapsing .coll {
+	background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    line-height: 24px;
+    margin-bottom: 0;
+    text-align: center;
+    width: 29px;
+	top: 1px;
+	position: relative;
+	cursor: pointer;
+	margin-left: 25px;
+}
+.collapsing + .collapsing .coll {
+	margin-left: 5px;
+}
+.collapsing input {
+	display: none;
+}
+.collapsing input[type="checkbox"]:checked + .coll {
+	border-color: #337ab7;
+	background: #337ab7;
+	color: #ffffff;
+}
+.block_category {
+	display: none;
+}
+.remove_seo_keyword {
+	font-size: 15px;
+}
+.remove_seo_keyword .fa {
+	border-radius: 4px;
+    padding: 7px 9px;
+}
+.load {
+	
+}
+.green-bg {
+	background: green;
+	border-color: green;
+}
+.load .fa.fa-spinner.faa-spin.animated {
+	display: inline-block;
+    font-size: 18px;
+    margin-right: 13px;
+	animation: 1s linear 0s normal none infinite running rot;
+	-webkit-animation: 1s linear 0s normal none infinite running rot;
+}
+.load .fa.fa-spinner.faa-spin.animated {
+    animation-name: spin;
+    animation-duration: 600ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    z-index: 100;
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+.form-control.px2 {
+    max-width: 160px;
+}

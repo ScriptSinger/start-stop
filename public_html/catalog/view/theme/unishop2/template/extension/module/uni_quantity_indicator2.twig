@@ -1,0 +1,21 @@
+{% if product.quantity_indicator %}
+	<div class="qty-indicator" data-text="{{ text_stock_indicator }}">
+		{% if product.quantity_indicator.type == 1 %}
+			<div class="qty-indicator__bar" data-toggle="tooltip" title="{{ product.quantity_indicator['title'] }}">
+				<div class="qty-indicator__percent p-{{ product.quantity_indicator['items'] }}" style="width:{{ product.quantity_indicator['width'] }}%"></div>
+			</div>
+	
+	{% elseif isbn >= 5 and quantity == 0 %}
+	
+	{% if wday == 6 or 0  %}
+	<span style="color:green;">На складе (Доставка через 2 дня)</span>
+	{% else %}
+	<span style="color:green;">На складе (Доставка завтра)</span>
+	{% endif %}
+		{% else %}
+			<div class="qty-indicator__text t-{{ product.quantity_indicator['items'] }}">
+				{{ product.quantity_indicator['title'] }}
+			</div>
+	    {% endif %}
+	</div>
+{% endif %}

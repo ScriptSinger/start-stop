@@ -1,0 +1,830 @@
+#home_filter {
+	margin-bottom: 15px;
+}
+#home_filter .filter {
+	margin-top: 0;
+}
+#home_filter + ul.breadcrumb {
+	display: none;
+}
+.filter #option_filter h3 {
+	font-size: 13px;
+    margin: 10px 0;
+}
+.filter #option_filter {
+	color: #000000;
+}
+.filter #option_filter .checkbox,
+.filter #option_filter .radio {
+    display: block;
+    margin: 0 0 8px 0;
+    padding-left: 0;
+    text-align: left;
+	position: relative;
+}
+.filter .checkbox-group .checkbox a {
+	font-size: 15px;
+	position: relative;
+	display: block;
+}
+.filter .checkbox-group .checkbox label,
+.filter .checkbox-group .radio label  {
+    padding: 0 0 0 25px;
+	display: block;
+	position: relative;
+}
+.filter .checkbox-group .checkbox.reding label,
+.filter .checkbox-group .radio.reding label {
+	padding: 0 25px;
+}
+.filter .checkbox-group-price .checkbox label,
+.filter .checkbox-group-price .radio label {
+	line-height: 24px;
+    padding-left: 7px;
+}
+.filter .checkbox-group input {
+	margin-left: 0;
+}
+.filter .checkbox-group input:disabled + label {
+    cursor: not-allowed;
+	opacity: 0.7;
+}
+.filter .checkbox-group .checkbox label:before {
+	border-radius: 3px;
+}
+.filter .checkbox-group .radio label:before {
+	border-radius: 10px;
+}
+.filter .filter_total:after {
+	content: ''; 
+    position: absolute;
+    left: -8px;
+	bottom: 6px;
+	border: 4px solid transparent;
+	border-right: 4px solid #34982E;
+}
+.filter .filter_total {
+	background: #34982E;
+	border-radius: 2px;
+	color: #ffffff;
+    min-width: 18px;
+    padding: 1px 4px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+	top: 0;
+}
+.filter input:disabled + label .filter_total,
+.filter .filter_total.filter_gray {
+	background: #A6A6A6;
+	display: none;
+}
+.filter input:disabled + label .filter_total:after,
+.filter .filter_total.filter_gray:after {
+	border-right: 4px solid #A6A6A6;
+}
+.filter .filter_total.gray {
+	background: gray;
+}
+.filter .filter_total.gray:after {
+	border-right: 4px solid gray;
+}
+#option_filter {
+	
+}
+#option_filter hr {
+	border-width: 0;
+}
+#option_filter  .checkbox-group h4,
+#option_filter  .checkbox-group-price h4 {
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    font-family: Arial;
+    font-size: 13px;
+    margin-bottom: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
+	margin-top: -1px;
+}
+#option_filter .border-red h4 {
+	padding-left: 0;
+	padding-right: 0;
+}
+#option_filter .no_drop {
+	display: none;
+}
+#option_filter .checkbox-group .fa-close {
+	cursor: pointer;
+    position: absolute;
+    right: 3px;
+}
+#option_filter .checkbox-group-overflow {
+	max-height: 215px;
+}
+#option_filter .checkbox-group .row + .checkbox-group-overflow,
+#option_filter .checkbox-group .row + .select-group {
+	margin-top: 10px;
+}
+#option_filter .checkbox-group-overflow.row-group-right {
+	margin-right: -12px;
+}
+#option_filter .scroll-content.checkbox-group-overflow {
+	overflow: scroll !important;
+}
+#option_filter .select-group select option {
+	padding: 7px 0 7px 10px;
+}
+#option_filter .select-group select option:disabled {
+	opacity: 0.5;
+}
+#option_filter .select-group .form-control:focus {
+    border-color: #666666;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0) inset, 0 0 0 rgba(102, 175, 233, 0);
+    outline: 0 none;
+}
+#option_filter .select-group .form-control:focus + .input-group-btn > .btn {
+	border-color: #666666;
+}
+.bg-gray {
+	background: #f9f9f9;
+}
+.pupop-filter {
+	background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    left: 100%;
+    line-height: 32px;
+    margin-left: 15px;
+    min-width: 330px;
+    padding: 7px 10px;
+    position: absolute;
+    top: -7px;
+    z-index: 999;
+}
+
+.pupop-filter a + a,
+.pupop-filter span {
+	margin-right: 15px;
+}
+
+.filter #option_filter > .options_container {
+	margin-bottom: 10px;
+}
+.filter .options_container .filter_total {
+	display: none;
+}
+.filter .text_more_group {
+	padding: 0 0 10px;
+}
+.filter .text_more_group a {
+	display: block;
+	cursor: pointer;
+}
+#formCost_popup + .pupop-filter {
+	top: auto;
+}
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@-webkit-keyframes bounceInLeft {
+  from, 60%, 75%, 90%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-3000px, 0, 0);
+    transform: translate3d(-3000px, 0, 0);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(25px, 0, 0);
+    transform: translate3d(25px, 0, 0);
+  }
+
+  75% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  90% {
+    -webkit-transform: translate3d(5px, 0, 0);
+    transform: translate3d(5px, 0, 0);
+  }
+
+  to {
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+.bounceInLeft {
+  -webkit-animation-name: bounceInLeft;
+  animation-name: bounceInLeft;
+}
+.filter_container a {
+	background: #f0f0f0;
+    color: #3f454b;
+    display: inline-block;
+    font-size: 13px;
+    margin: 0 10px 10px 0;
+    padding: 4px 17px 4px 10px;
+    position: relative;
+}
+.filter_container .fa.pull-right {
+	color: #3f454b;
+    font-size: 9px;
+    position: absolute;
+    right: 5px;
+    top: 8px;
+}
+.input-group .formCost input.form-control {
+    background: none;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    color: #434343;
+    float: left;
+    font-size: 14px;
+    height: 28px;
+    padding-right: 10px;
+    text-align: right;
+    top: -2px;
+}
+.input-group .formCost input.form-control {
+	width: 55px;
+}
+.filter_cloud_mobile .formCost input.form-control {
+	width: 100px;
+}
+.input-group .formCost input.form-control:not(:first-child):not(:last-child) {
+	border-radius: 3px;
+}
+.formCost label {
+	margin-right: 7px;
+}
+/*! jQuery-ui-Slider-Pips - v1.11.4 - 2016-09-04
+* Copyright (c) 2016 Simon Goellner <simey.me@gmail.com>; Licensed MIT */
+
+/* HORIZONTAL */
+/* increase bottom margin to fit the pips */
+.ui-slider-horizontal.ui-slider-pips {
+  margin-bottom: 1.4em;
+}
+
+/* default hide the labels and pips that arnt visible */
+/* we just use css to hide incase we want to show certain */
+/* labels/pips individually later */
+.ui-slider-pips .ui-slider-label,
+.ui-slider-pips .ui-slider-pip-hide {
+  display: none;
+}
+
+/* now we show any labels that we've set to show in the options */
+.ui-slider-pips .ui-slider-pip-label .ui-slider-label {
+  display: block;
+}
+
+/* PIP/LABEL WRAPPER */
+/* position each pip absolutely just below the default slider */
+/* and also prevent accidental selection */
+.ui-slider-pips .ui-slider-pip {
+  width: 2em;
+  height: 1em;
+  line-height: 1em;
+  position: absolute;
+  font-size: 0.8em;
+  color: #999;
+  overflow: visible;
+  text-align: center;
+  top: 20px;
+  left: 20px;
+  margin-left: -1em;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ui-state-disabled.ui-slider-pips .ui-slider-pip {
+  cursor: default;
+}
+
+/* little pip/line position & size */
+.ui-slider-pips .ui-slider-line {
+  background: #999;
+  width: 1px;
+  height: 3px;
+  position: absolute;
+  left: 50%;
+}
+
+/* the text label postion & size */
+/* it overflows so no need for width to be accurate */
+.ui-slider-pips .ui-slider-label {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  margin-left: -1em;
+  width: 2em;
+}
+
+/* make it easy to see when we hover a label */
+.ui-slider-pips:not(.ui-slider-disabled) .ui-slider-pip:hover .ui-slider-label {
+  color: black;
+  font-weight: bold;
+}
+
+/* VERTICAL */
+/* vertical slider needs right-margin, not bottom */
+.ui-slider-vertical.ui-slider-pips {
+  margin-bottom: 1em;
+  margin-right: 2em;
+}
+
+/* align vertical pips left and to right of the slider */
+.ui-slider-vertical.ui-slider-pips .ui-slider-pip {
+  text-align: left;
+  top: auto;
+  left: 20px;
+  margin-left: 0;
+  margin-bottom: -0.5em;
+}
+
+/* vertical line/pip should be horizontal instead */
+.ui-slider-vertical.ui-slider-pips .ui-slider-line {
+  width: 3px;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+
+.ui-slider-vertical.ui-slider-pips .ui-slider-label {
+  top: 50%;
+  left: 0.5em;
+  margin-left: 0;
+  margin-top: -0.5em;
+  width: 2em;
+}
+
+/* FLOATING HORIZTONAL TOOLTIPS */
+/* remove the godawful looking focus outline on handle and float */
+.ui-slider-float .ui-slider-handle:focus,
+.ui-slider-float .ui-slider-handle.ui-state-focus .ui-slider-tip-label,
+.ui-slider-float .ui-slider-handle:focus .ui-slider-tip,
+.ui-slider-float .ui-slider-handle.ui-state-focus .ui-slider-tip-label,
+.ui-slider-float .ui-slider-handle:focus .ui-slider-tip-label
+.ui-slider-float .ui-slider-handle.ui-state-focus .ui-slider-tip-label {
+  outline: none;
+}
+
+/* style tooltips on handles and on labels */
+/* also has a nice transition */
+.ui-slider-float .ui-slider-tip,
+.ui-slider-float .ui-slider-tip-label {
+  position: absolute;
+  visibility: hidden;
+  top: -40px;
+  display: block;
+  width: 34px;
+  margin-left: -18px;
+  left: 50%;
+  height: 20px;
+  line-height: 20px;
+  background: white;
+  border-radius: 3px;
+  border: 1px solid #888;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0;
+  color: #333;
+  -webkit-transition-property: opacity, top, visibility;
+  transition-property: opacity, top, visibility;
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+  -webkit-transition-duration: 200ms, 200ms, 0ms;
+  transition-duration: 200ms, 200ms, 0ms;
+  -webkit-transition-delay: 0ms, 0ms, 200ms;
+  transition-delay: 0ms, 0ms, 200ms;
+}
+
+/* show the tooltip on hover or focus */
+/* also switch transition delay around */
+.ui-slider-float .ui-slider-handle:hover .ui-slider-tip,
+.ui-slider-float .ui-slider-handle.ui-state-hover .ui-slider-tip,
+.ui-slider-float .ui-slider-handle:focus .ui-slider-tip,
+.ui-slider-float .ui-slider-handle.ui-state-focus .ui-slider-tip,
+.ui-slider-float .ui-slider-handle.ui-state-active .ui-slider-tip,
+.ui-slider-float .ui-slider-pip:hover .ui-slider-tip-label {
+  opacity: 1;
+  top: -30px;
+  visibility: visible;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  -webkit-transition-delay: 200ms, 200ms, 0ms;
+  transition-delay: 200ms, 200ms, 0ms;
+}
+
+/* put label tooltips below slider */
+.ui-slider-float .ui-slider-pip .ui-slider-tip-label {
+  top: 42px;
+}
+
+.ui-slider-float .ui-slider-pip:hover .ui-slider-tip-label {
+  top: 32px;
+  font-weight: normal;
+}
+
+/* give the tooltip a css triangle arrow */
+.ui-slider-float .ui-slider-tip:after,
+.ui-slider-float .ui-slider-pip .ui-slider-tip-label:after {
+  content: " ";
+  width: 0;
+  height: 0;
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-top-color: white;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  margin-left: -5px;
+}
+
+/* put a 1px border on the tooltip arrow to match tooltip border */
+.ui-slider-float .ui-slider-tip:before,
+.ui-slider-float .ui-slider-pip .ui-slider-tip-label:before {
+  content: " ";
+  width: 0;
+  height: 0;
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-top-color: #888;
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  margin-left: -5px;
+}
+
+/* switch the arrow to top on labels */
+.ui-slider-float .ui-slider-pip .ui-slider-tip-label:after {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-bottom-color: white;
+  top: -10px;
+}
+
+.ui-slider-float .ui-slider-pip .ui-slider-tip-label:before {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-bottom-color: #888;
+  top: -11px;
+}
+
+/* FLOATING VERTICAL TOOLTIPS */
+/* tooltip floats to left of handle */
+.ui-slider-vertical.ui-slider-float .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-tip-label {
+  top: 50%;
+  margin-top: -11px;
+  width: 34px;
+  margin-left: 0px;
+  left: -60px;
+  color: #333;
+  -webkit-transition-duration: 200ms, 200ms, 0;
+  transition-duration: 200ms, 200ms, 0;
+  -webkit-transition-property: opacity, left, visibility;
+  transition-property: opacity, left, visibility;
+  -webkit-transition-delay: 0, 0, 200ms;
+  transition-delay: 0, 0, 200ms;
+}
+
+.ui-slider-vertical.ui-slider-float .ui-slider-handle:hover .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-handle.ui-state-hover .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-handle:focus .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-handle.ui-state-focus .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-handle.ui-state-active .ui-slider-tip,
+.ui-slider-vertical.ui-slider-float .ui-slider-pip:hover .ui-slider-tip-label {
+  top: 50%;
+  margin-top: -11px;
+  left: -50px;
+}
+
+/* put label tooltips to right of slider */
+.ui-slider-vertical.ui-slider-float .ui-slider-pip .ui-slider-tip-label {
+  left: 47px;
+}
+
+.ui-slider-vertical.ui-slider-float .ui-slider-pip:hover .ui-slider-tip-label {
+  left: 37px;
+}
+
+/* give the tooltip a css triangle arrow */
+.ui-slider-vertical.ui-slider-float .ui-slider-tip:after,
+.ui-slider-vertical.ui-slider-float .ui-slider-pip .ui-slider-tip-label:after {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-left-color: white;
+  border-top-color: transparent;
+  position: absolute;
+  bottom: 50%;
+  margin-bottom: -5px;
+  right: -10px;
+  margin-left: 0;
+  top: auto;
+  left: auto;
+}
+
+.ui-slider-vertical.ui-slider-float .ui-slider-tip:before,
+.ui-slider-vertical.ui-slider-float .ui-slider-pip .ui-slider-tip-label:before {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-left-color: #888;
+  border-top-color: transparent;
+  position: absolute;
+  bottom: 50%;
+  margin-bottom: -5px;
+  right: -11px;
+  margin-left: 0;
+  top: auto;
+  left: auto;
+}
+
+.ui-slider-vertical.ui-slider-float .ui-slider-pip .ui-slider-tip-label:after {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-right-color: white;
+  right: auto;
+  left: -10px;
+}
+
+.ui-slider-vertical.ui-slider-float .ui-slider-pip .ui-slider-tip-label:before {
+  border: 5px solid rgba(255, 255, 255, 0);
+  border-right-color: #888;
+  right: auto;
+  left: -11px;
+}
+
+/* SELECTED STATES */
+/* Comment out this chuck of code if you don't want to have
+        the new label colours shown */
+.ui-slider-pips [class*=ui-slider-pip-initial] {
+  font-weight: bold;
+  color: #14CA82;
+}
+
+.ui-slider-pips .ui-slider-pip-initial-2 {
+  color: #1897C9;
+}
+
+.ui-slider-pips [class*=ui-slider-pip-selected] {
+  font-weight: bold;
+  color: #FF7A00;
+}
+
+.ui-slider-pips .ui-slider-pip-inrange {
+  color: black;
+}
+
+.ui-slider-pips .ui-slider-pip-selected-2 {
+  color: #E70081;
+}
+
+.ui-slider-pips [class*=ui-slider-pip-selected] .ui-slider-line,
+.ui-slider-pips .ui-slider-pip-inrange .ui-slider-line {
+  background: black;
+}
+.filter .text_more_group {
+	padding-top: 10px;
+}
+.filter .border-red {
+	border: 1px solid #c54448;
+}
+.filter #keywords_filter {
+	margin-bottom: 10px;
+}
+.filter #keywords_filter.input-group .form-control {
+	border-right: 0 none;
+	min-height: auto;
+	height: 30px;
+}
+.filter #keywords_filter.input-group .input-group-btn > .btn {
+	background: #ffffff;
+    height: 30px;
+    padding-right: 12px;
+	padding-left: 12px;
+	border-top: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 0 none;
+}
+.filter .form-control {
+	border: 1px solid #999999;
+}
+.filter .form-control,
+.filter #keywords_filter.input-group .input-group-btn > .btn {
+	padding-top: 4.5px;
+	padding-bottom: 4.5px;
+	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s 
+}
+.filter #keywords_filter.input-group .input-group-btn > .btn:focus {
+	outline: 0 none;
+}
+#keywords_filter .form-control::-moz-placeholder {
+	font-size: 13px;
+}
+#keywords_filter .form-control::-webkit-input-placeholder{
+	font-size: 13px;
+}
+#keywords_filter .form-control:-moz-placeholder{
+	font-size: 13px;
+}
+#keywords_filter .form-control:-ms-input-placeholder{
+	font-size: 13px;
+}
+#keywords_filter .form-control.red_filter::-moz-placeholder {
+	color: #c54448;
+}
+#keywords_filter .form-control.red_filter::-webkit-input-placeholder{
+	color: #c54448;
+}
+#keywords_filter .form-control.red_filter:-moz-placeholder{
+	color: #c54448;
+}
+#keywords_filter .form-control.red_filter:-ms-input-placeholder{
+	color: #c54448;
+}
+#keywords_filter .form-control:focus::-moz-placeholder {
+	color: #999999;
+}
+#keywords_filter .form-control:focus::-webkit-input-placeholder{
+	color: #999999;
+}
+#keywords_filter .form-control:focus:-moz-placeholder{
+	color: #999999;
+}
+#keywords_filter .form-control:focus:-ms-input-placeholder{
+	color: #999999;
+}
+.filter .formCost.checkbox  {
+	margin-bottom: 30px;
+}
+#option_filter .options_container .rating .fa-star {
+	font-size: 13px;
+}
+#option_filter .options_container .rating .fa-star-o {
+	font-size: 12px;
+}
+#option_filter .options_container .rating .fa-stack {
+    font-size: 6px;
+}
+#option_filter .container_counter {
+	margin-bottom: 15px;
+}
+#option_filter .container_count .clearfix {
+	margin-bottom: 10px;
+}
+.filter .row-right {
+	margin-right: -15px;
+}
+
+a.not-active-link {
+   pointer-events: none;
+   cursor: default;
+   opacity: 0.7;
+   color: gray;
+   display: none;
+}
+.filter .checkbox.none, .filter .radio.none {
+	display: none;
+}
+a.category_filter input {
+	display: none;
+}
+.filter .checkbox-group .checkbox a.category_filter label,
+.filter .checkbox-group .radio a.category_filter label {
+	padding-left: 0;
+}
+.category_filter .fa-check {
+	margin-top: 3px;
+}
+.load {
+	opacity: 0.5;
+}
+
+@media screen and (max-width: 768px) {
+    head {
+        max-width: 768px;
+    }
+}
+.go_filter_mobile_block {
+	background: #ffffff;
+    box-shadow: 0 4px 4px #666;
+	width: 300px;
+	position: absolute;
+	top: 145px;
+	left: -300px;
+	z-index: 9999;
+}
+.go_filter_mobile_block .filter #option_filter .formCost,
+.go_filter_mobile_block .filter #option_filter .select-group {
+	margin: 10px 0 15px 0;
+}
+.go_filter_mobile_block .btn-border {
+	border-radius: 0 0 4px 0;
+}
+.icon_mobile_filter {
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+.icon_mobile_filter.btn.btn-primary {
+	border-radius: 3px;
+    padding: 10px 15px;
+    width: 100%;
+	text-transform: uppercase;
+}
+.icon_mobile_filter .wheel {
+    animation-name: spin;
+    animation-duration: 600ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.filter #option_filter .none {
+	display: none;
+}
+#home_filter .btn-border {
+	border: 1px solid #dddddd;
+}
+.reset_filter {
+	margin-bottom: 10px;
+	cursor: pointer;#option_filter
+}
+@media (max-width: 767px) {
+  .filter #option_filter .hidden-xs {
+    display: none !important;
+  }
+}
+@media (min-width: 768px) {
+  .filter #option_filter .hidden-sm {
+    display: none !important;
+  }
+}
+.filter_cloud_mobile .content_filt {
+	display: none !important;
+}
+.options.filter_category_page .category_filt {
+	display: none;
+}
+#option_filter .checkbox-group-price + .checkbox-group,
+#option_filter  .checkbox-group + .checkbox-group-price,
+#option_filter  .checkbox-group + .checkbox-group {
+	margin-top: -2px;
+}
+#home_filter .hiden_filter {
+	display: none !important;
+}
+.gofilter_shadow_block {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: #ffffff url('loading.gif') center center no-repeat;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=90);
+	-moz-opacity: 0.9;
+	-khtml-opacity: 0.9;
+	opacity: 0.3;
+	z-index: 2147483647;
+}
+.radio.select_filter {
+	padding-top: 10px;
+}
+.radio.select_filter + .select-group {
+	padding-bottom: 10px;
+}
+.close-mobile-filter {
+	background: #fff;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 0 0 #eee;
+	cursor: pointer;
+    height: 36px;
+    line-height: 35px;
+    position: absolute;
+    right: -33px;
+    text-align: center;
+    top: 0;
+    width: 35px;
+    z-index: 9;
+}
+.filter_hide {
+	display: none;
+}
+.filter .checkbox-group .radio input.filter_hide + label {
+	padding-left: 0;
+}
+.filter .checkbox-group input + input + input {
+	opacity: 0;
+}

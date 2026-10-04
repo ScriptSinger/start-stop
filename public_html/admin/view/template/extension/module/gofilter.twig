@@ -1,0 +1,1537 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-filter" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+		{% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+	{% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-filter" class="form-horizontal">
+		  <div class="clearfix"></div><br />
+		  <ul class="nav nav-tabs block">
+			<li class="active"><a href=".tab-setting" class="tab-block-display" data-toggle="tab"><i class="fa fa-sliders"></i>&nbsp;&nbsp;&nbsp;{{ text_layout }}<span class="new-red">New</span></a></li>
+			<li><a href=".tab-style" data-toggle="tab"><i class="fa fa-pie-chart"></i>&nbsp;&nbsp;&nbsp;{{ text_style }}</a></li>
+			<li><a href=".tab-additional-setting" data-toggle="tab"><i class="fa fa-wrench"></i>&nbsp;&nbsp;&nbsp;{{ text_settings }}<span class="new-red">New</span></a></li>
+			<li><a href=".tab-additional-cache" data-toggle="tab"><i class="fa fa-cloud"></i>&nbsp;&nbsp;&nbsp;{{ text_cache }}</a></li>
+			<li><a href=".tab-additional-seo" data-toggle="tab"><i class="fa fa-gg"></i>&nbsp;&nbsp;&nbsp;{{ text_seo }}</a></li>
+			<li><a href=".tab-additional-scripts" data-toggle="tab"><i class="fa fa-code"></i>&nbsp;&nbsp;&nbsp;{{ text_scripts }}</a></li>
+			<li><a href=".tab-additional-more" data-toggle="tab"><i class="fa fa-database"></i>&nbsp;&nbsp;&nbsp;{{ text_more_filter }}</a></li>
+			<li><a href=".tab-additional-autor" data-toggle="tab"><i class="fa fa-info"></i>&nbsp;&nbsp;&nbsp;{{ version_tab }}<span class="new-red">New</span></a></li>
+			<div class="logotip"></div>
+		  </ul>
+		  <div class="tab-content">
+			
+			<div class="tab-pane active tab-setting">
+				<fieldset class="border">
+					<div class="col-sm-2">
+						<div class="col-sm-12 block-information input-group">
+							<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>
+							<label class="form-control control-label">
+								<span data-toggle="tooltip" title="" data-original-title="{{ text_help_settings_layout }}">{{ text_settings_layout }}</span>
+							</label>
+						</div><br /><br />
+						<ul class="nav nav-tabs left">
+						
+							{% set start = 0 %}{% if layoutss %}{% for schet, value in layoutss %}{% set start = start + 1 %}
+								<li{% if start == 1 %} class="active"{% endif %}><a href=".block_option{{ schet }}" class="tab-block-display" data-toggle="tab" ondrag="return false" ondragdrop="return false" ondragstart="return false">
+									<span class="row">
+										<span class="col-sm-2 listing">
+											<span class="layout-icon"><i class="fa fa-paperclip pull-left"></i></span>
+											<span class="save-icon"><i class="fa fa-save"></i></span>
+										</span>
+										<span class="col-sm-6">
+											<span class="row-group-left">
+												<span class="style_text" id="edit_name_layout">{% if gofilter_layout_name[schet] %}{{ gofilter_layout_name[schet] }}{% else %}layout{{ schet }}{% endif %}</span>
+												<input type="text" id="edit_name_layout" class="style_text form-control" name="gofilter_data[layout{{ schet }}][layout_name]" value="{% if gofilter_layout_name[schet] %} {{ gofilter_layout_name[schet] }}{% else %}layout{{ schet }}{% endif %}" />
+												<span class="delete-icon"><i class="fa fa-close"></i></span>
+											</span>
+										</span>
+										<span class="col-sm-2">
+											<i onclick="remove_layout({{ schet }})" class="fa fa-minus-circle btn-danger btn-xs pull-right" aria-hidden="true"></i></a>
+										</span>
+									</span>
+								</li>
+								<div class="logotip"></div>
+							{% endfor %}
+						{% endif %}
+					    </ul><br /><br />
+						<a class="btn btn-primary" onclick="add_layout();">{{ text_add_layout }}</a>
+					</div>
+					<div class="col-sm-10">
+					<div>
+					<div class="row border-left">
+					<div class="tab-content">
+						{% set start = 0 %}{% if layoutss %}{% for schet, value in layoutss %}{% set start = start + 1 %}
+						<div class="tab-pane{% if start == 1 %} active{% endif %} block_option block_option{{ schet }}" >
+							<div class="col-sm-12 margin-bottom">
+								{% if massiv_name_module[schet] %}
+									{% set massiv_name_filter = {} %}
+									{% for value in massiv_name_module[schet] %}
+										{% set massiv_name_filter = value %}
+									{% endfor %}
+								{% endif %}
+								<ul class="nav nav-tabs" id="content-language">
+								{% set k = 0 %}
+								{% for language in languages %}
+									<li{% if k == 0 %} class="active"{% endif %}><a href=".content-language{{ schet }}{{ language.language_id }}" data-toggle="tab"><img src="{{ language.img }}" title="{{ language.name }}" /> {{ language.name }}</a></li>
+									{% set k=k+1 %}
+								{% endfor %}
+							   </ul>
+							   <div class="tab-content border">
+							   {% set k = 0 %}
+							   {% for language in languages %}
+									<div class="tab-pane{% if k == 0 %} active{% endif %} content-language{{ schet }}{{ language.language_id }}">
+										<div class="form-group">
+											<label class="col-sm-3 control-label text-left" for="input-meta-title[{{ language.language_id }}]">{{ text_h3_filter }}</label>
+											<div class="col-sm-6">
+											  <input type="text" name="gofilter_data[layout{{ schet }}][name_module][{{ language.language_id }}]" value="{{ massiv_name_filter[language.language_id] }}" placeholder="{{ text_h3_filter }}" id="name_module[{{ language.language_id }}]" class="form-control" />
+											</div>
+										</div>
+									</div>
+									{% set k=k+1 %}
+								{% endfor %}
+							   </div>
+							</div>
+							{% if layoutss %}
+								<div class="col-sm-3">
+									<div class="col-sm-12 block-information input-group">
+										<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>
+										<span class="form-control control-label">
+											{{ text_help_layout }}
+										</span>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="checkbox-group-overflow">
+										<table class="table table-striped">
+											<tbody>
+												{% for layout in layoutss[schet] %}
+												<tr>
+													<td class="checkbox">
+														<input type="checkbox" name="gofilter_data[layout{{ schet }}][layout][]" value="{{ layout.layout_id }}" id="option-value-layout{{ schet }}-{{ layout.layout_id }}"{% if layout.change_layout %} checked{% endif %} data-route = "{{ layout.route }}" data-layout="{{ schet }}" />
+														<label for="option-value-layout{{ schet }}-{{ layout.layout_id }}">	{{ layout.name }}</label>
+													</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="col-sm-4 block_category block_category{{ schet }}"{% if test_categ_block[schet] %} style="display: block;"{% endif %}>
+									<div class="col-sm-12 block-information input-group">
+										<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>
+										<span class="form-control control-label">{{ entry_category_filter }}</span>
+									</div><br />
+								<input type="checkbox" name="gofilter_data[layout{{ schet }}][child_category]" value="1"{% if gofilter_child_category[schet] %}{% if gofilter_child_category[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="child_category{{ schet }}" /><label class="coll control-label" for="child_category{{ schet }}"><span data-original-title="{{ text_check_child_category_label }}" title="" data-toggle="tooltip">&nbsp;&nbsp;{{ text_check_child_category }}</span></label><br />
+									<br />
+									<div>
+										<input type="text" name="category_name" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" data-layout="{{ schet }}" />
+										<div id="featured-category{{ schet }}" class="well well-sm featured-category"class="st">
+											{% if massiv_categories[schet] %}
+												{% for category in massiv_categories[schet] %}
+														<div id="featured-category{{ category.category_id }}"><i class="fa fa-minus-circle"></i> {{ category.name }}
+															  <input type="hidden" name="gofilter_data[layout{{ schet }}][categories_layout][]" value="{{ category.category_id }}" />
+															</div>
+												{% endfor %}
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							{% endif %}
+							<div class="col-sm-10"><br /><br />
+								<div class="col-sm-12 block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_help_layout_block }}</span>
+								</div>
+								<div class="clearfix"></div><br />
+							</div>
+							<div class="col-sm-12"><div class="col-sm-12">
+							<ul class="nav nav-tabs block">
+								<li class="active"><a href=".tab-setting-show" data-toggle="tab"><i class="fa fa-building-o"></i>&nbsp;&nbsp;&nbsp;{{ text_common_settings }}</a></li>
+								<li><a href=".tab-setting-option" data-toggle="tab"><i class="fa fa-check-square-o"></i>&nbsp;&nbsp;&nbsp;{{ text_check_options }}<span class="new-red">New</span></a></li>
+								<li><a href=".tab-setting-attributes" data-toggle="tab"><i class="fa fa-list"></i>&nbsp;&nbsp;&nbsp;{{ text_check_attributes }}<span class="new-red">New</span></a></li>
+								<div class="logotip"></div>
+							 </ul>
+							</div></div>
+							<div class="tab-content">
+								<div class="tab-pane active tab-setting-show">
+									<div class="col-sm-12">
+									<div class="col-sm-12">
+									<div class="col-sm-12 block_checked_filter bg-gray">
+									<div class="row">
+										<div class="col-sm-2 name_block"><strong>{{ text_select_block }}</strong><br /></div>
+										<div class="col-sm-4 name_block"><strong>{{ text_status_show }}</strong><br /></div>
+										<div class="col-sm-2 name_block">
+											<label class="control-label">
+												<span data-toggle="tooltip" title="" data-original-title="{{ text_help_where }}"><strong>{{ text_where }}</strong></span>
+											</label>
+										</div>
+										<div class="col-sm-2 name_block"><strong>{{ text_sort_filter }}</strong><br /></div>
+										<div class="col-sm-2 name_block"><strong>{{ text_additional }}</strong><br /></div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-compress" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_price }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_price]" value="1"{% if gofilter_status_price[schet] %}{% if gofilter_status_price[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_price]" value="1"{% if gofilter_collapse_price[schet] %}{% if gofilter_collapse_price[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_price{{ schet }}" /><label class="coll" for="collapse_price{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_price]" value="1"{% if gofilter_desktop_price[schet] %}{% if gofilter_desktop_price[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_price{{ schet }}" /><label class="coll" for="desktop_price{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_price]" value="1"{% if gofilter_mobile_price[schet] %}{% if gofilter_mobile_price[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_price{{ schet }}" /><label class="coll" for="mobile_price{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+											
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_price]" value="1"{%  if gofilter_view_price[schet] == false or gofilter_view_price[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_price[schet] %}{{ gofilter_sort_price[schet] }}{% else %}1{% endif %}" name="gofilter_data[layout{{ schet }}][sort_price]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2"></div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-sitemap" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_category }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_category]" value="1"{% if gofilter_status_category[schet] %}{% if gofilter_status_category[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_category]" value="1"{% if gofilter_collapse_category[schet] %}{% if gofilter_collapse_category[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_category{{ schet }}" /><label class="coll" for="collapse_category{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_category]" value="1"{% if gofilter_desktop_category[schet] %}{% if gofilter_desktop_category[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_category{{ schet }}" /><label class="coll" for="desktop_category{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_category]" value="1"{% if gofilter_mobile_category[schet] %}{% if gofilter_mobile_category[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_category{{ schet }}" /><label class="coll" for="mobile_category{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_category]" value="1"{% if gofilter_view_category[schet] == false or gofilter_view_category[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_category[schet] %}{{ gofilter_sort_category[schet] }}{% else %}2{% endif %}" name="gofilter_data[layout{{ schet }}][sort_category]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2">
+											<div class="input-group">
+												<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>
+												<select name="gofilter_data[layout{{ schet }}][category_type]" class="form-select">
+												{% if gofilter_category_type[schet] %}{% set test_category_type = gofilter_category_type[schet] %}{% else %}{% set test_category_type = "link" %}{% endif %}
+													<option value="link"{% if test_category_type == "link" %} selected{% endif %}>{{ text_ajax }}</option>
+													<option value="select"{% if test_category_type == "select" %} selected{% endif %}>{{ text_select }}</option>
+													<option value="radio"{% if test_category_type == "radio" %} selected{% endif %}>{{ text_radio }}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-tags" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_keywords }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_keywords]" value="1"{% if gofilter_status_keywords[schet] %}{% if gofilter_status_keywords[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_keywords]" value="1"{% if gofilter_collapse_keywords[schet] %}{% if gofilter_collapse_keywords[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_keywords{{ schet }}" /><label class="coll" for="collapse_keywords{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_keywords]" value="1"{% if gofilter_desktop_keywords[schet] %}{% if gofilter_desktop_keywords[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_keywords{{ schet }}" /><label class="coll" for="desktop_keywords{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_keywords]" value="1"{% if gofilter_mobile_keywords[schet] %}{% if gofilter_mobile_keywords[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_keywords{{ schet }}" /><label class="coll" for="mobile_keywords{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_keywords]" value="1"{% if gofilter_view_keywords[schet] == false or gofilter_view_keywords[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_keywords[schet] %}{{ gofilter_sort_keywords[schet] }}{% else %}3{% endif %}" name="gofilter_data[layout{{ schet }}][sort_keywords]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2"> 
+											<div class="input-group">
+												<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="Разделитель"><i class="fa fa-ellipsis-h"></i></button></span>
+												<select name="gofilter_data[layout{{ schet }}][keywords_type]" class="form-select">
+													{% if gofilter_keywords_type[schet] %}{% set test_keywords_type = gofilter_keywords_type[schet] %}{% else %}{% set test_keywords_type = " " %}{% endif %}
+													<option value=" "{% if test_keywords_type == " " %} selected{% endif %}>{{ text_space }}</option>
+													<option value=","{% if test_keywords_type == "," %} selected{% endif %}>{{ text_comma }}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-paperclip" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_manufacturers }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_manufacturers]" value="1"{% if gofilter_status_manufacturers[schet] %}{% if gofilter_status_manufacturers[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_manufacturers]" value="1"{% if gofilter_collapse_manufacturers[schet] %}{% if gofilter_collapse_manufacturers[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_manufacturers{{ schet }}" /><label class="coll" for="collapse_manufacturers{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_manufacturers]" value="1"{% if gofilter_desktop_manufacturers[schet] %}{% if gofilter_desktop_manufacturers[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_manufacturers{{ schet }}" /><label class="coll" for="desktop_manufacturers{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_manufacturers]" value="1"{% if gofilter_mobile_manufacturers[schet] %}{% if gofilter_mobile_manufacturers[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_manufacturers{{ schet }}" /><label class="coll" for="mobile_manufacturers{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_manufacturers]" value="1"{% if gofilter_view_manufacturers[schet] == false or gofilter_view_manufacturers[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_manufacturers[schet] %}{{gofilter_sort_manufacturers[schet] }}{% else %}4{% endif %}" name="gofilter_data[layout{{ schet }}][sort_manufacturers]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2">
+											<div class="input-group">
+												<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>
+												<select name="gofilter_data[layout{{ schet }}][manufacturers_type]" class="form-select">
+												{% if gofilter_manufacturers_type[schet] %}{% set test_manufacturers_type = gofilter_manufacturers_type[schet] %}{% else %}{% set test_manufacturers_type = "checkbox" %}{% endif %}
+													<option value="select"{% if test_manufacturers_type == "select" %} selected{% endif %}>{{ text_select }}</option>
+													<option value="checkbox"{% if test_manufacturers_type == "checkbox" %} selected{% endif %}>{{ text_checkbox }}</option>
+													<option value="radio"{% if test_manufacturers_type == "radio" %} selected{% endif %}>{{ text_radio }}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-stack-overflow" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_stock }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_stock]" value="1"{% if gofilter_status_stock[schet] %}{% if gofilter_status_stock[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_stock]" value="1"{% if gofilter_collapse_stock[schet] %}{% if gofilter_collapse_stock[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_stock{{ schet }}" /><label class="coll" for="collapse_stock{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_stock]" value="1"{% if gofilter_desktop_stock[schet] %}{% if gofilter_desktop_stock[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_stock{{ schet }}" /><label class="coll" for="desktop_stock{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_stock]" value="1"{% if gofilter_mobile_stock[schet] %}{% if gofilter_mobile_stock[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_stock{{ schet }}" /><label class="coll" for="mobile_stock{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_stock]" value="1"{% if gofilter_view_stock[schet] == false or gofilter_view_stock[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											 <input type="text" value="{% if gofilter_sort_stock[schet] %}{{ gofilter_sort_stock[schet] }}{% else %}5{% endif %}" name="gofilter_data[layout{{ schet }}][sort_stock]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2">
+											<div class="input-group">
+												<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>
+												<select name="gofilter_data[layout{{ schet }}][status_stock_type]" class="form-select">
+												{% if gofilter_status_stock_type[schet] %}{% set test_status_stock_type = gofilter_status_stock_type[schet] %}{% else %}{% set test_status_stock_type = "checkbox" %}{% endif %}
+													<option value="select"{% if test_status_stock_type == "select" %} selected{% endif %}>{{ text_select }}</option>
+													<option value="checkbox"{% if test_status_stock_type == "checkbox" %} selected{% endif %}>{{ text_checkbox }}</option>
+													<option value="radio"{% if test_status_stock_type == "radio" %} selected{% endif %}>{{ text_radio }}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-star-half-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_ratings }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_ratings]" value="1"{% if gofilter_status_ratings[schet] %}{% if gofilter_status_ratings[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_ratings]" value="1"{% if gofilter_collapse_ratings[schet] %}{% if gofilter_collapse_ratings[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_ratings{{ schet }}" /><label class="coll" for="collapse_ratings{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_ratings]" value="1"{% if gofilter_desktop_ratings[schet] %}{% if gofilter_desktop_ratings[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_ratings{{ schet }}" /><label class="coll" for="desktop_ratings{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_ratings]" value="1"{% if gofilter_mobile_ratings[schet] %}{% if gofilter_mobile_ratings[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_ratings{{ schet }}" /><label class="coll" for="mobile_ratings{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_ratings]" value="1"{% if gofilter_view_ratings[schet] == false or gofilter_view_ratings[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_ratings[schet] %}{{ gofilter_sort_ratings[schet] }}{% else %}6{% endif %}" name="gofilter_data[layout{{ schet }}][sort_ratings]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2">
+											<div class="input-group">
+												<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>
+												<select name="gofilter_data[layout{{ schet }}][ratings_type]" class="form-select">
+												{% if gofilter_ratings_type[schet] %}{% set test_ratings_type = gofilter_ratings_type[schet] %}{% else %}{% set test_ratings_type = "checkbox" %}{% endif %}
+													<option value="checkbox"{% if test_ratings_type == "checkbox" %} selected{% endif %}>{{ text_checkbox }}</option>
+													<option value="radio"{% if test_ratings_type == "radio" %} selected{% endif %}>{{ text_radio }}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-th-large" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_options }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_options]" value="1"{% if gofilter_status_options[schet] %}{% if gofilter_status_options[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_options]" value="1"{% if gofilter_collapse_options[schet] %}{% if gofilter_collapse_options[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_options{{ schet }}" /><label class="coll" for="collapse_options{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_options]" value="1"{% if gofilter_desktop_options[schet] %}{% if gofilter_desktop_options[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_options{{ schet }}" /><label class="coll" for="desktop_options{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_options]" value="1"{% if gofilter_mobile_options[schet] %}{% if gofilter_mobile_options[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_options{{ schet }}" /><label class="coll" for="mobile_options{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_options]" value="1"{% if gofilter_view_options[schet] == false or gofilter_view_options[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_options[schet] %}{{gofilter_sort_options[schet] }}{% else %}7{% endif %}" name="gofilter_data[layout{{ schet }}][sort_options]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2"></div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-building-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_attributes }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_attributes]" value="1"{% if gofilter_status_attributes[schet] %}{% if gofilter_status_attributes[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_attributes]" value="1"{% if gofilter_collapse_attributes[schet] %}{% if gofilter_collapse_attributes[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_attributes{{ schet }}" /><label class="coll" for="collapse_attributes{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_attributes]" value="1"{% if gofilter_desktop_attributes[schet] %}{% if gofilter_desktop_attributes[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_attributes{{ schet }}" /><label class="coll" for="desktop_attributes{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_attributes]" value="1"{% if gofilter_mobile_attributes[schet] %}{% if gofilter_mobile_attributes[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_attributes{{ schet }}" /><label class="coll" for="mobile_attributes{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_attributes]" value="1"{% if gofilter_view_attributes[schet] == false or gofilter_view_attributes[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_attributes[schet] %}{{gofilter_sort_attributes[schet] }}{% else %}8{% endif %}" name="gofilter_data[layout{{ schet }}][sort_attributes]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2"></div>
+									</div>
+									</div>
+									<div class="col-sm-12 block_checked_filter">
+									<div class="row">
+										<div class="col-sm-2 name_block"><i class="fa fa-building-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_filter }}</div>
+										<div class="col-sm-4 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][status_filter]" value="1"{% if gofilter_status_filter[schet] %}{% if gofilter_status_filter[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="switching" />
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][collapse_filter]" value="1"{% if gofilter_collapse_filter[schet] %}{% if gofilter_collapse_filter[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="collapse_filter{{ schet }}" /><label class="coll" for="collapse_filter{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][desktop_filter]" value="1"{% if gofilter_desktop_filter[schet] %}{% if gofilter_desktop_filter[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="desktop_filter{{ schet }}" /><label class="coll" for="desktop_filter{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>
+											<span class="collapsing"><input type="checkbox" name="gofilter_data[layout{{ schet }}][mobile_filter]" value="1"{% if gofilter_mobile_filter[schet] %}{% if gofilter_mobile_filter[schet] == 1 %} checked="checked"{% endif %}{% endif %} id="mobile_filter{{ schet }}" /><label class="coll" for="mobile_filter{{ schet }}" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>
+										</div>
+										<div class="col-sm-2 status_block">
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][view_filter]" value="1"{% if gofilter_view_filter[schet] == false or gofilter_view_filter[schet] != 1 %}{% else %} checked="checked"{% endif %} id="switching" data-on-text="Column" data-off-text="Content" />
+										</div>
+										<div class="col-sm-2 status_block cont">
+											<span class="minus"><i class="fa fa-minus"></i></span>
+											<input type="text" value="{% if gofilter_sort_filter[schet] %}{{gofilter_sort_filter[schet] }}{% else %}8{% endif %}" name="gofilter_data[layout{{ schet }}][sort_filter]" size="3" id="cont" class="form-control" />
+											<span class="plus"><i class="fa fa-plus"></i></span>
+										</div>
+										<div class="col-sm-2"></div>
+									</div>
+									</div>
+									</div>
+									</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="tab-pane tab-setting-option">
+								<fieldset class="border">
+									<div class="col-sm-12">
+										<div class="col-sm-10">
+											<div class="block-information input-group">
+												<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> 
+												<span class="option_empty_h1{{ schet }}">
+													<span class="form-control" style="display: {% if gofilter_option_empty[schet] %}none{% else %}block{% endif %};">{{ help_text_options }}</span>
+													<span class="form-control" style="display: {% if gofilter_option_empty[schet] %}block{% else %}none{% endif %};">{{ help_text_options_show }}</span>
+												</span>
+											</div>
+										</div><div class="clearfix"></div><br />
+										<label class="col-sm-4" for="input-caption">
+										<span class="option_empty_text{{ schet }}">
+											<span style="display: {% if gofilter_option_empty[schet] %}none{% else %}block{% endif %};">{{ help_text_options_label }}</span>
+											<span style="display: {% if gofilter_option_empty[schet] %}block{% else %}none{% endif %};">{{ help_text_options_label_hide }}</span>
+										</span>
+										<br /><br /><br />
+										<input type="checkbox" name="gofilter_data[layout{{ schet }}][option_empty]" value="1"{% if gofilter_option_empty[schet] %}{% if gofilter_option_empty[schet] == 1 %} checked="checked"{% endif %}{% endif %} class="option_empty{{ schet }}" data-empty="{{ schet }}" id="switching" data-off-text="{{ text_isklushit }}" data-on-text="{{ text_soderjit }}" onChange="replaceTextOption('.option_empty{{ schet }}')" />
+										</label>
+										<div class="col-sm-8">
+										  <input type="text" name="related-options" value="" placeholder="{{ help_text_options_placeholder }}" id="input-related-options" class="form-control" data-layout="{{ schet }}"/>
+										  <div id="options-related{{ schet }}" class="well well-sm"class="st">
+											{% for value_options_related_massiv in options_related[schet] %}
+												<div id="options-related"><i class="fa fa-minus-circle"></i> {{ value_options_related_massiv.name_option }}
+												  <input type="hidden" name="gofilter_data[layout{{ schet }}][options_related][]" value="{{ value_options_related_massiv.option_id }}" />
+												</div>
+											{% endfor %}
+										  </div>
+										</div>
+									</div>
+									<br /><br />
+								</fieldset>
+							</div>
+							<div class="clearfix"></div>
+							<div class="tab-pane tab-setting-attributes">
+								<fieldset class="border">
+									<div class="col-sm-12">
+										<div class="col-sm-12">
+											<div class="block-information input-group">
+												<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> 
+												<span class="attrib_empty_h1{{ schet }}">
+													<span class="form-control" style="display: {% if gofilter_attrib_empty[schet] %}none{% else %}block{% endif %};">{{ help_text_attrib }}</span>
+													<span class="form-control" style="display: {% if gofilter_attrib_empty[schet] %}block{% else %}none{% endif %};">{{ help_text_attrib_show }}</span>
+												</span>
+											</div>
+										</div><div class="clearfix"></div><br /><br />
+										<label class="col-sm-4" for="input-caption">
+											<span class="attrib_empty_text{{ schet }}">
+												<span style="display: {% if gofilter_attrib_empty[schet] %}none{% else %}block{% endif %};">{{ help_text_attrib_label }}</span>
+												<span style="display: {% if gofilter_attrib_empty[schet] %}block{% else %}none{% endif %};">{{ help_text_attrib_label_hide }}</span>
+											</span>
+											<br /><br /><br />
+											<input type="checkbox" name="gofilter_data[layout{{ schet }}][attrib_empty]" value="1"{% if gofilter_attrib_empty[schet] %}{% if gofilter_attrib_empty[schet] == 1 %} checked="checked"{% endif %}{% endif %} class="attrib_empty{{ schet }}" data-empty="{{ schet }}" id="switching" data-off-text="{{ text_isklushit }}" data-on-text="{{ text_soderjit }}" onChange="replaceTextAttr('.attrib_empty{{ schet }}')" />
+										</label>
+										<div class="col-sm-8">
+										  <input type="text" name="related-attributes" value="" placeholder="{{ help_text_attrib_placeholder }}" id="input-related-attributes" class="form-control" data-layout="{{ schet }}"/>
+										  <div id="attributes-related{{ schet }}" class="well well-sm"class="st">
+											{% for value_attribute_related_massiv in attributes_related[schet] %}
+												<div id="attributes-related"><i class="fa fa-minus-circle"></i> {{ value_attribute_related_massiv.name }}
+												  <input type="hidden" name="gofilter_data[layout{{ schet }}][attributes_related][]" value="{{ value_attribute_related_massiv.attribute_id }}" />
+												</div>
+											{% endfor %}
+										  </div>
+										</div>
+									</div>
+									<br /><br />
+								</fieldset>
+							</div>
+							</div>
+						</div>
+						{% endfor %}
+						{% endif %}
+						<div id="end_layout_filter"></div>
+					</div>
+					</div>
+					</div>
+					</div>
+				</fieldset>
+				</div>
+				<div class="tab-pane tab-style">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_h3_filter }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<div class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="Цвет шрифта"><span>{{ text_color }}</span></div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if color_caption %}{{color_caption }}{% endif %}" name="gofilter_data[style][color_caption]" size="3" id="input-caption" class="form-control color {hash:true}" />
+							</div>
+							<div class="col-sm-4 text-right"><img src="view/javascript/gofilter/image/zagolovok.png" alt="" title="" /></div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_h4_group }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<div class="col-sm-2 control-label" for="input-caption"><span>{{ text_bg }}</span></div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if bg_group %}{{bg_group }}{% else %}#f9f9f9{% endif %}" name="gofilter_data[style][bg_group]" size="3" id="input-caption" class="form-control color {hash:true}" />
+							</div><div class="clearfix"></div><br />
+							<div class="col-sm-2 control-label" for="input-caption"><span>{{ text_color }}</span></div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if color_group %}{{color_group }}{% else %}#444444{% endif %}" name="gofilter_data[style][color_group]" size="3" id="input-caption" class="form-control color {hash:true}" />
+							</div>
+							<div class="col-sm-4 text-right"><img src="view/javascript/gofilter/image/group.png" alt="" title="" /></div>
+							<div class="clearfix"></div><br />
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">Количество товара</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<div class="col-sm-2">
+								<label class="control-label" for="input-caption" data-toggle="tooltip" data-original-title="Когда кол-во товара больше 0"><span>{{ text_bg }}</span></label>
+								<div class="clearfix"></div><br />
+								<label class="control-label" for="input-caption" data-toggle="tooltip" data-original-title="Когда кол-во товара равно 0"><span>{{ text_bg }}</span></label>
+							</div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if color_product %}{{color_product }}{% else %}#34982e{% endif %}" name="gofilter_data[style][color_product]" size="3" id="input-caption" class="form-control color {hash:true}" /><br />
+							  <input type="text" value="{% if color_product_no %}{{color_product_no }}{% else %}#A6A6A6{% endif %}" name="gofilter_data[style][color_product_no]" size="3" id="input-caption" class="form-control color {hash:true}" />
+							</div>
+							<div class="col-sm-4 text-right"><br /><img src="view/javascript/gofilter/image/qyantity.png" alt="" title="" /></div>
+							<div class="clearfix"></div><br />
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_indikator_price }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<div class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="Цвет шрифта"><span>{{ text_bg }}</span></div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if bg_price %}{{bg_price }}{% else %}#c54448{% endif %}" name="gofilter_data[style][bg_price]" size="3" id="input-caption" class="form-control color {hash:true}" />
+							</div>
+							<div class="col-sm-4 text-right"><br /><img src="view/javascript/gofilter/image/price.png" alt="" title="" /></div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-setting">
+					<fieldset class="border">
+						<div class="form-group">
+						
+							<div class="col-sm-10">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info" aria-hidden="true"></i></span> <span class="form-control"><span class="redcolor">New!!!</span> {{ text_block_job }} - {{ text_and_or }}</span>
+								</div>
+							</div><div class="clearfix"></div>
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ text_and_or }}"><br /><span>{{ text_help_block_job }}</span><br /><br /></label>
+							<div class="col-sm-2"><br /><br />
+							  <input id="switching" name="gofilter_data[settings][job_view]" value="1" {% if job_view and job_view == 1 %}checked="checked"{% endif %} type="checkbox" data-on-text="{{ text_and }}" data-off-text="{{ text_or }}">
+							</div>
+							<div class="col-sm-6"><br />
+								{{ help_text_and_or }}
+							</div>
+							<div class="clearfix"></div><br /><br />
+							<div class="col-sm-10">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control"><span class="redcolor">New!!!</span> {{ text_help_h1_disable_view }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ text_help_disable_view }}"><span>{{ text_help_disable_view }}</span></label>
+							<div class="col-sm-2"><br />
+							  <input id="switching" name="gofilter_data[settings][show_disable_view]" value="1"{% if show_disable_view and show_disable_view == 1 %} checked="checked"{% endif %} type="checkbox" data-off-text="OFF" data-on-text="ON">
+							</div>
+							<div class="col-sm-6 text-left">{{ text_help_and_disable_view }}</div><div class="clearfix"></div><br /><br />
+							<div class="col-sm-10">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_setting_view }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ text_help_view_vilter }}"><span>{{ text_view_vilter }}</span></label>
+							<div class="col-sm-3">
+							  <input id="switching" name="gofilter_data[settings][popup_view]" value="1" {% if popup_view and popup_view == 1 %}checked="checked"{% endif %} type="checkbox" data-on-text="Without button" data-off-text="Button">
+							</div>
+							<div class="col-sm-4 text-right"></div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ text_help_height_filter }}"><span>{{ text_height_filter }}</span></label>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if max_height %}{{ max_height }}{% else %}215{% endif %}" name="gofilter_data[settings][max_height]" size="3" id="input-caption" class="form-control px pull-left text-right" />&nbsp;&nbsp;<span class="text_after_form">px</span>
+							</div>
+							<div class="col-sm-4 text-right"></div><div class="clearfix"></div><br />
+							<div class="col-sm-2 control-label" for="input-caption"><span>{{ text_quantity }}</span></div>
+							<div class="col-sm-2">
+							  <input type="text" value="{% if count_show %}{{ count_show }}{% else %}3{% endif %}" name="gofilter_data[settings][count_show]" size="3" id="input-caption" class="form-control px pull-left text-right" />
+							</div>
+							<div class="col-sm-4 text-right"></div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ text_help_view_qyantity }}"><span>{{ text_view_qyantity }}</span></label>
+							<div class="col-sm-3">
+							  <input id="switching" name="gofilter_data[settings][quantity_view]" value="1"{% if quantity_view and quantity_view == 1 %} checked="checked"{% endif %} type="checkbox" data-off-text="ON" data-on-text="OFF">
+							</div>
+							<div class="col-sm-4 text-right"></div><div class="clearfix"></div><br /><br />
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_setting_quantity }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2" for="input-caption"><span>{{ text_help_view_vilter_quantity }}</span></label>
+							<div class="col-sm-3">
+							  <input id="switching" name="gofilter_data[settings][stock_quantity]" value="1" {% if stock_quantity and stock_quantity == 1 %}checked="checked"{% endif %} type="checkbox">
+							</div><div class="clearfix"></div><br /><br />
+						</div>
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-cache">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ help_text_cache }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_on_cache }}"><span>{{ text_status_cache }}</span></label>
+							<div class="col-sm-3">
+							  <input id="switching" name="gofilter_data[settings][status_cache]" value="1" {% if status_cache and status_cache == 1 %}checked="checked"{% endif %} type="checkbox">
+							</div>
+							<div class="col-sm-4 text-right"></div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption">{{ text_clear_cache }}</label>
+							<div class="col-sm-3">
+							  <a data-toggle="tooltip" title="При нажатии очистится кэш фильтра в папке system/storage/cache/" class="btn btn-danger cache" data-type="gofilter">{{ text_button_clear_cache }}</a>
+							</div>
+							<div class="col-sm-7 text-right"><textarea wrap="off" rows="6" readonly="readonly" class="form-control hide" id="cache_result"></textarea></div><div class="clearfix"></div><br />
+						</div>
+						<br /><br />
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-seo">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ help_text_seo }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_on_seo }}"><span>{{ text_status_seo }}</span></label>
+							<div class="col-sm-3">
+							  <input id="switching" name="gofilter_data[settings][status_seo]" value="1" {% if status_seo and status_seo == 1 %}checked="checked"{% endif %} type="checkbox">
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_seo_separator }}"><span>{{ text_seo_separator }}</span></label>
+							<div class="col-sm-2">
+							  <input id="input-caption" class="form-control px pull-left text-center" type="text" size="3" name="gofilter_data[settings][seo_separator]" value="{% if seo_separator %}{{ seo_separator }}{% else %}={% endif %}">
+							</div>
+							<div class="col-sm-5"><div class="row"><img src="view/stylesheet/gofilter/seo_separator.jpg" alt="" title="" class="img-responsive" /></div></div>
+						</div>
+						<br />
+						<div class="form-group">
+							<div class="col-sm-10">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ help_text_seo_keyword }}</span><br />
+								</div>
+								<div class="col-sm-12"><div class="row"><br /><img src="view/stylesheet/gofilter/seo.jpg" alt="" title="" class="img-responsive" /></div></div>
+							</div><div class="clearfix"></div><br /><br />
+							<div class="col-sm-2">
+								<a class="btn btn-primary" onclick="add_seo_keyword()">{{ text_add_seo }}</a>
+							</div>
+							<div class="col-sm-10">
+								<div class="col-sm-3"><label><span>{{ text_seo_parametr }}</span></label><br /></div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-3"><label class="control-label" data-toggle="tooltip" data-original-title="{{ help_text_seo_keyword_unique }}"><span>{{ text_seo_keyword_parametr }}</span></label><br /></div>
+								<div class="clearfix"></div>
+								<div id="end_seo_filter"></div>
+								{% set sch = 0 %}
+								{% if seo_keywords %}
+									{% for key,value_seo in seo_keywords %}
+										<div class="col-sm-12 seo_key{{ sch }}">
+											<div class="col-sm-3"><br />
+											{% for language in languages %}
+													<div class="input-group">
+														<span class="input-group-addon">
+															<img src="{{ language.img }}" title="{{ language.name }}" />
+														</span>
+														<input name="gofilter_data[seo][seo_keywords][{{ sch }}][language][{{ language.language_id }}]" value="{{ value_seo[language.language_id] }}" data-language="{{ language.language_id }}" class="form-control" type="text">
+													</div>
+											{% endfor %}
+											</div>
+											<div class="col-sm-1"></div>
+											<div class="col-sm-3"><br />
+												<input name="gofilter_data[seo][seo_keywords][{{ sch }}][keyword]" value="{{ key }}" data-language="{{ language.language_id }}" class="form-control" type="text">
+											</div>
+											<div class="col-sm-1 text-left remove_seo_keyword"><br /><i class="fa fa-times btn-danger btn-xs" onclick="remove_seo_keyword({{ sch }})" aria-hidden="true"></i></div>
+										</div>
+										{% set sch = sch + 1 %}
+									{% endfor %}
+									{% endif %}
+								<div class="clearfix"></div>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-scripts">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_label_id }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_id }}"><span>{{ text_content_id }}</span></label>
+							<div class="col-sm-6"><br />
+							  <input id="input-caption" class="form-control px2 pull-left" type="text" size="5" name="gofilter_data[settings][id_content]" value="{% if id_content %}{{ id_content }}{% endif %}">
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_id }}"><span>{{ text_column_id }}</span></label>
+							<div class="col-sm-6"><br />
+							  <input id="input-caption" class="form-control px2 pull-left" type="text" size="5" name="gofilter_data[settings][id_column_left]" value="{% if id_column_left %}{{ id_column_left }}{% endif %}"><div class="clearfix"></div><br />
+							  <input id="input-caption" class="form-control px2 pull-left" type="text" size="5" name="gofilter_data[settings][id_column_right]" value="{% if id_column_right %}{{ id_column_right }}{% endif %}">
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="{{ help_text_id }}"><span>{{ text_mobile_id }}</span></label>
+							<div class="col-sm-6"><br /><br />
+							  <input id="input-caption" class="form-control px2 pull-left" type="text" size="5" name="gofilter_data[settings][id_button_mobile]" value="{% if id_button_mobile %}{{ id_button_mobile }}{% endif %}">
+							</div>
+							
+						</div>
+						<br />
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control"><?php echo $help_text_scripts; ?></span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption" data-toggle="tooltip" data-original-title="<?php echo $help_popup_label_text_scripts; ?>"><span><?php echo $help_label_text_scripts; ?></span></label>
+							<div class="col-sm-6">
+							  &lt;script type="text/javascript"&gt;<textarea name="gofilter_data[settings][filter_scripts]" maxlength = "10000" style="width: 100%; min-height: 400px;">{% if filter_scripts %}{{ filter_scripts }}{% endif %}</textarea>&lt;/script&gt;
+							</div>
+						</div>
+						<br />
+						<div class="clearfix"></div>
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-more">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_clear_space }}</span>
+								</div>
+							</div><div class="clearfix"></div><br />
+							<label class="col-sm-2 control-label" for="input-caption"><br />{{ text_clear_label_space }}</label>
+							<div class="col-sm-4"><br /><br />
+							  <a data-toggle="tooltip" title="{{ help_text_clear_label_space }}" class="btn btn-danger garbage" data-type="gofilter">{{ text_clear_button_space }}</a>
+							</div>
+							<div class="col-sm-6 text-right"><textarea wrap="off" rows="6" readonly="readonly" class="form-control hide" id="garbage_result"></textarea></div><div class="clearfix"></div><br />
+						</div>
+						<br /><br />
+					</fieldset>
+				</div>
+				<div class="tab-pane tab-additional-autor">
+					<fieldset class="border">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<div class="block-information input-group">
+									<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control"><span class="redcolor">New!!!</span> {{ text_version_tab }}</span>
+								</div>
+							</div><div class="clearfix"></div>
+							<div class="col-sm-10"><br />
+								{{ text_help_version_tab }}
+							</div>
+						</div>
+						<br /><br />
+					</fieldset>
+				</div>
+			</div>
+		  </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% if code_protection %}
+<script type="text/javascript" ><!--
+var sch = {{ sch }};
+function add_seo_keyword() {
+	html = '<div class="col-sm-12 seo_key' + sch + '">';
+		html += '<div class="col-sm-3"><br />';
+			{% for language in languages %}
+				html += '<div class="input-group">';
+					html += '<span class="input-group-addon">';
+						html += '<img src="{{ language.img }}" title="{{ language.name }}" />';
+					html += '</span>';
+					html += '<input name="gofilter_data[seo][seo_keywords][' + sch + '][language][{{ language.language_id }}]" value="" data-language="{{ language.language_id }}" class="form-control" type="text">';
+				html += '</div>';
+			{% endfor %}
+		html += '</div>';
+		html += '<div class="col-sm-1"></div>';
+		html += '<div class="col-sm-3"><br />';
+			html += '<input name="gofilter_data[seo][seo_keywords][' + sch + '][keyword]" value="" data-language="{{ language.language_id }}" class="form-control" type="text">';
+		html += '</div>';
+		html += '<div class="col-sm-1 text-left remove_seo_keyword"><br /><i class="fa fa-times btn-danger btn-xs" onclick="remove_seo_keyword('+ sch + ')" aria-hidden="true"></i></div>';
+	html += '</div>';
+	html += '<div class="clearfix"></div>';
+	$('#end_seo_filter').after(html);
+	sch = sch + 1;
+}
+function remove_seo_keyword(ch) {
+	$('.seo_key' + ch).remove();
+}
+generetion_ajax_parametr();
+function generetion_ajax_parametr() {
+	$('input[name=\'related-attributes\']').autocomplete({
+		'source': function(request, response) {
+			$.ajax({
+				url: '{{ text_zapros }}getAttributes&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return {
+							label: item['name_group'] + ' - ' + item['name_attribute'],
+							value: item['attribute_id']
+						}
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			var layout = $(this).parent().parent().find('#input-related-attributes').attr('data-layout');
+			$('input[name=\'related-attributes\']').val('');
+
+
+			$('#attributes-related' + layout).append('<div id="attributes-related"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="gofilter_data[layout' + layout + '][attributes_related][]" value="' + item['value'] + '" /></div>');
+			$('#attributes-related .fa-minus-circle').click(function() {
+				$(this).parent().remove();
+			});
+		}
+	});
+	$('#attributes-related .fa-minus-circle').click(function() {
+		$(this).parent().remove();
+	});
+	$('input[name=\'related-options\']').autocomplete({
+		'source': function(request, response) {
+			$.ajax({
+				url: '{{ text_zapros }}getOptions&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return {
+							label: item['name_option'],
+							value: item['option_id'],
+						}
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			var layout = $(this).parent().parent().find('#input-related-options').attr('data-layout');
+			$('input[name=\'related-options\']').val('');
+
+
+			$('#options-related' + layout).append('<div id="options-related"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="gofilter_data[layout' + layout + '][options_related][]" value="' + item['value'] + '" /></div>');
+			$('#options-related .fa-minus-circle').click(function() {
+				$(this).parent().remove();
+			});
+		}
+	});
+$('#options-related .fa-minus-circle').click(function() {
+	$(this).parent().remove();
+});
+}
+function generetion_category() {
+$('input[data-route=\'product/category\']').click(function () {
+	if ($(this).is(':checked')) {
+		$('.block_category' + $(this).attr('data-layout')).show();
+	} else {
+		$('.block_category' + $(this).attr('data-layout')).hide();
+	}
+});
+}
+generetion_category();
+function generetion_autocomplete() {
+	$('input[name=\'category_name\']').autocomplete({
+		'source': function(request, response) {
+			$.ajax({
+				url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+							return {
+								label: item['name'],
+								value: item['category_id']
+							}
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			var layout = $(this).attr('data-layout');
+			$('input[name=\'category\']').val('');
+
+			$('#featured-category' + item['value']).remove();
+
+			$('#featured-category' + layout).append('<div id="featured-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="gofilter_data[layout' + layout + '][categories_layout][]" value="' + item['value'] + '" /></div>');
+		}
+	});
+	$('.featured-category').delegate('.fa-minus-circle', 'click', function() {
+		$(this).parent().remove();
+	});
+}
+generetion_autocomplete();
+$('.cache').on('click', function() {
+  $.ajax({
+	url: '{{ delete_cache }}&type=' + $(this).data('type'),
+	type: 'post',
+	dataType: 'json',
+	beforeSend: function() {
+	  $('#cache_result').text('');
+	},
+	success: function(json) {
+	  $('.alert-success, .alert-danger').remove();
+			
+	  if (json['error']) {
+		$('#content > .container-fluid').before('<div class="alert alert-danger" class="hd"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+		$('.alert-danger').slideDown().delay(2000).slideUp();
+	  }
+	  
+	  if (json['success']) {
+		  $('#cache_result').text(json['success']);
+		  $('#cache_result').removeClass('hide').addClass('show');
+	  }
+	},
+
+	error: function(xhr, ajaxOptions, thrownError) {
+	 alert(thrownError + '  ' + xhr.statusText + '  ' + xhr.responseText);
+	}
+  });
+});
+$('.garbage').on('click', function() {
+  $.ajax({
+	url: '{{ delete_garbage }}&type=' + $(this).data('type'),
+	type: 'post',
+	dataType: 'json',
+	beforeSend: function() {
+	  $('.garbage').addClass('load');
+	  $('.garbage').removeClass('green-bg');
+	  $('a.garbage').html('<span>{{ text_load_for_button_darbage }}</span>');
+	  $('a.garbage').prepend('<i class="fa fa-spinner faa-spin animated"></i>');
+	},
+	success: function(json) {
+	  $('.garbage').removeClass('load');
+	  $('.attention.clearfix').removeClass('load');
+	  $('a.garbage').text('{{ text_cont_for_button_darbage }}');
+	  $('.garbage').addClass('green-bg');
+	  $('#garbage_result').text('');
+	  if (json['itog_count'] != '0') {
+		  $('#garbage_result').text(json['text_success']);
+	  } else {
+		  $('#garbage_result').text(json['itog_count_text']);
+	  }
+	  
+	  $('#garbage_result').removeClass('hide').addClass('show');
+	},
+
+	error: function(xhr, ajaxOptions, thrownError) {
+	  alert(thrownError + "  " + xhr.statusText + "  " + xhr.responseText);
+	}
+	
+  });
+});
+$(document).ready(function() {
+    $('.minus').click(function () {
+        var $input = $(this).parent().find('#cont');
+        var count = parseInt($input.val()) - 1;
+		if (count < 1) {count = 1;}
+        $input.val(count);
+        $input.change();
+        return false;
+    });
+    $('.plus').click(function () {
+        var $input = $(this).parent().find('#cont');
+        $input.val(parseInt($input.val()) + 1);
+        $input.change();
+        return false;
+    });
+});
+--></script>
+<script type="text/javascript"><!--
+
+tabs_js();
+function tabs_js() {
+	
+	$('input#edit_name_layout').hide();
+	$('.save-icon').hide();
+
+	$('span#edit_name_layout').dblclick(function () {
+		$(this).hide();
+		$(this).parent().find('input#edit_name_layout').show().focus();
+		$(this).parent().find('.delete-icon').show();
+		$(this).parent().parent().parent().find('.layout-icon').hide();
+		$(this).parent().parent().parent().find('.save-icon').show();
+	});
+	
+	$(document).mouseup(function (e) {
+		if ($('.nav.nav-tabs.left').has(e.target).length === 0) {
+			$('input#edit_name_layout').hide();
+			$('span#edit_name_layout').show();
+			$('.layout-icon').show();
+			$('.save-icon').hide();
+			$('.delete-icon').hide();
+		}
+	});
+	
+	$('.save-icon .fa').click(function () {
+		$(this).parent().parent().find('.layout-icon').show();
+		$(this).parent().parent().find('.save-icon').hide();
+		$(this).parent().parent().parent().find('input#edit_name_layout').hide();
+		$(this).parent().parent().parent().find('span#edit_name_layout').show();
+		$('.delete-icon').hide();
+		
+		var msg = $(this).parent().parent().parent().find('input#edit_name_layout').val();
+		$(this).parent().parent().parent().find('span#edit_name_layout').text(msg);
+		
+	});
+	
+	
+}
+function remove_layout(schet) { 
+	var schet_old = schet - 1;
+	if ($('a.tab-block-display[href=".block_option' + schet_old + '"]').find('*').length == 0) {
+		schet_old = schet + 1;
+	}
+	$('a.tab-block-display[href=".block_option' + schet + '"]').remove();
+	$('a.tab-block-display[href=".block_option' + schet_old + '"]').parent().addClass('active');
+	
+	$('.block_option' + schet_old).addClass('active');
+	$('.block_option' + schet).remove();
+}
+	
+	var schet = {% if max_keys %}{{ max_keys }}{% else %}0{% endif %};
+	
+	function add_layout() {
+		schet = schet + 1;
+		$('.block_option').removeClass('active');
+
+		html_tabs = '<li class="active"><a href=".block_option' + schet + '" class="tab-block-display" data-toggle="tab" ondrag="return false" ondragdrop="return false" ondragstart="return false"><span class="row"><span class="col-sm-2 listing"><span class="layout-icon"><i class="fa fa-paperclip pull-left"></i></span><span class="save-icon"><i class="fa fa-save"></i></span></span><span class="col-sm-6"><span class="row-group-left"><span class="style_text" id="edit_name_layout">layout' + schet + '</span><input type="text" id="edit_name_layout" class="style_text form-control" name="gofilter_data[layout' + schet + '][layout_name]" value="layout' + schet + '" /><span class="delete-icon"><i class="fa fa-close"></i></span></span></span><span class="col-sm-2"><i onclick="remove_layout(' + schet + ')" class="fa fa-minus-circle btn-danger btn-xs pull-right" aria-hidden="true"></i></a></span></span></li>';
+		
+		html = '<div class="tab-pane active block_option block_option' + schet + '">';
+		
+		html += '<div class="col-sm-12 margin-bottom">'
+		html += 	'<ul class="nav nav-tabs" id="content-language">';
+						{% set k = 0 %}
+						{% for language in languages %}
+		html += 			'<li{% if k == 0 %} class="active"{% endif %}><a href=".content-language' + schet + '{{ language.language_id }}" data-toggle="tab"><img src="{{ language.img }}" title="{{ language.name }}" /> {{ language.name }}</a></li>';
+							{% set k = k + 1 %}
+						 {% endfor %}
+		html +=		'</ul>';
+		html += 	'<div class="tab-content border">';
+					{% set k = 0 %}
+					{% for language in languages %}
+		html += 		'<div class="tab-pane{% if k == 0 %} active{% endif %} content-language' + schet + '{{ language.language_id }}">';
+		html += 			'<div class="form-group">';
+		html += 				'<label class="col-sm-3 control-label text-left" for="input-meta-title[{{ language.language_id }}]">{{ text_h3_filter }}</label>';
+		html += 				'<div class="col-sm-6">';
+		html += 					'<input type="text" name="gofilter_data[layout' + schet + '][name_module][{{ language.language_id }}]" value="{% if massiv_name_filter.language.language_id %}{{ massiv_name_filter.language.language_id }}{% endif %}" placeholder="{{ text_h3_filter }}" id="name_module[{{ language.language_id }}]" class="form-control" />';
+		html += 				'</div>';
+		html += 			'</div>';
+		html += 		'</div>';
+						{% set k = k + 1 %}
+					{% endfor %}
+		html += '</div>';
+		html += '</div>';
+		html += 	'<div class="col-sm-3">';
+		html += 		'<div class="col-sm-12 block-information input-group">';
+		html += 			'<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>';
+		html += 			'<span class="form-control control-label">';
+		html += 				'{{ text_help_layout }}';
+		html += 			'</span>';
+		html += 		'</div>';
+		html += 	'</div>';
+		html += 	'<div class="col-sm-4">';
+		html += 		'<div class="checkbox-group-overflow">';
+		html += 			'<table class="table table-striped">';
+		html += 				'<tbody>';
+								{% for layout in layouts %}
+		html += 					'<tr>';
+		html += 						'<td class="checkbox">';
+		html += 							'<input type="checkbox" name="gofilter_data[layout' + schet + '][layout][]" value="{{ layout.layout_id }}" id="option-value-layout' + schet + '-{{ layout.layout_id }}"  data-route = "{{ layout.route }}" data-layout="' + schet + '" />';
+		html += 							'<label for="option-value-layout' + schet + '-{{ layout.layout_id }}">';
+		html += 							'{{ layout.name }}';
+		html += 							'</label>';
+		html += 						'</td>';
+		html += 					'</tr>';
+								{% endfor %}
+		html += 				'</tbody>';
+		html += 			'</table>';
+		html += 		'</div>';
+		html += 	'</div>';
+		html += 	'<div class="col-sm-4 block_category block_category' + schet + '">';
+		html += 		'<div class="col-sm-12 block-information input-group">';
+		html += 		'<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>';
+		html += 		'<span class="form-control control-label">{{ entry_category_filter }}</span>';
+		html += 	'</div><br />';
+		html += 	'<input type="checkbox" name="gofilter_data[layout' + schet + '][child_category]" value="1" id="child_category' + schet + '" /><label class="coll control-label" for="child_category' + schet + '"><span data-original-title="{{ text_check_child_category_label }}" title="" data-toggle="tooltip">&nbsp;&nbsp;{{ text_check_child_category }}</span></label><br /><br />';
+		html += 		'<div>';
+		html += 			'<input type="text" name="category_name" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" data-layout="' + schet + '" />';
+		html += 			'<div id="featured-category' + schet + '" class="well well-sm featured-category"class="st">';
+		html += 			'</div>';
+		html += 		'</div>';
+		html += 	'</div>';
+		html += 	'<div class="col-sm-10"><br /><br />';
+		html += 		'<div class="col-sm-12 block-information input-group">';
+		html += 			'<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> <span class="form-control">{{ text_help_layout_block }}</span>';
+		html += 		'</div>';
+		html += 		'<div class="clearfix"></div><br />';
+		html += 	'</div>';
+		
+		html += 	'<div class="col-sm-12"><div class="col-sm-12">';
+		html += 		'<ul class="nav nav-tabs block">';
+		html += 			'<li class="active"><a href=".tab-setting-show" data-toggle="tab"><i class="fa fa-building-o"></i>&nbsp;&nbsp;&nbsp;{{ text_common_settings }}</a></li>';
+		html += 			'<li><a href=".tab-setting-option" data-toggle="tab"><i class="fa fa-check-square-o"></i>&nbsp;&nbsp;&nbsp;{{ text_check_options }}<span class="new-red">New</span></a></li>';
+		html += 			'<li><a href=".tab-setting-attributes" data-toggle="tab"><i class="fa fa-list"></i>&nbsp;&nbsp;&nbsp;{{ text_check_attributes }}<span class="new-red">New</span></a></li>';
+		html += 			'<div class="logotip"></div>';
+		html += 		'</ul>';
+		html += 	'</div></div>';
+		html += 	'<div class="tab-content">';
+		html += 		'<div class="tab-pane active tab-setting-show">';
+		html += 			'<div class="col-sm-12">	';
+
+		html += 				'<div class="col-sm-12">';
+		html += 					'<div class="col-sm-12 block_checked_filter bg-gray">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><strong>{{ text_select_block }}</strong><br /></div>';
+		html += 							'<div class="col-sm-4 name_block"><strong>{{ text_status_show }}</strong><br /></div>';
+		html += 							'<div class="col-sm-2 name_block">';
+		html += 								'<label class="control-label">';
+		html += 									'<span data-toggle="tooltip" title="" data-original-title="{{ text_help_where }}"><strong>{{ text_where }}</strong></span>';
+		html += 								'</label>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 name_block"><strong>{{ text_sort_filter }}</strong><br /></div>';
+		html += 							'<div class="col-sm-2 name_block"><strong>{{ text_additional }}</strong><br /></div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-compress" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_price }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_price]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_price]" value="0" id="collapse_price' + schet + '" /><label class="coll" for="collapse_price' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_price]" value="1" id="desktop_price' + schet + '" checked="checked" /><label class="coll" for="desktop_price' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_price]" value="1" id="mobile_price' + schet + '" checked="checked" /><label class="coll" for="mobile_price' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_price]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="1" name="gofilter_data[layout' + schet + '][sort_price]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2"></div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 					'<div class="row">';
+		html += 						'<div class="col-sm-2 name_block"><i class="fa fa-sitemap" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_category }}</div>';
+		html += 						'<div class="col-sm-4 status_block">';
+		html += 							'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_category]" value="1"/>';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_category]" value="0" id="collapse_category' + schet + '" /><label class="coll" for="collapse_category' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_category]" value="1" id="desktop_category' + schet + '" checked="checked" /><label class="coll" for="desktop_category' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_category]" value="1" id="mobile_category' + schet + '" checked="checked" /><label class="coll" for="mobile_category' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2 status_block">';
+		html += 							'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_category]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2 status_block cont">';
+		html += 							'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 							'<input type="text" value="2" name="gofilter_data[layout' + schet + '][sort_category]" size="3" id="cont" class="form-control" />';
+		html += 							'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2">';
+		html += 							'<div class="input-group">';
+		html += 								'<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>';
+		html += 								'<select name="gofilter_data[layout' + schet + '][category_type]" class="form-select">';
+		html += 									'<option value="link" selected>{{ text_ajax }}</option>';
+		html += 									'<option value="select">{{ text_select }}</option>';
+		html += 									'<option value="radio">{{ text_radio }}</option>';
+		html += 								'</select>';
+		html += 							'</div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 						'<div class="col-sm-2 name_block"><i class="fa fa-tags" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_keywords }}</div>';
+		html += 						'<div class="col-sm-4 status_block">';
+		html += 							'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_keywords]" value="1" />';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_keywords]" value="0" id="collapse_keywords' + schet + '" /><label class="coll" for="collapse_keywords' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_keywords]" value="1" id="desktop_keywords' + schet + '" checked="checked" /><label class="coll" for="desktop_keywords' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 							'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_keywords]" value="1" id="mobile_keywords' + schet + '" checked="checked" /><label class="coll" for="mobile_keywords' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2 status_block">';
+		html += 							'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_keywords]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2 status_block cont">';
+		html += 							'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 							'<input type="text" value="3" name="gofilter_data[layout' + schet + '][sort_keywords]" size="3" id="cont" class="form-control" />';
+		html += 							'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 						'</div>';
+		html += 						'<div class="col-sm-2"> ';
+		html += 						'<div class="input-group">';
+		html += 							'<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="Разделитель"><i class="fa fa-ellipsis-h"></i></button></span>';
+		html += 							'<select name="gofilter_data[layout' + schet + '][keywords_type]" class="form-select">';
+		html += 								'<option value=" " selected>{{ text_space }}</option>';
+		html += 								'<option value=",">{{ text_comma }}</option>';
+		html += 							'</select>';
+		html += 						'</div>';
+		html += 						'</div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-paperclip" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_manufacturers }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet +'][status_manufacturers]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_manufacturers]" value="0" id="collapse_manufacturers' + schet + '" /><label class="coll" for="collapse_manufacturers' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_manufacturers]" value="1" id="desktop_manufacturers' + schet + '" checked="checked" /><label class="coll" for="desktop_manufacturers' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_manufacturers]" value="1" id="mobile_manufacturers' + schet + '" checked="checked" /><label class="coll" for="mobile_manufacturers' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_manufacturers]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="4" name="gofilter_data[layout' + schet + '][sort_manufacturers]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2">';
+		html += 								'<div class="input-group">';
+		html += 									'<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>';
+		html += 									'<select name="gofilter_data[layout' + schet + '][manufacturers_type]" class="form-select">';
+		html += 										'<option value="select">{{ text_select }}</option>';
+		html += 										'<option value="checkbox" selected>{{ text_checkbox }}</option>';
+		html += 										'<option value="radio">{{ text_radio }}</option>';
+		html += 									'</select>';
+		html += 								'</div>';
+		html += 							'</div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-stack-overflow" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_stock }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_stock]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_stock]" value="0" id="collapse_stock' + schet + '" /><label class="coll" for="collapse_stock' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_stock]" value="1" id="desktop_stock' + schet + '" checked="checked" /><label class="coll" for="desktop_stock' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_stock]" value="1" id="mobile_stock' + schet + '" checked="checked" /><label class="coll" for="mobile_stock' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_stock]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="5" name="gofilter_data[layout' + schet + '][sort_stock]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2">';
+		html += 								'<div class="input-group">';
+		html += 									'<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>';
+		html += 									'<select name="gofilter_data[layout' + schet + '][status_stock_type]" class="form-select">';
+		html += 										'<option value="select">{{ text_select }}</option>';
+		html += 										'<option value="checkbox" selected>{{ text_checkbox }}</option>';
+		html += 										'<option value="radio">{{ text_radio }}</option>';
+		html += 									'</select>';
+		html += 								'</div>';
+		html += 							'</div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-star-half-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_ratings }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_ratings]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_ratings]" value="0" id="collapse_ratings' + schet + '" /><label class="coll" for="collapse_ratings' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_ratings]" value="1" id="desktop_ratings' + schet + '" checked="checked" /><label class="coll" for="desktop_ratings' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_ratings]" value="1" id="mobile_ratings' + schet + '" checked="checked" /><label class="coll" for="mobile_ratings' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_ratings]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="6" name="gofilter_data[layout' + schet + '][sort_ratings]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2">';
+		html += 								'<div class="input-group">';
+		html += 									'<span class="input-group-btn"><button class="btn btn-default" type="button" data-toggle="tooltip" title="{{ text_view }}"><i class="fa fa-eye"></i></button></span>';
+		html += 									'<select name="gofilter_data[layout' + schet + '][ratings_type]" class="form-select">';
+		html += 										'<option value="checkbox" selected>{{ text_checkbox }}</option>';
+		html += 										'<option value="radio">{{ text_radio }}</option>';
+		html += 									'</select>';
+		html += 								'</div>';
+		html += 							'</div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-th-large" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_options }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_options]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_options]" value="0" id="collapse_options' + schet + '" /><label class="coll" for="collapse_options' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_options]" value="1" id="desktop_options' + schet + '" checked="checked" /><label class="coll" for="desktop_options' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_options]" value="1" id="mobile_options' + schet + '" checked="checked" /><label class="coll" for="mobile_options' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_options]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="7" name="gofilter_data[layout' + schet + '][sort_options]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2"></div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-2 name_block"><i class="fa fa-building-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_attributes }}</div>';
+		html += 							'<div class="col-sm-4 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_attributes]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_attributes]" value="0" id="collapse_attributes' + schet + '" /><label class="coll" for="collapse_attributes' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_attributes]" value="1" id="desktop_attributes' + schet + '" checked="checked" /><label class="coll" for="desktop_attributes' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_attributes]" value="1" id="mobile_attributes' + schet + '" checked="checked" /><label class="coll" for="mobile_attributes' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_attributes]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="8" name="gofilter_data[layout' + schet + '][sort_attributes]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2"></div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 					'<div class="col-sm-12 block_checked_filter">';
+		html += 						'<div class="row">';
+		html += 							'<div class="col-sm-3 name_block"><i class="fa fa-building-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ text_block_filter }}</div>';
+		html += 							'<div class="col-sm-3 status_block">';
+		html += 								'<input type="checkbox" id="switching" checked name="gofilter_data[layout' + schet + '][status_filter]" value="1" />';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][collapse_filter]" value="0" id="collapse_filter' + schet + '" /><label class="coll" for="collapse_filter' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_collapse }}"><i class="fa fa-compress"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][desktop_filter]" value="1" id="desktop_filter' + schet + '" checked="checked" /><label class="coll" for="desktop_filter' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_desktop }}"><i class="fa fa-desktop"></i></label></span>';
+		html += 								'<span class="collapsing"><input type="checkbox" name="gofilter_data[layout' + schet + '][mobile_filter]" value="1" id="mobile_filter' + schet + '" checked="checked" /><label class="coll" for="mobile_filter' + schet + '" data-toggle="tooltip" title="" data-original-title="{{ text_help_mobile }}"><i class="fa fa-mobile"></i></label></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block">';
+		html += 								'<input type="checkbox" name="gofilter_data[layout' + schet + '][view_filter]" value="1" checked="checked" id="switching" data-on-text="Column" data-off-text="Content" />';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2 status_block cont">';
+		html += 								'<span class="minus"><i class="fa fa-minus"></i></span>';
+		html += 								'<input type="text" value="9" name="gofilter_data[layout' + schet + '][sort_filter]" size="3" id="cont" class="form-control" />';
+		html += 								'<span class="plus"><i class="fa fa-plus"></i></span>';
+		html += 							'</div>';
+		html += 							'<div class="col-sm-2"></div>';
+		html += 						'</div>';
+		html += 					'</div>';
+		html += 			'</div>';
+		html += 		'</div>';
+		html += 	'</div>';
+		html += 	'<div class="clearfix"></div>';
+		html += 	'<div class="tab-pane tab-setting-option">';
+		html += 		'<fieldset class="border">';
+		html += 			'<div class="col-sm-12">';
+		html += 				'<div class="col-sm-10">';
+		html += 					'<div class="block-information input-group">';
+		html += 						'<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span> ';
+		html +=							'<span class="option_empty_h1' + schet + '">';
+		html +=								'<span class="form-control" style="display: block;">{{ help_text_options }}</span>';
+		html +=								'<span class="form-control" style="display: none;">{{ help_text_options_show }}</span>';
+		html +=							'</span>';
+		html += 						'</span>';
+		html += 					'</div>';
+		html += 				'</div><div class="clearfix"></div><br />';
+		html += 				'<label class="col-sm-4" for="input-caption">';
+		html += 					'<span class="option_empty_text' + schet + '">';
+		html +=							'<span style="display: block">{{ help_text_options_label }}</span>';
+		html +=							'<span style="display: none;">{{ help_text_options_label_hide }}</span>';
+		html +=						'</span>';
+		html += 					'<br /><br /><br />';
+		html += 					'<input type="checkbox" name="gofilter_data[layout' + schet + '][option_empty]" value="1" class="option_empty' + schet + '" data-empty="' + schet + '" id="switching" data-off-text="{{ text_isklushit }}" data-on-text="{{ text_soderjit }}" onChange="replaceTextOption(\'.option_empty' + schet + '\')" />';
+		html += 				'</label>';
+		html += 				'<div class="col-sm-8">';
+		html += 					'<input type="text" name="related-options" value="" placeholder="{{ help_text_options_placeholder }}" id="input-related-options" class="form-control" data-layout="' + schet + '"/>';
+		html += 					'<div id="options-related' + schet + '" class="well well-sm"class="st">';
+		html += 					'</div>';
+		html += 				'</div>';
+		html += 			'</div>';
+		html += 			'<br /><br />';
+		html += 		'</fieldset>';
+		html += 	'</div>';
+		html += 	'<div class="clearfix"></div>';
+		html += 	'<div class="tab-pane tab-setting-attributes">';
+		html += 		'<fieldset class="border">';
+		html += 			'<div class="col-sm-12">';
+		html += 				'<div class="col-sm-12">';
+		html += 					'<div class="block-information input-group">';
+		html += 						'<span class="input-group-addon"><i class="fa fa-info " aria-hidden="true"></i></span>';
+		html +=							'<span class="attrib_empty_h1' + schet + '">';
+		html +=								'<span class="form-control" style="display: block;">{{ help_text_attrib }}</span>';
+		html +=								'<span class="form-control" style="display: none;">{{ help_text_attrib_show }}</span>';
+		html +=							'</span>';
+		html += 					'</div>';
+		html += 				'</div><div class="clearfix"></div><br />';
+		html += 				'<label class="col-sm-4" for="input-caption">';
+		html += 					'<span class="attrib_empty_text' + schet + '">';
+		html +=							'<span style="display: block">{{ help_text_attrib_label }}</span>';
+		html +=							'<span style="display: none;">{{ help_text_attrib_label_hide }}</span>';
+		html +=						'</span>';
+		html += 					'<br /><br /><br />';
+		html += 					'<input type="checkbox" name="gofilter_data[layout' + schet + '][attrib_empty]" value="1" class="attrib_empty' + schet + '" data-empty="' + schet + '" id="switching" data-off-text="{{ text_isklushit }}" data-on-text="{{ text_soderjit }}" onChange="replaceTextAttr(\'.attrib_empty' + schet + '\')" />';
+		html += 				'</label>';
+		html += 				'<div class="col-sm-8">';
+		html += 					'<input type="text" name="related-attributes" value="" placeholder="{{ help_text_attrib_placeholder }}" id="input-related-attributes" class="form-control" data-layout="' + schet + '"/>';
+		html += 					'<div id="attributes-related' + schet + ' class="well well-sm st">';
+		html += 					'</div>';
+		html += 				'</div>';
+		html += 			'</div>';
+		html += 			'<br /><br />';
+		html += 		'</fieldset>';
+		html += 	'</div>';
+		html += 	'</div>';
+		html += 	'</div>';
+
+		$('#end_layout_filter').after(html);
+		
+		$('ul.nav.nav-tabs.left > li').removeClass('active');
+		
+		$('ul.nav.nav-tabs.left').append(html_tabs);
+		
+		$('{{ "#" }}block_option' + schet).trigger('click');
+		
+		$.getScript('view/javascript/gofilter/bootstrap-switch.min.js');
+		$.getScript('view/javascript/gofilter/highlight.js');
+		$.getScript('view/javascript/gofilter/main.js');
+		
+		$('.delete-icon .fa').click(function () {
+			$(this).parent().parent().find('input#edit_name_layout').attr('value', '').focus();
+		});
+		
+		tabs_js();
+		
+		generetion_autocomplete();
+		generetion_category();
+		generetion_ajax_parametr();
+	
+	}
+$('.delete-icon .fa').click(function () {
+	$(this).parent().parent().find('input#edit_name_layout').attr('value', '').focus();
+});
+function replaceTextAttr(classs) {
+	$('.attrib_empty_text' + $(classs).attr('data-empty') + ' span').slideToggle(0);
+	$('.attrib_empty_h1' + $(classs).attr('data-empty') + ' span').slideToggle(0);
+}
+function replaceTextOption(classs) {
+	$('.option_empty_text' + $(classs).attr('data-empty') + ' span').slideToggle(0);
+	$('.option_empty_h1' + $(classs).attr('data-empty') + ' span').slideToggle(0);
+}
+//--></script>
+<style>
+.input-group .btn {
+	padding: 5px 13px;
+}
+.input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group {
+    margin-right: -2px;
+}
+.st {
+	height: 150px;
+	overflow: auto;
+}
+.st2 {
+	width: 100%; min-height: 400px;
+}
+.fs10 {
+	 font-size: 10px;
+}
+.fn {
+	font-weight: normal;
+}
+.hd {
+	display: none;
+}
+</style>
+{% endif %}
+<style type="text/css">
+.input-group .btn {
+	padding: 5px 13px;
+}
+.input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group {
+    margin-right: -2px;
+}
+.redcolor {
+	color: red;
+}
+.new-red {
+	background: #fff;
+    color: red;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 7px;
+    position: absolute;
+    right: -10px;
+    top: -7px;
+	display: block;
+}
+ul.block li.active {
+	position: relative;
+}
+
+.block-information .input-group-addon {
+	position: relative;
+}
+.block-information .input-group-addon .new-red {
+	right: -5px;
+}
+</style>
+{{ footer }}

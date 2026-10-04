@@ -1,0 +1,294 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			<div class="panel-body">
+				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+						<div class="col-sm-10">
+							<input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+							{% if error_name %}
+								<div class="text-danger">{{ error_name }}</div>
+							{% endif %}
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-name">{{ entry_title }}</label>
+						<div class="col-sm-10">
+							<ul class="nav nav-tabs">
+								{% for lang in languages %}
+									<li><a href="#module-title-{{ lang.language_id }}" data-toggle="tab"><img src="language/{{ lang.code }}/{{ lang.code }}.png" title="{{ lang.name }}" /></a></li>
+								{% endfor %}
+							</ul>
+							<div class="tab-content">
+								{% for lang in languages %}
+									<div id="module-title-{{ lang.language_id }}" class="tab-pane">
+										<input type="text" name="title[{{ lang.language_id }}]" value="{{ title[lang.language_id] }}" placeholder="{{ text_example_title }}" class="form-control" />
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-banner">{{ entry_menu_items }}</label>
+						<div class="col-sm-10">
+							<ul class="nav nav-tabs">
+								{% for lang in languages %}
+									<li><a href="#item-{{ key }}-{{ lang.language_id }}" data-toggle="tab"><img src="language/{{ lang.code }}/{{ lang.code }}.png" title="{{ lang.name }}" /></a></li>
+								{% endfor %}
+							</ul>
+							<div class="tab-content">
+								{% for lang in languages %}
+									{% set lang_id = lang.language_id %}
+								
+									<div id="item-{{ key }}-{{ lang.language_id }}" class="tab-pane">
+										{% for key, item in items %}
+											{% if item.title[lang_id] %}
+											<div class="menu-wrapper" data-key="{{ key }}">
+												<div class="first-level" data-key="{{ key }}"> 
+													<div id="f-{{ key }}-{{ lang_id }}" class="input-group">
+														<input type="text" name="items[{{ key }}][title][{{ lang_id }}]" value="{{ item.title[lang_id] }}" class="form-control" placeholder="Заголовок" />
+														<input type="text" name="items[{{ key }}][link][{{ lang_id }}]" value="{{ item.link[lang_id] }}" class="form-control" placeholder="Ссылка" />
+														<input type="text" name="items[{{ key }}][sort][{{ lang_id }}]" value="{{ item.sort[lang_id] ? item.sort[lang_id] : 0 }}" class="form-control" placeholder="Сортировка" />
+														<span class="input-group-addon" onclick="deteteItem(this, 1)"><i class="fa fa-times"></i></span>
+													</div>
+													<div class="get-links" onclick="popupLinks($(this).prev().attr('id'), -1, {{ lang_id }})">{{ text_select_link }}</div>
+													{% for key1, item1 in item.child %}
+														{% if item1.title[lang_id] %}
+														<div class="second-level" data-key="{{ key1 }}">
+															<div id="s-{{ key }}-{{ key1 }}-{{ lang_id }}" class="input-group">
+																<input type="text" name="items[{{ key }}][child][{{ key1 }}][title][{{ lang_id }}]" value="{{ item1.title[lang_id] }}" class="form-control" placeholder="Заголовок" />
+																<input type="text" name="items[{{ key }}][child][{{ key1 }}][link][{{ lang_id }}]" value="{{ item1.link[lang_id] }}" class="form-control" placeholder="Ссылка" />
+																<input type="text" name="items[{{ key }}][child][{{ key1 }}][sort][{{ lang_id }}]" value="{{ item1.sort[lang_id] ? item1.sort[lang_id] : 0 }}" class="form-control" placeholder="Сортировка" />
+																<span class="input-group-addon" onclick="deteteItem(this, 0)"><i class="fa fa-times"></i></span>
+															</div>
+															<div class="get-links" onclick="popupLinks($(this).prev().attr('id'), -1, {{ lang_id }})">{{ text_select_link }}</div>
+															{% for key2, item2 in item1.child %}
+																{% if item2.title[lang_id] %}
+																<div class="third-level" data-key="{{ key2 }}">
+																	<div id="t-{{ key }}-{{ key1 }}-{{ key2 }}-{{ lang_id }}" class="input-group">
+																		<input type="text" name="items[{{ key }}][child][{{ key1 }}][child][{{ key2 }}][title][{{ lang_id }}]" value="{{ item2.title[lang_id] }}" class="form-control" placeholder="Заголовок" />
+																		<input type="text" name="items[{{ key }}][child][{{ key1 }}][child][{{ key2 }}][link][{{ lang_id }}]" value="{{ item2.link[lang_id] }}" class="form-control" placeholder="Ссылка" />
+																		<input type="text" name="items[{{ key }}][child][{{ key1 }}][child][{{ key2 }}][sort][{{ lang_id }}]" value="{{ item2.sort[lang_id] ? item2.sort[lang_id] : 0 }}" class="form-control" placeholder="Сортировка" />
+																		<span class="input-group-addon" onclick="deteteItem(this, 0)"><i class="fa fa-times"></i></span>
+																	</div>
+																	<div class="get-links" onclick="popupLinks($(this).prev().attr('id'), -1, {{ lang_id }})">{{ text_select_link }}</div>
+																</div>
+																{% endif %}
+															{% endfor %}
+															<div class="third-level b">
+																<button type="button" onclick="addThird(this, {{ lang.language_id }})" class="btn btn-sm btn-info">{{ text_add_third_level }}</button>
+															</div>
+														</div>
+														{% endif %}
+													{% endfor %}
+													<div class="second-level b">
+														<button type="button" onclick="addSecond(this, {{ lang.language_id }})" class="btn btn-sm btn-success">{{ text_add_second_level }}</button>
+													</div>
+												</div>
+											</div>
+											{% endif %}
+										{% endfor %}
+										<button type="button" onclick="addFirst(this, {{ lang.language_id }})" class="btn btn-sm btn-primary">{{ text_add_first_level }}</button>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">{{ entry_categories }}</label>
+						<div class="col-sm-10">
+							<div class="well well-sm" style="height: 200px; overflow: auto;">
+								<div class="checkbox">
+									<label><input type="checkbox" name="categories[]" value="-1" {{ -1 in selected_categories ? 'checked="checked"' }}>  {{ text_all_categories }}</label>
+								</div>
+								<hr style="margin:10px 0 5px;border-color:#ccc" />
+								{% for category in categories %}
+									<div class="checkbox">
+										<label><input type="checkbox" name="categories[]" value="{{ category.category_id }}" {{ category.category_id in selected_categories ? 'checked="checked"' }}>  {{ category.name }}</label>
+									</div>
+								{% endfor %}
+                            </div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">{{ entry_stores }}</label>
+						<div class="col-sm-10">
+							<div class="well well-sm" style="height: 150px; overflow: auto;">
+								{% for store in stores %}
+									<div class="checkbox">
+										<label><input type="checkbox" name="stores[]" value="{{ store.store_id }}" {{ store.store_id in selected_stores or stores|length == 1 ? 'checked="checked"' }}>  {{ store.name }}</label>
+									</div>
+								{% endfor %}
+                            </div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">{{ entry_hide_on_mobile }}</label>
+						<div class="col-sm-10">
+							<select name="hide_on_mobile" id="hide_on_mobile" class="form-control">
+								<option value="0" {{ hide_on_mobile == 0 ? 'selected="selected"' }}>{{ text_disabled }}</option>
+								<option value="1" {{ hide_on_mobile ? 'selected="selected"' }}>{{ text_enabled }}</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+						<div class="col-sm-10">
+							<select name="status" id="input-status" class="form-control">
+								<option value="1" {{ status ? 'selected="selected"' }}>{{ text_enabled }}</option>
+								<option value="0" {{ status == 0 ? 'selected="selected"' }}>{{ text_disabled }}</option>
+							</select>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="popup-links">
+	<div id="modal-links" class="modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">{{ entry_select_link }}</h4>
+				</div>
+				<div class="modal-body"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+	button, select, .btn, .btn:active, .btn:hover, .btn:focus, .nav-tabs .li{outline:none !important;-moz-user-select:none !important;-webkit-user-select:none !important}
+	.menu-wrapper{background:#f7f7f7;margin:0 0 25px;padding:15px;border-radius:6px}
+	.menu-wrapper > div input:nth-child(1), .menu-wrapper > div input:nth-child(2){width:calc(50% - 60px)}
+	.menu-wrapper > div input:nth-child(3) {width:120px}
+	.second-level, .third-level{margin:0 0 0 24px}
+	.get-links{padding:5px 0 15px;text-decoration:underline dotted;color:#f00;font-size:.85em;cursor:pointer}
+	.third-level .get-links {padding:5px 0 0}
+	.input-group-addon{cursor:pointer}
+	.menu-wrapper .second-level{padding:10px;background:rgba(0 0 0 / .02)}
+	.menu-wrapper .third-level{padding:10px;background:rgba(0 0 0 / .02)}
+	#modal-links .heading{padding:0 0 10px;font-weight:700}
+	#modal-links .popup-links li {line-height:1.7em;cursor:pointer}
+	
+	@media(min-width:767px) {
+		.second-level, .third-level{position:relative}
+		.second-level:not(.b):before, .third-level:not(.b):before{position:absolute;left:-20px;top:18px;font-weight:700;content:'•'}
+	}
+</style>
+<script>
+	$(function() {
+		$('.nav-tabs').each(function() {
+			$(this).find('li:first a').tab('show');
+		});
+	});
+	
+	function addFirst(elem, lang_id) {
+		const key = typeof($(elem).prev().data('key')) == 'undefined' ? 0 : parseFloat($(elem).prev().data('key')) + 1;
+	
+		html = '<div class="menu-wrapper" data-key="'+key+'">';
+		html += '<div class="first-level" data-key="'+key+'">';
+		html += '<div id="t-'+key+'-'+lang_id+'" class="input-group">';
+		html += '<input type="text" name="items['+key+'][title]['+lang_id+']" value="" class="form-control" placeholder="Заголовок" />';
+		html += '<input type="text" name="items['+key+'][link]['+lang_id+']" value="" class="form-control" placeholder="Ссылка" />';
+		html += '<input type="text" name="items['+key+'][sort]['+lang_id+']" value="" class="form-control" placeholder="Сортировка" />';
+		html += '<span class="input-group-addon" onclick="deteteItem(this, 1)"><i class="fa fa-times"></i></span>';
+		html += '</div>';
+		html += '<div class="get-links" onclick="popupLinks($(this).prev().attr(\'id\'), -1, '+lang_id+')">{{ text_select_link }}</div>';
+		html += '<div class="second-level b">';
+		html += '<button type="button" onclick="addSecond(this, '+lang_id+')" class="btn btn-sm btn-success">{{ text_add_second_level }}</button>';
+		html += '</div>';
+		html += '</div>';
+		html += '</div>';
+
+		$(elem).before(html)
+	};
+	
+	function addSecond(elem, lang_id) {
+		const key = $(elem).closest('.first-level').data('key'),
+			  key1 = typeof($(elem).parent().prev().data('key')) == 'undefined' ? 0 : parseFloat($(elem).parent().prev().data('key')) + 1;
+			  
+		html = '<div class="second-level" data-key="'+key1+'">';
+		html += '<div id="s-'+key+'-'+key1+'-'+lang_id+'" class="input-group">';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][title]['+lang_id+']" value="" class="form-control" placeholder="Заголовок" />';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][link]['+lang_id+']" value="" class="form-control" placeholder="Ссылка" />';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][sort]['+lang_id+']" value="" class="form-control" placeholder="Сортировка" />';
+		html += '<span class="input-group-addon" onclick="deteteItem(this, 0)"><i class="fa fa-times"></i></span>';
+		html += '</div>';
+		html += '<div class="get-links" onclick="popupLinks($(this).prev().attr(\'id\'), -1, '+lang_id+')">{{ text_select_link }}</div>';
+		html += '<div class="third-level b">';
+		html += '<button type="button" onclick="addThird(this, '+lang_id+')" class="btn btn-sm btn-info">{{ text_add_third_level }}</button>';
+		html += '</div>';
+		html += '</div>';
+
+		$(elem).parent().before(html);
+	};
+	
+	function addThird(elem, lang_id) {
+		const key = $(elem).closest('.first-level').data('key'),
+			  key1 = $(elem).closest('.second-level').data('key'),
+			  key2 = typeof($(elem).parent().prev().data('key')) == 'undefined' ? 0 : parseFloat($(elem).parent().prev().data('key')) + 1;
+	
+		html = '<div class="third-level" data-key="'+key2+'">';
+		html += '<div id="t-'+key+'-'+key1+'-'+key2+'-'+lang_id+'" class="input-group">';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][child]['+key2+'][title]['+lang_id+']" value="" class="form-control" placeholder="Заголовок" />';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][child]['+key2+'][link]['+lang_id+']" value="" class="form-control" placeholder="Ссылка" />';
+		html += '<input type="text" name="items['+key+'][child]['+key1+'][child]['+key2+'][sort]['+lang_id+']" value="" class="form-control" placeholder="Сортировка" />';
+		html += '<span class="input-group-addon" onclick="deteteItem(this, 0)"><i class="fa fa-times"></i></span>';
+		html += '</div>';
+		html += '<div class="get-links" onclick="popupLinks($(this).prev().attr(\'id\'), -1, '+lang_id+')">{{ text_select_link }}</div>';
+		html += '</div>';
+
+		$(elem).parent().before(html);
+	};
+	
+	function deteteItem(elem, flag) {
+		if(flag){
+			$(elem).parent().parent().parent().remove();
+		} else {
+			$(elem).parent().parent().remove();
+		}
+	}
+	
+	function popupLinks(elem, store_id, lang_id) {
+		$('#modal-links .modal-body').load('index.php?route=extension/module/uni_custom_menu_v2/getLinks&elem='+elem+'&store_id='+store_id+'&lang_id='+lang_id+'&{{ token}}', function() {
+			$('#modal-links').modal('show');
+		});
+	}
+	
+	$(document).on('click', '.popup-links.links li span', function() {
+		$('#'+$(this).data('elem')+' input:eq(0)').val($(this).data('title'));
+		$('#'+$(this).data('elem')+' input:eq(1)').val($(this).data('link'));
+				
+		$('#modal-links').modal('hide');
+		$('#modal-links .modal-body').html('')
+	});
+	
+</script>
+{{ footer }}

@@ -1,0 +1,23 @@
+{% if banners %}
+	<script>
+		const windowWidth = $(window).width();
+		
+		{% for i, banner in banners %}
+			{% set banner_style = banner.image ? 'style="max-height:'~banner.height~'px"' %}
+			
+			let html_{{ i }} = '<div class="banner-in-category id-{{ banner.banner_id }} uni-href" data-href="{{ banner.href }}">';
+			{% if banner.image %}html_{{ i }} += '<img src="{{ banner.image }}" class="banner-in-category__img img-responsive" {{ banner_style }} />';{% endif %}
+			{% if banner.description or banner.button %}
+				html_{{ i }} += '<div class="banner-in-category__wrap">';
+				html_{{ i }} += '<div class="banner-in-category__description">{{ banner.description }}</div>';
+				{% if banner.button %}html_{{ i }} += '<button class="banner-in-category__btn btn btn-lg btn-primary uni-href" data-href="{{ banner.href }}">{{ banner.button }}</button>';{% endif %}
+				html_{{ i }} += '</div>';
+			{% endif %}
+			html_{{ i }} += '</div>';
+	
+			if(windowWidth > 992) {
+				$('.products-block .product-layout:eq('+(((windowWidth >= 1585) ? {{ banner.position2 }} : {{ banner.position }})-1)+')').before(html_{{ i }});
+			}
+		{% endfor %}
+	</script>
+{% endif %}

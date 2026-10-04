@@ -1,0 +1,69 @@
+<div class="battery-wizard-container">
+    <div id="w-step-1" class="w-step">
+        <h3 class="w-title">Подбор по марке автомобиля</h3>
+        <div class="w-grid brands">
+            {% for brand in popular_brands %}
+            <div class="w-item brand-box" onclick="wLoadModels('{{ brand.name }}')">
+                <img src="{{ brand.image }}" alt="{{ brand.name }}">
+                <span>{{ brand.name }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="w-more-brands" style="display:none;" class="w-grid brands mt-3">
+            {% for brand in other_brands %}
+            <div class="w-item brand-box" onclick="wLoadModels('{{ brand.name }}')">
+                <img src="{{ brand.image }}" alt="{{ brand.name }}">
+                <span>{{ brand.name }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="w-btn-more" onclick="$('#w-more-brands').slideToggle()">Все марки</button>
+    </div>
+
+    <div id="w-step-2" class="w-step" style="display:none;">
+        <h3 class="w-title"><span class="w-back" onclick="wBack(1)">←</span> Модели <span id="w-cur-brand"></span></h3>
+        <div id="w-models" class="w-grid models"></div>
+    </div>
+
+    <div id="w-step-3" class="w-step" style="display:none;">
+        <h3 class="w-title"><span class="w-back" onclick="wBack(2)">←</span> Выберите кузов/поколение</h3>
+        <div id="w-gens" class="w-grid gens"></div>
+    </div>
+</div>
+
+<style>
+.battery-wizard-container { background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+.w-title { font-weight: bold; margin-bottom: 20px; color: #333; }
+.w-back { color: #e31e24; cursor: pointer; font-size: 24px; vertical-align: middle; margin-right: 10px; }
+.w-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+.w-grid.gens { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.w-item { border: 1px solid #f0f0f0; padding: 10px; text-align: center; cursor: pointer; border-radius: 8px; transition: 0.2s; background: #fff; }
+.w-item:hover { border-color: #e31e24; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.brand-box img { max-width: 60px; height: 50px; object-fit: contain; margin-bottom: 5px; }
+.gens img { width: 100%; border-radius: 5px; margin-bottom: 10px; }
+.w-btn-more { display: block; margin: 20px auto 0; background: none; border: 1px solid #ccc; padding: 5px 20px; border-radius: 20px; color: #666; }
+</style>
+
+<script>
+let sel = { b: '', m: '' };
+function wLoadModels(b) {
+    sel.b = b; $('#w-cur-brand').text(b);
+    $.get('index.php?route=extension/module/battery_filter/getModels', {brand: b}, function(data) {
+        let h = ''; data.forEach(i => { h += `<div class="w-item" onclick="wLoadGens('${i.model}')"><b>${i.model}</b></div>`; });
+        $('#w-models').html(h); $('.w-step').hide(); $('#w-step-2').fadeIn();
+    });
+}
+function wLoadGens(m) {
+    sel.m = m;
+    $.get('index.php?route=extension/module/battery_filter/getGenerations', {brand: sel.b, model: m}, function(data) {
+        let h = ''; data.forEach(i => { h += `<div class="w-item" onclick="wGo('${i.name}')"><img src="${i.image}"><div>${i.name}</div></div>`; });
+        $('#w-gens').html(h); $('.w-step').hide(); $('#w-step-3').fadeIn();
+    });
+}
+function wGo(g) {
+    $.get('index.php?route=extension/module/battery_filter/getResult', {brand: sel.b, model: sel.m, gen: g}, function(json) {
+        if(json.redirect) location.href = json.redirect;
+    });
+}
+function wBack(s) { $('.w-step').hide(); $('#w-step-' + s).fadeIn(); }
+</script>

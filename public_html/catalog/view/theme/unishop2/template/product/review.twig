@@ -1,0 +1,140 @@
+<div>
+{% if reviews %}
+	<div class="review-list">
+		{% if review_images %}
+			<div class="review-list__all-review-images owl-carousel">
+				{% for key, image in review_images %}
+					<div class="review-list__all-review-image">
+						<img src="{{ image.thumb }}" alt="" class="img-responsive" width="80" height="80" />
+					</div>
+				{% endfor %}
+				{% if show_all_review_images %}
+					<div class="review-list__all-review-image-text">
+						{% set lastImg = review_images|last %}
+						<img src="{{ lastImg.thumb }}"  alt="" class="img-responsive" width="80" height="80" /><span>{{ text_show_all_review_images }}</span>
+					</div>
+				{% endif %}
+			</div>
+			<script>
+				const allReviewImagesBlock = '.review-list__all-review-images', thisWidth = $(allReviewImagesBlock).closest('.tab-content').outerWidth() - 10, items = {0:{items:3}, 450:{items:4}, 650:{items:8}, 1050:{items:12}, 1600:{items:15}};
+			
+				$(allReviewImagesBlock).owlCarousel({
+					responsive: items,
+					responsiveBaseElement: $(allReviewImagesBlock),
+					dots: false,
+					nav: true,
+					navText: ['<i class="fa fa-chevron-left"></i>', '<i class="fa fa-chevron-right"></i>']
+				});
+				
+				if($(allReviewImagesBlock).width() <= 0) {
+					let match = -1;
+					
+					$.each(items, (breakpoint) => {
+						if (breakpoint <= thisWidth && breakpoint > match) {
+							match = Number(breakpoint);
+						}
+					});
+					
+					const item_length = $(allReviewImagesBlock+' .owl-item').length, item_width = thisWidth / items[match]['items'];
+					
+					$(allReviewImagesBlock+' .owl-stage').css({width: item_width * item_length});
+					$(allReviewImagesBlock+' .owl-item').css({width: item_width});
+				}
+			</script>
+		{% endif %}
+		{% for review in reviews %}
+			<div class="review-list__item uni-item {{ votes_status and review.most_popular ? 'popular' }}">
+				<div class="review-list__info">
+					<div class="review-list__rating rating"> 
+						{% for i in 1..5 %}
+							<i class="{{ review.rating < i ? 'far' : 'fa' }} fa-star"></i>
+						{% endfor %}
+					</div>
+					<div class="review-list__name">{{ review.author }}</div>
+					<div class="review-list__date">{{ review.date_added }}</div>
+					{% if review.real_buyer %}
+						<div class="review-list__real-buyer">{{ text_real_buyer }}</div>
+					{% endif %}
+					{% if votes_status %}
+						<div class="review-list__votes">
+							<i class="review-list__icon fas fa-thumbs-up" data-id="{{ review.review_id }}" data-vote="plus"></i><span class="review-list__votes-plus-qty">{{ review.votes_plus }}</span>
+							<i class="review-list__icon fas fa-thumbs-down" data-id="{{ review.review_id }}" data-vote="minus"></i><span class="review-list__votes-minus-qty">{{ review.votes_minus }}</span>
+						</div>
+					{% endif %}
+				</div>
+				<div class="review-list__info-text">
+					{% if review.plus %}
+						<div class="review-list__plus">
+							<div class="review-list__plus-heading">{{ text_review_plus }}</div>
+							{{ review.plus }}
+						</div>
+					{% endif %}
+					{% if review.minus %}
+						<div class="review-list__minus">
+							<div class="review-list__minus-heading">{{ text_review_minus }}</div>
+							{{ review.minus }}
+						</div>
+					{% endif %}
+					<div class="review-list__comment">
+						{% if review.plus or review.minus %}<div class="review-list__comment-heading">{{ text_review_comment }}</div>{% endif %}
+						{{ review.text }}
+					</div>
+					{% if review.admin_reply %} 
+						<div class="review-list__reply">
+							<div class="review-list__reply-heading">{{ text_admin_reply }}</div>
+							{{ review.admin_reply }}
+						</div>
+					{% endif %}
+					{% if review.images %}
+						<div class="review-list__images">
+							{% for image in review.images %}
+								<img src="{{ image.thumb }}" data-thumb="{{ image.thumb }}" data-popup="{{ image.popup }}" alt="" />&nbsp;&nbsp;
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+				{% if votes_status and review.most_popular %}
+					<div><span class="review-list__popular-text {{ review.plus is empty and review.minus is empty ? 'static' }}">{{ text_most_popular_review }}</span></div>
+				{% endif %}
+			</div>
+		{% endfor %}
+		{% if review_show_more %}
+			<div class="show-more-review">
+				<button class="show-more-review__btn btn btn-xl btn-default"><span>{{ button_show_more_reviews }}</span></button>
+			</div>
+			<script>
+				$(function() {
+					$('.show-more-review__btn').on('click', function() {
+						$.get('index.php?route=product/uni_reviews/getReviewsRender&pid={{ product_id}}&start={{ start }}&limit={{ limit }}', (data) => {
+							const $data = $(data);
+				
+							$data.find('.review-list__item').hide();
+				
+							$('.review-list').append($data.find('.review-list').html());
+					
+							$(this).parent().remove();
+					
+							$('.review-list__item').fadeIn();
+						});
+					});
+				});
+			</script>
+		{% endif %}
+		{% if review_image_status %}
+			<div class="review-list__popup">
+				<div class="review-list__popup-header">
+					<div class="review-list__popup-title"></div>
+					<i class="review-list__popup-close fas fa-times"></i>
+				</div>
+				<div class="review-list__popup-full"></div>
+				<div class="review-list__popup-thumbs"></div>
+			</div>
+			{% if review_images %}
+				<script>var uniAllReviewImages = atob('{{ all_review_images }} ');</script>
+			{% endif %}
+		{% endif %}
+	</div>
+{% else %}
+	<p>{{ text_no_reviews }}</p>
+{% endif %}
+</div>

@@ -1,0 +1,21 @@
+<?php
+$_['heading_title'] = '<b>UniShop2</b> - Custom menu v2';
+$_['text_extension'] = 'Modules';
+$_['text_success'] = 'Module settings have been successfully changed';
+$_['text_edit'] = 'Editing';
+$_['text_select_link'] = 'Select a link from the additional menu links from the template settings';
+$_['text_add_first_level'] = 'Add a first level item';
+$_['text_add_second_level'] = 'Add a second level item';
+$_['text_add_third_level'] = 'Add a third level item';
+$_['text_links_not_found'] = 'No links found';
+$_['text_all_categories'] = 'All pages/layouts to which the module is added';
+$_['entry_name'] = 'Module name';
+$_['entry_title'] = 'Module header on the catalog';
+$_['entry_menu_items'] = 'Menu items';
+$_['entry_categories'] = 'Categories';
+$_['entry_stores'] = 'Stores';
+$_['entry_hide_on_mobile'] = 'Hide on mobile';
+$_['entry_status'] = 'Status';
+$_['entry_select_link'] = 'Link selection';
+$_['error_permission'] = 'Warning: You do not have enough rights to edit the module!';
+$_['error_name'] = 'The module name must be between 3 and 64 characters long!';

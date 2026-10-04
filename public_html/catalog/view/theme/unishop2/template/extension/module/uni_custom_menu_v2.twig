@@ -1,0 +1,84 @@
+{% if items %}
+	{% if heading_title %}
+		<div class="heading">{{ heading_title }}</div>
+	{% endif %}
+	{% if position %}
+		{% if items|length > 1 %}
+			<ul class="nav nav-tabs">
+				{% for key, item in items %}
+					<li {{ key == 0 ? 'class="active"' }}><a href="#custom-menu-v2-{{ key }}-{{ module }}" data-toggle="tab">{{ item.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+		<div class="tab-content">
+			{% for key, item in items %}
+				<div id="custom-menu-v2-{{ key }}-{{ module }}" class="tab-pane {{ key == 0 ? 'active' }}">
+					<div class="custom-menu-v2-tabs">
+						{% if item.link  %}
+							<a href="{{ item.link }}" class="custom-menu-v2-tabs__a">{{ item.title }}</a>
+						{% endif %}
+						{% if item.child %}
+							{% for child in item.child %}
+								<ul class="custom-menu-v2-tabs__ul">
+									<li>
+										<a href="{{ child.link }}" class="custom-menu-v2-tabs__children-a {{ child.link is empty ? 'disabled' }}">{{ child.title }}</a>
+										{% if child.child %}
+											<ul class="custom-menu-v2-tabs__children2">
+												{% for child in child.child %}
+													<li><a href="{{ child.link }}" class="custom-menu-v2-tabs__children2-a">{{ child.title }}</a></li>
+												{% endfor %}
+											</ul>
+										{% endif %}
+									</li>
+								</ul>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<nav class="custom-menu-v2 custom-menu-v2-{{ module }}">
+			<ul class="custom-menu-v2__ul">
+				{% for item in items %}
+					<li class="custom-menu-v2__li">
+						<a href="{{ item.link }}" class="custom-menu-v2__a">
+							{{ item.title }}
+							{% if item.child %}
+							<span class="custom-menu-v2__pm">
+								<i class="fas fa-minus"></i>
+								<i class="fas fa-plus"></i>
+							</span>
+						{% endif %}
+						</a> 
+						{% if item.child %}
+							<ul class="custom-menu-v2__children collapse">
+								{% for child in item.child %}
+									<li>
+										<a href="{{ child.link }}" class="custom-menu-v2__children-a">{{ child.title }}</a>
+										{% if child.child %}
+											<ul class="custom-menu-v2__children2">
+												{% for child in child.child %}
+													<li><a href="{{ child.link }}" class="custom-menu-v2__children2-a">{{ child.title }}</a></li>
+												{% endfor %}
+											</ul>
+										{% endif %}
+									</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</nav>
+		<script>
+			$(function() {
+				$('.custom-menu-v2-{{ module }} span').on('click', function(e){
+					e.preventDefault();
+					$(this).toggleClass('open');
+					$(this).parent().next().collapse('toggle');
+				});
+			});
+		</script>
+	{% endif %}
+{% endif %}

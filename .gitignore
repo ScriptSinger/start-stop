@@ -1,0 +1,47 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+
+# Local OpenCart configuration (contains database credentials)
+public_html/config.php
+public_html/admin/config.php
+
+# Database dumps and imported/exported business data
+dump.sql
+baza/
+myprice.txt
+public_html/price/
+public_html/temp_import/
+
+# Runtime data, caches, logs, sessions, generated modifications and uploads
+storage/
+public_html/system/storage/
+public_html/image/
+public_html/image/cache/
+public_html/upload/
+public_html/ocstore/upload/
+
+# Generated theme/PWA assets
+public_html/catalog/view/theme/unishop2/stylesheet/generated*.css
+public_html/catalog/view/theme/unishop2/js/merged*.js
+public_html/catalog/view/theme/unishop2/js/install-sw*.js
+public_html/catalog/view/theme/unishop2/manifest/manifest*.json
+public_html/uni-sw.*.js
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and temporary files
+*.log
+tmp/
+temp/

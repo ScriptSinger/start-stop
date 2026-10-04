@@ -1,0 +1,162 @@
+.panel-footer-afilter {
+    padding: 10px 15px;
+    border-top: 1px solid #ddd;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+.afilter-checkbox {
+    padding: 0 12px;
+}
+.afilter-group-item {
+    padding: 10px 15px;
+}
+.afilter-label {
+    position: absolute;
+    right: 12px;
+    font-size: 9px;
+    vertical-align: middle;
+    line-height: 14px;
+    margin-top: 1px;
+}
+.checkbox label.disabled {
+    cursor: not-allowed;
+    color: #a9a9a9;
+}
+#auto-filter-mobile {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    z-index: 1000;
+    width: 300px;
+    left: -300px;
+    background: #fff;
+    transition: left 300ms ease;
+}
+#auto-filter-mobile.show-mobile-menu {
+    left: 0;
+}
+#auto-filter-mobbutton {
+    position: absolute;
+    left: 100%;
+    top: 90px;
+}
+#auto-filter-mobbutton button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+#auto-filter-mobbutton button:focus {
+    outline: 0;
+}
+.auto-filter-mobbody {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.closebtn {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 32px;
+    margin-left: 50px;
+    z-index: 11;
+}
+.auto-filter-mobbody .panel-heading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    z-index: 10;
+    border-right: 1px solid #ddd;
+}
+.auto-filter-mobbody .panel-heading, .auto-filter-mobbody .panel {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.auto-filter-mobbody .panel-body {
+    margin-top: 40px;
+}
+.panel-footer-afilter .btn-group {
+    margin-right: 10px;
+}
+.clear-filter {
+    cursor: pointer;
+}
+
+/*
+	STYLE SHEET FOR JQUERY LISTNAV PLUGIN V 3.0.0, 11/22/2017
+	For more information, visit http://esteinborn.github.com/jquery-listnav
+*/
+.listNav {
+    min-height: 20px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    padding: 12px;
+    border-radius: 3px;
+}
+.listNav,
+.ln-letters {
+    overflow: hidden;
+}
+.listNavHide {
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+.letterCountShow {
+    display: block;
+}
+
+.ln-letters a {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    user-select: none;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    margin: 0 2px 2px 0;
+}
+
+.ln-letters .ln-last {
+    border-right: 1px solid silver;
+}
+
+.ln-letters a:hover,
+.ln-letters .ln-selected {
+    background-color: #eaeaea;
+}
+
+.ln-letters .ln-disabled {
+    color: #ccc;
+}
+
+.ln-letter-count {
+    color: #336699;
+    font-size: .8em;
+    left: 0;
+    line-height: 1.35;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 20px;
+}
+.custom-scroll {
+    max-height: 260px;
+}

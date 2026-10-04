@@ -1,0 +1,35 @@
+{% if rating_type %}
+	{% if product.rating is defined %}
+		{% if rating_type == 2 %}
+			<div class="product-thumb__rating rating uni-href" data-href="{{ product.href }}#tab-review">
+				{% for i in 1..5 %}
+					<i class="{{ product.rating < i ? 'far' : 'fas' }} fa-star"></i>
+				{% endfor %}
+				{% if product.rating %}<span class="product-thumb__rating-text">{{ product.text_reviews }}</span>{% endif %}
+			</div>
+		{% elseif show_rating %}
+			<div class="product-thumb__rating rating uni-href" data-href="{{ product.href }}#tab-review">
+				{% if product.rating_new %}
+					<i class="fas fa-star"></i>{{ product.rating_new|number_format(1) }} <i class="fas fa-comment"></i><span class="product-thumb__rating-text">{{ product.text_reviews }}</span>
+				{% endif %}
+			</div>
+		{% endif %}
+	{% else %}
+		{% set class = rating_position == 2 ? 'product-page__rating' : 'rating-model__rating' %}
+		
+		{% if rating_type == 2 %}
+			{% if rating_position == 2 or (rating_position == 1 and rating) %}
+				<div class="{{ class }} rating uni-href" onclick="$('a[href=\'#tab-review\']').click(); uniScrollTo('#tab-review');">
+					{% for i in 1..5 %}
+							<i class="{{ rating < i ? 'far' : 'fas' }} fa-star"></i>
+					{% endfor %}
+					{% if rating %}&nbsp;&nbsp;{{ product.text_reviews }}{% endif %}
+				</div>
+			{% endif %}
+		{% elseif product.rating_new %}
+			<div class="{{ class }} rating uni-href" onclick="$('a[href=\'#tab-review\']').click(); uniScrollTo('#tab-review');">
+				<i class="fas fa-star"></i>{{ product.rating_new|number_format(1) }} <i class="fas fa-comment"></i>{{ product.text_reviews }}
+			</div>
+		{% endif %}
+	{% endif %}
+{% endif %}

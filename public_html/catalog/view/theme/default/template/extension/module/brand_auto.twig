@@ -1,0 +1,52 @@
+{{ header }}
+<div class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            {% if breadcrumb['href'] %}
+                <li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+            {% else %}
+                <li>{{ breadcrumb['text'] }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="row">
+        {{ column_left }}
+        {% if (column_left and column_right) %}
+            {% set class = 'col-sm-6' %}
+        {% elseif (column_left or column_right) %}
+            {% set class = 'col-sm-9' %}
+        {% else %}
+            {% set class = 'col-sm-12' %}
+        {% endif %}
+        <div id="content" class="{{ class }}">
+            {{ content_top }}
+            <h1>{{ heading_title }}</h1>
+            {% if (auto_models is not empty) %}
+                <div id="model_list" class="row">
+                    {% for auto_model in auto_models %}
+                        <div class="col-md-2">
+                            <div class="thumbnail">
+                                <a href="{{ auto_model['href'] }}">
+                                    <img src="{{ auto_model['image'] }}" alt="{{ auto_model['name'] }}">
+                                </a>
+                                <div class="caption">
+                                    <h4 class="text-center"><a href="{{ auto_model['href'] }}">{{ auto_model['name'] }}</a></h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ text_no_models }}
+            {% endif %}
+            {{ content_bottom }}
+        </div>
+        {{ column_right }}
+    </div>
+</div>
+{{ footer }}
+<script>
+    $('#model_list').listnav({
+        allText: '{{ auto_filter_all }}'
+    });
+</script>

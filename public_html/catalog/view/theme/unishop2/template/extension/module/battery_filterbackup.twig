@@ -1,0 +1,217 @@
+<style>
+/* Чистый дизайн в стиле Start-Stop */
+.bf-container {
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    position: relative;
+    border-top: 4px solid #e31e24; /* Фирменный красный */
+}
+
+.bf-header-simple {
+    padding: 15px 20px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bf-title-simple {
+    font-size: 18px;
+    font-weight: 800;
+    color: #231f20;
+    text-transform: uppercase;
+}
+
+.bf-logo-side img {
+    max-height: 35px;
+}
+
+.bf-body {
+    padding: 10px 20px 25px;
+}
+
+.bf-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.bf-col {
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+.bf-col label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.bf-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bf-select:focus {
+    border-color: #e31e24;
+    outline: none;
+}
+
+.bf-select:disabled {
+    background: #f8f8f8;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.bf-btn-col {
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.bf-btn-search {
+    width: 100%;
+    height: 44px;
+    background: #e31e24;
+    color: #fff !important;
+    border: none;
+    border-radius: 4px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bf-btn-search:hover {
+    background: #c1171c;
+}
+
+.ss-loading { display: none; margin-left: 5px; }
+
+@media (max-width: 768px) {
+    .bf-col, .bf-btn-col { flex: 100%; }
+    .bf-header-simple { flex-direction: column; gap: 10px; text-align: center; }
+}
+</style>
+
+<div class="bf-container">
+    <div class="bf-header-simple">
+        <div class="bf-title-simple">Подбор по автомобилю</div>
+        <div class="bf-logo-side">
+            <img src="catalog/view/theme/default/image/logo.png" alt="Start-Stop">
+        </div>
+    </div>
+    
+    <div class="bf-body">
+        <div class="bf-row">
+            <div class="bf-col">
+                <label>Марка</label>
+                <select id="sel-brand" class="bf-select">
+                    <option value="">Выберите марку</option>
+                    {% for b in brands %}
+                        <option value="{{ b.brand }}">{{ b.brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="bf-col">
+                <label>Модель</label>
+                <select id="sel-model" class="bf-select" disabled>
+                    <option value="">Модель</option>
+                </select>
+            </div>
+
+            <div class="bf-col">
+                <label>Поколение</label>
+                <select id="sel-gen" class="bf-select" disabled>
+                    <option value="">Поколение</option>
+                </select>
+            </div>
+
+            <div class="bf-btn-col">
+                <button id="btn-go" class="bf-btn-search">
+                    <i class="fa fa-search"></i> НАЙТИ АКБ 
+                    <i class="fa fa-spinner fa-spin ss-loading"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#sel-brand').on('change', function() {
+        var brand = $(this).val();
+        if (!brand) return;
+
+        $.getJSON('index.php?route=extension/module/battery_filter/getModels&brand=' + encodeURIComponent(brand), function(data) {
+            var h = '<option value="">Выберите модель</option>';
+            $.each(data, function(i, v) { h += '<option value="'+v.model+'">'+v.model+'</option>'; });
+            $('#sel-model').html(h).prop('disabled', false);
+            $('#sel-gen').html('<option value="">Поколение</option>').prop('disabled', true);
+        });
+    });
+
+    $('#sel-model').on('change', function() {
+        var brand = $('#sel-brand').val();
+        var model = $(this).val();
+        if (!model) return;
+
+        $.getJSON('index.php?route=extension/module/battery_filter/getGenerations&brand='+encodeURIComponent(brand)+'&model='+encodeURIComponent(model), function(data) {
+            var h = '<option value="">Выберите поколение</option>';
+            $.each(data, function(i, v) { h += '<option value="'+v.generation+'">'+v.generation+'</option>'; });
+            $('#sel-gen').html(h).prop('disabled', false);
+        });
+    });
+
+    $('#btn-go').on('click', function() {
+        var brand = $('#sel-brand').val();
+        var model = $('#sel-model').val();
+        var gen = $('#sel-gen').val();
+        
+        if (!brand || !model) {
+            alert('Выберите марку и модель');
+            return;
+        }
+
+        $('.ss-loading').show();
+        $.getJSON('index.php?route=extension/module/battery_filter/getResult&brand='+encodeURIComponent(brand)+'&model='+encodeURIComponent(model)+'&gen='+encodeURIComponent(gen), function(json) {
+            if (json['redirect']) { 
+                setTimeout(function(){ location.href = json['redirect']; }, 500); 
+            } else {
+                $('.ss-loading').hide();
+                alert('Ничего не найдено');
+            }
+        });
+    });
+});
+</script>
+
+
+
+

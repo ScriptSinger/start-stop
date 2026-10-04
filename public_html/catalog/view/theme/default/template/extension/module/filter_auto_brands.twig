@@ -1,0 +1,14 @@
+{% if (brands is not empty) %}
+    <div class="row">
+        {% for brand in brands %}
+            <div class="col-md-2">
+                <div class="thumbnail">
+                    <a href="{{ brand['href'] }}"><img src="{{ brand['image'] }}" alt="{{ brand['name'] }}"></a>
+                    <div class="caption">
+                        <h4 class="text-center"><a href="{{ brand['href'] }}">{{ brand['name'] }}</a></h4>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

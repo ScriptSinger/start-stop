@@ -1,0 +1,31 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post">
+                    <div class="form-group">
+                        <label>{{ entry_product_field }}</label>
+                        <select class="form-control" name="product_field">
+                            <option value="sku">{{ entry_sku_field }}</option>
+                            <option value="model">{{ entry_model_field }}</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-file-excel-o" aria-hidden="true"></i> {{ button_export_base }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
